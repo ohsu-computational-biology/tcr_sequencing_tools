@@ -35,12 +35,14 @@ count.spikes <- function(input.fastq,
     #    trim to length (regardless of whether we're using the spike or its reverse-compl.
     spikes <- strtrim(spikes, spike.length);
 
-    #   create output
+    #   create outputs
     output.table <- spike.table;
     output.table$spike.count <- 0;
+    records.to.remove.ids <- character();
 
     #   count spikes - note there are two cases
-    for(i in 1:length(spikes))  {
+#    for(i in 1:length(spikes))  {
+    for(i in 1:10)  {
         if((i %% 10) == 0)  {
             cat("Processing spike ", i, " out of ", length(spikes), "\n", sep="");
         }   #   fi
@@ -49,19 +51,31 @@ count.spikes <- function(input.fastq,
         current.spike.counts <- vcountPattern(current.spike, sread(fastq.reads));
         output.table[i,]$spike.count <- sum(as.logical(current.spike.counts));
         #   record read ids (as they'll need removed later)
+        records.to.remove <- which(current.spike.counts > 0);
+        if(length(records.to.remove) > 0)   {
+            temp.reads <- fastq.reads[records.to.remove];
+            records.to.remove.ids <- c(records.to.remove.ids, 
+                                        as.character(temp.reads@id));
+        }   #   fi
     }   #   for i
 
-    #   build sames of output files
+    #   build names of output files
     count.table <- paste(output.dir, basename(input.fastq), ".counts.", spike.length, "bp.txt", sep="");
     reads.to.remove.list <- paste(output.dir, basename(input.fastq), ".reads.to.remove.txt", sep="");
     cat("Writing spike count file to: ", count.table, "\n", sep="");
     cat("Writing list of reads to remove to: ", reads.to.remove.list, "\n", sep="");
     
-    #   write output
+    #   write outputs
     write.table(output.table,
                 file=count.table,
                 quote=FALSE,
                 sep=",");
+
+    write.table(records.to.remove.ids,
+                file=reads.to.remove.list,
+                quote=FALSE,
+                row.names=FALSE,
+                col.names=FALSE);
 
 }   #   count.spikes()
 
