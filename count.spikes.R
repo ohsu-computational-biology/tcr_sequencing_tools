@@ -41,8 +41,7 @@ count.spikes <- function(input.fastq,
     records.to.remove.ids <- character();
 
     #   count spikes - note there are two cases
-#    for(i in 1:length(spikes))  {
-    for(i in 1:10)  {
+    for(i in 1:length(spikes))  {
         if((i %% 10) == 0)  {
             cat("Processing spike ", i, " out of ", length(spikes), "\n", sep="");
         }   #   fi
