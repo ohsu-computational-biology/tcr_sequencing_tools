@@ -53,10 +53,11 @@ for(i in 1:length(fastq.files))	{
 	remove.fastqs(curr.fastq, curr.reads.forward, curr.reads.reverse);
 
 	if((i %% 10) == 0)	{
-		cat("Processed:\n",
+		cat("Processed: ", i, " (of ", length(fastq.files), ")\n",
 			"\t", curr.fastq, "\n",
 			"\t", curr.reads.forward, "\n",
-			"\t", curr.reads.reverse, "\n\n");
+			"\t", curr.reads.reverse, "\n\n",
+			sep="");
 	}	#	fi
 
 }	#	for i
