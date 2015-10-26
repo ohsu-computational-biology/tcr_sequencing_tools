@@ -60,6 +60,7 @@ count.spikes <- function(input.fastq,
 
     #   build names of output files
     count.table <- paste(output.dir, basename(input.fastq), ".counts.", spike.length, "bp.txt", sep="");
+	#	TODO:  strip .fastq away before appending ".reads.to.remove.txt"
     reads.to.remove.list <- paste(output.dir, basename(input.fastq), ".reads.to.remove.txt", sep="");
     cat("Writing spike count file to: ", count.table, "\n", sep="");
     cat("Writing list of reads to remove to: ", reads.to.remove.list, "\n", sep="");
