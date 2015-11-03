@@ -147,17 +147,19 @@ postprocess.normalization.output <- function(input.table)   {
 
     #   convert floating point counts to integers
     input.table$"Clone count" <- round(input.table$"Clone count");
-
     #   convert "Inf" values to zeroes
     indices.to.change <- which(input.table$"Clone fraction" == Inf);
-    input.table[indices.to.change,]$"Clone fraction" <- 0;
+    if(length(indices.to.change) > 0)   {
+        input.table[indices.to.change,]$"Clone fraction" <- 0;
+    }   #   fi
     indices.to.change <- which(input.table$"Clone count" == Inf);
-    input.table[indices.to.change,]$"Clone count" <- 0;
+    if(length(indices.to.change) > 0)   {
+        input.table[indices.to.change,]$"Clone count" <- 0;
+    }   #   fi
 
     return(input.table);
 
 }   #   postprocess.normalization.output()   
-
 
 
 
