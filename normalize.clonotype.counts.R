@@ -14,7 +14,7 @@
 
 
 
-normalize.clonotype.counts <- function(clonotype.count.file, spike.count.file, sample.id=0)  {
+normalize.clonotype.counts <- function(exported.clone.file, spike.count.file, sample.id=0)  {
   # Get the corresponding MiTCR file to go with the spiked file
   
   # Reads in the spiked_read counts
@@ -32,9 +32,9 @@ normalize.clonotype.counts <- function(clonotype.count.file, spike.count.file, s
 
   # Opens the matching MiTCR file, if such file exists
 #   Original commented out below
-#  MiTCR_file_data <- read.csv(clonotype.count.file, stringsAsFactors = FALSE)
+#  MiTCR_file_data <- read.csv(exported.clone.file, stringsAsFactors = FALSE)
 #   End original
-  MiTCR_file_data <- read.csv(clonotype.count.file, stringsAsFactors = FALSE, sep="\t");
+  MiTCR_file_data <- read.csv(exported.clone.file, stringsAsFactors = FALSE, sep="\t");
   # Get rid of the TRB that is before every V and J segment name, so it can be matched later
   # TODO:  generalize this; we assume there that there's always a trailing "*00" after the region
     #   of interest, which may not always hold, especially if MiXCR changes their output format.
@@ -58,7 +58,7 @@ normalize.clonotype.counts <- function(clonotype.count.file, spike.count.file, s
       # Get the current spike information:  spike ID, count, V-region, J-region, etc.
     current.spike.info <- spiked_reads[index,]
 #   Begin Jacob
-      # Grab all the rows of the clonotype.count file that match both the V- and J- region
+      # Grab all the rows of the exported.clone.file that match both the V- and J- region
       #     of the current spike count
 #      MiTCR_multiple_row <- subset(MiTCR_file_data, current.spike.info$V == MiTCR_file_data$V.segments & current.spike.info$J == MiTCR_file_data$J.segments)
     indices.to.modify <- which((MiTCR_file_data$V.segments == current.spike.info$V) & (MiTCR_file_data$J.segments == current.spike.info$J));
@@ -85,7 +85,6 @@ normalize.clonotype.counts <- function(clonotype.count.file, spike.count.file, s
     
     #   make column-names VDJTools-compatible 
     MiTCR_file_data <- postprocess.normalization.output(MiTCR_file_data);
-
     output.file.name <- paste("S", sample.id, "_exported_clones_normalized.txt", sep="");
     write.table(MiTCR_file_data, 
                 output.file.name, 
