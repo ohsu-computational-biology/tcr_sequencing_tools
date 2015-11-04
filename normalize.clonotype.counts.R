@@ -25,7 +25,7 @@ normalize.clonotype.counts <- function(exported.clone.file, spike.count.file, sa
   spiked_mean <- mean(spiked_reads[[5]])
   
   # Test vector holding all the multiples needed to hit the mean
-  multiples_needed <- spiked_mean/spiked_reads$COUNT
+  multiples_needed <- spiked_mean/spiked_reads$spike.count
   
   #Puts the spiked_reads in the spiked_reads.frame for later use
   spiked_reads$multiples <- multiples_needed
