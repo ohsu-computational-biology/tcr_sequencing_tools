@@ -1,5 +1,6 @@
 #   Script for removing records with stop codons and frameshifts
 
+options(scipen=999);
 
 
 remove.records <- function(input.file)    {
@@ -22,11 +23,15 @@ remove.records <- function(input.file)    {
         }   #   fi
     }   #   for i 
     #   write output to file
+
+    colnames(clonotypes)[1] <- "#count";
     output.file.name <- paste(input.file, "_no_frameshifts_or_stop_codons.txt", sep="");
 
     write.table(clonotypes, 
         file=output.file.name, 
-        row.names=FALSE);
+        row.names=FALSE,
+        sep="\t",
+        quote=FALSE);
 
 }   #   remove.records()
 
