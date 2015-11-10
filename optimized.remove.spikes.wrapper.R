@@ -1,12 +1,44 @@
 #	Wrapper script for optimized.remove.spikes.R
 #
-#	Loads optimized.remove.spikes.R, then calls remove.fastqs() for all files in directory
+#	Loads optimized.remove.spikes.R, then calls remove.fastqs() (which is a function defined
+#       in that file) for all files in directory specified as an input to this Rscript
 #
 #	This script should be placed in the same directory containing, for each sample SX, files:
 #
 #		SX.fastq
 #		SX.reads.to.remove.txt
 #
+#   This script expects as input the path to this directory
+#   
+#   There are two modes of operation, depending on whether or not merged.reads is TRUE or FALSE.
+#   The original workflow kept forward and reverse reads separate.  For example, for a single
+#       sample:
+#
+#           S1_R1.fastq
+#           S1_R2.fastq
+#           S1_R1.reads.to.remove.txt
+#           S1_R2.reads.to.remove.txt
+#
+#   This wrapper (and the tool it wraps) required that both reads.to.remove.txt files be
+#       applied to each fastq.  For example, to run remove.fastqs(), three inputs were required:
+#           - fastq (e.g. S1_R1.fastq)
+#           - forward reads.to.remove (e.g. S1_R1.reads.to.remove.txt)  
+#           - reverse reads.to.remove (e.g. S1_R2.reads.to.remove.txt)  
+#
+#   This wrapper would then call (per the example above): 
+#
+#       remove.fastqs(S1_R1.fastq, S1_R1.reads.to.remove.txt, S1_R2.reads.to.remove.txt);
+#
+#   For the case above, the reads were not merged, so merged.reads should be set to FALSE.
+#
+#   If PEAR is used upstream in the pipeline (one of the first steps), then the forward and
+#       reverse reads are merged into a single fastq, which is then used for the remainder
+#       of the pipeline.
+#   remove.fastqs() expects two reads.to.remove.txt files.  To keep revisions simple we 
+#       simply modify this wrapper script and feed remove.fastqs() the same reads.to.remove.txt
+#       file as input.  Functionally this gives us the results we want, without having to 
+#       make large revisions to the code
+
 #	Load required libraries
 library(stringr);
 
