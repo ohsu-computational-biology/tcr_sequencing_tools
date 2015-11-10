@@ -42,14 +42,20 @@
 #	Load required libraries
 library(stringr);
 
-merged.reads <- TRUE;
+merged.reads <- FALSE;
 
 #	Get command-line arguments
 arguments <- commandArgs(trailingOnly=TRUE);
 working.dir <- arguments[1];
 
+#   for debugging purposes
+working.dir <- "/Users/leyshock/Desktop/TCRseq/results/november/10_november/remove_fastq_testing/";
+
 #	Specify relevant details
-source("/mnt/lustre1/CompBio/genomic_resources/tcrseq/optimized.remove.spikes.R");
+#   usage on ExaCloud
+#source("/mnt/lustre1/CompBio/genomic_resources/tcrseq/optimized.remove.spikes.R");
+#   usage on personal laptop
+source("/Users/leyshock/Desktop/TCRseq/tools/tcr_sequencing_tools/optimized.remove.spikes.R");
 fastq.suffix <- ".fastq";
 reads.to.remove.suffix <- ".reads.to.remove.txt";
 
@@ -67,10 +73,6 @@ fastq.files <- files.in.dir[fastq.files];
 fastq.files <- paste(working.dir, fastq.files, sep="");
 file.roots.1 <- unique(reads.to.remove.files);
 file.roots.2 <- unique(fastq.files);
-
-#	error-check
-if(length(file.roots.1) != length(file.roots.2))
-	stop("Mismatch between number of fastq files and number of reads.to.remove.files in directory")
 
 for(i in 1:length(fastq.files))	{
     #   get a fastq file to process
