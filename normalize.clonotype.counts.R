@@ -11,17 +11,21 @@
 #   3.  A CSV file detailing the barcode-to-VJ-region 
 #   4.  Spiked reads are supposed to be present in the exact same frequency
 
-scaling.factor <- calculate.scaling.factor(spike.count.dir);
-normalize.clonotype.counts(exported.clone.file, scaling.factor, sample.id);
+#scaling.factor <- calculate.scaling.factor(spike.count.dir);
+#normalize.clonotype.counts(exported.clone.file, scaling.factor, sample.id);
 
 
-normalize.clonotype.counts <- function(exported.clone.file, spike.count.file, sample.id=0)  {
+normalize.clonotype.counts <- function(exported.clone.file, 
+                                        spike.count.file, 
+                                        scaling.factor, 
+                                        sample.id=0)  {
   # Get the corresponding MiTCR file to go with the spiked file
 
   # Reads in the spiked_read counts
   all_content <- readLines(spike.count.file)
   skip_second <- all_content[-2]
-  spiked_reads <- read.csv(textConnection(skip_second), header = TRUE, stringsAsFactors = FALSE)
+#  spiked_reads <- read.csv(textConnection(skip_second), header = TRUE, stringsAsFactors = FALSE)
+  spiked_reads <- read.csv(spike.count.file, header = TRUE, stringsAsFactors = FALSE)
   
   # Originally Jacob calculated the scaling factors in this function; the original code is
   #     reproduced below (though commented out)
