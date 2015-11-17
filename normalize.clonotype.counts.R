@@ -11,24 +11,32 @@
 #   3.  A CSV file detailing the barcode-to-VJ-region 
 #   4.  Spiked reads are supposed to be present in the exact same frequency
 
-
+scaling.factor <- calculate.scaling.factor(spike.count.dir);
+normalize.clonotype.counts(exported.clone.file, scaling.factor, sample.id);
 
 
 normalize.clonotype.counts <- function(exported.clone.file, spike.count.file, sample.id=0)  {
   # Get the corresponding MiTCR file to go with the spiked file
-  
+
   # Reads in the spiked_read counts
   all_content <- readLines(spike.count.file)
   skip_second <- all_content[-2]
   spiked_reads <- read.csv(textConnection(skip_second), header = TRUE, stringsAsFactors = FALSE)
+  
+  # Originally Jacob calculated the scaling factors in this function; the original code is
+  #     reproduced below (though commented out)
+  # For modularity's sake we instead calculate the scaling factor in a different function, and
+  #     assign it here.  The use of "spiked_reads" is a legacy from Jacob's code 
+  spiked_reads$multiples <- scaling.factor;
+  
+  # BEGIN Jacob's original code
   #Get the mean from the last column, which is the read count
-  spiked_mean <- mean(spiked_reads[[5]])
-  
+#  spiked_mean <- mean(spiked_reads[[5]])
   # Test vector holding all the multiples needed to hit the mean
-  multiples_needed <- spiked_mean/spiked_reads$spike.count
-  
+#  multiples_needed <- spiked_mean/spiked_reads$spike.count
   #Puts the spiked_reads in the spiked_reads.frame for later use
-  spiked_reads$multiples <- multiples_needed
+#  spiked_reads$multiples <- multiples_needed
+  # END Jacob's original code
 
   # Opens the matching MiTCR file, if such file exists
 #   Original commented out below
@@ -53,27 +61,18 @@ normalize.clonotype.counts <- function(exported.clone.file, spike.count.file, sa
  
   MiTCR_file_data$normalized.count <- 0; 
   MiTCR_file_data$normalized.percent <- 0; 
+
   # Go through every spike in the spike file
     for(index in 1:nrow(spiked_reads)) {
-      # Get the current spike information:  spike ID, count, V-region, J-region, etc.
-    current.spike.info <- spiked_reads[index,]
-#   Begin Jacob
-      # Grab all the rows of the exported.clone.file that match both the V- and J- region
-      #     of the current spike count
-#      MiTCR_multiple_row <- subset(MiTCR_file_data, current.spike.info$V == MiTCR_file_data$V.segments & current.spike.info$J == MiTCR_file_data$J.segments)
-    indices.to.modify <- which((MiTCR_file_data$V.segments == current.spike.info$V) & (MiTCR_file_data$J.segments == current.spike.info$J));
-    if(length(indices.to.modify) > 0)   {
-        MiTCR_file_data[indices.to.modify,]$normalized.count <- current.spike.info$multiples * MiTCR_file_data[indices.to.modify,]$Clone.count;
-      # Then change the percentage by the same amount, as not all counts are changed the same
-      MiTCR_file_data[indices.to.modify,]$normalized.percent <- current.spike.info$multiples * MiTCR_file_data[indices.to.modify,]$Clone.fraction;
-    }   #   fi
-      # Point of this whole script, change the sequence count
-#      MiTCR_multiple_row$Seq..Count <- current.spike.info$multiples * MiTCR_multiple_row$Seq..Count
-#      # Then change the percentage by the same amount, as not all counts are changed the same
-#      MiTCR_multiple_row$Percent <- current.spike.info$multiples * MiTCR_multiple_row$Percent
-#      # Add to the data.frame that will be the CSV file
-#      MiTCR_output <- rbind(MiTCR_output, MiTCR_multiple_row)
-#   End Jacob
+          # Get the current spike information:  spike ID, count, V-region, J-region, etc.
+        current.spike.info <- spiked_reads[index,]
+          # Grab all the rows of the exported.clone.file that match both the V- and J- region
+          #     of the current spike count
+        indices.to.modify <- which((MiTCR_file_data$V.segments == current.spike.info$V) & (MiTCR_file_data$J.segments == current.spike.info$J));
+        if(length(indices.to.modify) > 0)   {
+            MiTCR_file_data[indices.to.modify,]$normalized.count <- current.spike.info$multiples * MiTCR_file_data[indices.to.modify,]$Clone.count;
+          MiTCR_file_data[indices.to.modify,]$normalized.percent <- current.spike.info$multiples * MiTCR_file_data[indices.to.modify,]$Clone.fraction;
+        }   #   fi
     }   #   for index
  
     output.file.name <- paste("S", sample.id, "_exported_clones_normalized_unconverted.txt", sep="");
@@ -160,6 +159,53 @@ postprocess.normalization.output <- function(input.table)   {
     return(input.table);
 
 }   #   postprocess.normalization.output()   
+
+#   This function calculates a "global" scaling factor
+#   The factor is calculated using counts of EACH spike for ALL samples
+#   The calculated scaling factor should be applied to each sample's spike count
+
+calculate.scaling.factor <- function(spike.count.dir)  {
+    
+    #   Get list of files in directory
+    spike.count.files <- list.files(spike.count.dir);
+
+    #   TODO:  error-check that they all have the appropriate suffix to be
+    #       spike.count.txt files
+    
+    #   Create matrix to hold results
+    #   One row for each spike; we take a peek at a spike.count.txt file to
+    #       find out how many spikes there are.  This aids portability, since
+    #       the user doesn't ned to know how many spikes there are prior to
+    #       running the script
+    temp.file <- paste(spike.count.dir, spike.count.files[1], sep="");
+    temp <- read.csv(temp.file);
+    num.rows <- length(temp[[1]]);
+    #   One column for each sample
+    num.cols <- length(spike.count.files);
+    counts.and.samples <- matrix(nrow = num.rows, ncol = num.cols); 
+
+    #   Read in each of the spike count files
+    for(i in 1:length(spike.count.files))   {
+        #   Read in spike.count file
+        curr.file <- paste(spike.count.dir, spike.count.files[i], sep="");
+        curr.spike.counts <- read.csv(curr.file);
+        #   Add counts to matrix
+        counts.and.samples[, i] <- curr.spike.counts$spike.count;
+    }   #   for 
+
+    #   Calculate mean number of spikes found, across all samples
+    #   The "apply" function calculates the sum across rows (across samples)
+    sum.across.samples <- apply(counts.and.samples, 1, sum);
+    spike.count.mean <- sum(sum.across.samples) / num.rows;
+
+    #   Use the mean to calculate the scaling factor
+    scaling.factor <- sum.across.samples / spike.count.mean;
+    scaling.factor <- 1 / scaling.factor;
+
+    return(scaling.factor);
+
+}   #   calculate.scaling.factor()
+
 
 
 
