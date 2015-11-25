@@ -22,9 +22,7 @@ normalize.clonotype.counts <- function(exported.clone.file,
   # Get the corresponding MiTCR file to go with the spiked file
 
   # Reads in the spiked_read counts
-  all_content <- readLines(spike.count.file)
-  skip_second <- all_content[-2]
-#  spiked_reads <- read.csv(textConnection(skip_second), header = TRUE, stringsAsFactors = FALSE)
+#   TODO:  can we make this the spike file, rather than a particular count file?
   spiked_reads <- read.csv(spike.count.file, header = TRUE, stringsAsFactors = FALSE)
   
   # Originally Jacob calculated the scaling factors in this function; the original code is
@@ -32,15 +30,6 @@ normalize.clonotype.counts <- function(exported.clone.file,
   # For modularity's sake we instead calculate the scaling factor in a different function, and
   #     assign it here.  The use of "spiked_reads" is a legacy from Jacob's code 
   spiked_reads$multiples <- scaling.factor;
-  
-  # BEGIN Jacob's original code
-  #Get the mean from the last column, which is the read count
-#  spiked_mean <- mean(spiked_reads[[5]])
-  # Test vector holding all the multiples needed to hit the mean
-#  multiples_needed <- spiked_mean/spiked_reads$spike.count
-  #Puts the spiked_reads in the spiked_reads.frame for later use
-#  spiked_reads$multiples <- multiples_needed
-  # END Jacob's original code
 
   # Opens the matching MiTCR file, if such file exists
 #   Original commented out below
@@ -62,7 +51,8 @@ normalize.clonotype.counts <- function(exported.clone.file,
   
   # Remove the extra characters for the V segments in the spiked counts, so matches occur
   spiked_reads$V <- gsub("-","", spiked_reads$V)
- 
+
+  # TODO:  are we right to set these to zero? 
   MiTCR_file_data$normalized.count <- 0; 
   MiTCR_file_data$normalized.percent <- 0; 
 
@@ -175,7 +165,6 @@ calculate.scaling.factor <- function(spike.count.dir)  {
 
     #   TODO:  error-check that they all have the appropriate suffix to be
     #       spike.count.txt files
-    
     #   Create matrix to hold results
     #   One row for each spike; we take a peek at a spike.count.txt file to
     #       find out how many spikes there are.  This aids portability, since
@@ -210,8 +199,12 @@ calculate.scaling.factor <- function(spike.count.dir)  {
 
 }   #   calculate.scaling.factor()
 
-
-
-
-
-
+  
+  # BEGIN Jacob's original code
+  #Get the mean from the last column, which is the read count
+#  spiked_mean <- mean(spiked_reads[[5]])
+  # Test vector holding all the multiples needed to hit the mean
+#  multiples_needed <- spiked_mean/spiked_reads$spike.count
+  #Puts the spiked_reads in the spiked_reads.frame for later use
+#  spiked_reads$multiples <- multiples_needed
+  # END Jacob's original code
