@@ -14,11 +14,11 @@
 #scaling.factor <- calculate.scaling.factor(spike.count.dir);
 #normalize.clonotype.counts(exported.clone.file, scaling.factor, sample.id);
 
+arguments <- commandArgs(trailingOnly = TRUE);
+exported.clone.file <- arguments[1];
+spike.count.file <- arguments[2];
+scaling.factor.file <- arguments[3];
 
-normalize.clonotype.counts <- function(exported.clone.file, 
-                                        spike.count.file, 
-                                        scaling.factor.file)    {
-  # Get the corresponding MiTCR file to go with the spiked file
 
   # Reads in the spiked_read counts
 #   TODO:  can we make this the spike file, rather than a particular count file?
@@ -88,7 +88,6 @@ normalize.clonotype.counts <- function(exported.clone.file,
                 sep="\t");
  
  
-}   #   normalize.clonotype.counts()
 
 
 #   TODO:  remove the dependency on column order, since this isn't guaranteed
