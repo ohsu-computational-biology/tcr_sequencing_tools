@@ -1,3 +1,8 @@
+
+#   wrapper script for TCRseq normalization
+
+#   working.dir should be directory containing all and only 
+
 library(stringr);
 
 tester <- function(working.dir) {
@@ -30,6 +35,8 @@ if(length(file.roots.1) != length(file.roots.2))
 	stop("Mismatch between number of count.files and number of clone.files in directory")
 for(i in 1:length(count.files))	{
 
+    #   calculate scaling factor
+    calculate.scaling.factor(working.dir);
 	#	call function
 	normalize.clonotype.counts(clone.files[i], count.files[i], i);
 
