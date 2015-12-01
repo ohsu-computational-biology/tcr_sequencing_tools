@@ -40,6 +40,10 @@ calculate.scaling.factor <- function(spike.count.dir)  {
     scaling.factor <- sum.across.samples / spike.count.mean;
     scaling.factor <- 1 / scaling.factor;
 
-    return(scaling.factor);
+    write.table(scaling.factor,
+                file="scaling_factor.txt",
+                quote=FALSE,
+                row.names=FALSE,
+                col.names=FALSE);
 
 }   #   calculate.scaling.factor()
