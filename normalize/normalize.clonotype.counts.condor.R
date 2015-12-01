@@ -136,12 +136,13 @@ postprocess.normalization.output <- function(input.table)   {
         }   #   fi
     }   #   for index
 #   TODO:  fix file name 
-    output.file.name <- paste("S_exported_clones_normalized_unconverted.txt", sep="");
-    write.table(MiTCR_file_data, 
-                output.file.name, 
-                quote = FALSE, 
-                row.names = FALSE, 
-                sep="\t");
+#   TODO:  write regression test for this
+#    output.file.name <- paste("S_exported_clones_normalized_unconverted.txt", sep="");
+#    write.table(MiTCR_file_data, 
+#                output.file.name, 
+#                quote = FALSE, 
+#                row.names = FALSE, 
+#                sep="\t");
    
 #   TODO:  fix file name 
     #   make column-names VDJTools-compatible 
