@@ -57,16 +57,34 @@ count.spikes <- function(input.fastq,
                                         as.character(temp.reads@id));
         }   #   fi
     }   #   for i
-
+    #   construct summary for QC purposes
+    qc.summary <- data.frame(sample.id=character(),
+                             num.reads=integer(),
+                             num.spiked.reads=integer(),
+                             pct.spiked.reads=numeric(),
+                             stringsAsFactors=FALSE);
+    qc.summary[1,]$sample.id <- input.fastq;
+    qc.summary[1,]$num.reads <- num.fastqs;
+    qc.summary[1,]$num.spiked.reads <- sum(output.table$spike.count);
+    qc.summary[1,]$pct.spiked.reads <- (qc.summary$num.spiked.reads / num.fastqs) * 100;
+    #   modify output.table so it'll become easily incorporated into qc.summary
+    spike.count <- output.table$spike.count;
+    qc.spike <- data.frame(spike.count);
+    rownames(qc.spike) <- output.table$SPIKE_ID;
+    qc.spike <- t(qc.spike);
+    rownames(qc.spike) <- NULL;
+    qc.summary <- cbind(qc.summary, qc.spike); 
+    
     #   build names of output files
     #   strip ".fastq" from file name.  Not necessary, just more hygienic 
     filename.no.extension <- sub("[.][^.]*$", "", basename(input.fastq));
     count.table <- paste(output.dir, filename.no.extension, "spike.counts.", spike.length, "bp.txt", sep="");
 	#	TODO:  strip .fastq away before appending ".reads.to.remove.txt"
     reads.to.remove.list <- paste(output.dir, filename.no.extension, ".reads.to.remove.txt", sep="");
+    qc.file <- paste(output.dir, filename.no.extension, ".qc.txt", sep="");
     cat("Writing spike count file to: ", count.table, "\n", sep="");
     cat("Writing list of reads to remove to: ", reads.to.remove.list, "\n", sep="");
-    
+    cat("Writing QC summary to: ", qc.file, "\n", sep="");
     #   write outputs
     write.table(output.table,
                 file=count.table,
@@ -78,6 +96,12 @@ count.spikes <- function(input.fastq,
                 quote=FALSE,
                 row.names=FALSE,
                 col.names=FALSE);
+
+    write.table(qc.summary,
+                file=qc.file,
+                quote=FALSE,
+                sep=",",
+                row.names=FALSE);
 
 }   #   count.spikes()
 
