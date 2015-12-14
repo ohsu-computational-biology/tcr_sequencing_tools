@@ -25,7 +25,8 @@ remove.records <- function(input.file)    {
     #   write output to file
 
     colnames(clonotypes)[1] <- "#count";
-    output.file.name <- paste(input.file, "_no_frameshifts_or_stop_codons.txt", sep="");
+    output.file.name <- sub("[.][^.]*$", "", basename(input.file));
+    output.file.name <- paste(output.file.name, "_no_fssc.txt", sep="");
 
     write.table(clonotypes, 
         file=output.file.name, 
