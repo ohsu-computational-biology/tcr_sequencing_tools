@@ -135,6 +135,9 @@ postprocess.normalization.output <- function(input.table)   {
           MiTCR_file_data[indices.to.modify,]$normalized.percent <- current.spike.info$multiples * MiTCR_file_data[indices.to.modify,]$Clone.fraction;
         }   #   fi
     }   #   for index
+#   TODO:  Keep this?  Originally this output the "raw" data, not cleaning it up for use with other
+#       tools.  I am not sure if there's any reason to keep this code around though, since I cannot
+#       recall ever having used the "raw" data.
 #   TODO:  fix file name 
 #   TODO:  write regression test for this
 #    output.file.name <- paste("S_exported_clones_normalized_unconverted.txt", sep="");
@@ -144,10 +147,10 @@ postprocess.normalization.output <- function(input.table)   {
 #                row.names = FALSE, 
 #                sep="\t");
    
-#   TODO:  fix file name 
     #   make column-names VDJTools-compatible 
     MiTCR_file_data <- postprocess.normalization.output(MiTCR_file_data);
-    output.file.name <- paste("S_exported_clones_normalized.txt", sep="");
+    output.file.name <- basename(exported.clone.file);
+    output.file.name <- paste(output.file.name, "_normalized.txt", sep="");
     write.table(MiTCR_file_data, 
                 output.file.name, 
                 quote = FALSE, 
