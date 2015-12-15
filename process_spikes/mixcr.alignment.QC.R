@@ -12,7 +12,7 @@ arguments <- commandArgs(trailingOnly=TRUE);
 working.dir <- arguments[1];
 
 #   for debugging purposes
-working.dir <- "/Users/leyshock/Desktop/TCRseq/tools/temp/QC/";
+#working.dir <- "/Users/leyshock/Desktop/TCRseq/tools/temp/QC/";
 
 #	Examine the current directory for the files to process
 files.in.dir <- list.files(working.dir);
@@ -44,7 +44,7 @@ for(i in 1:length(files.in.dir))	{
         stop("Unexpected length of report for file: ", curr.file, "\n", sep="");
     }   #   fi
 
-    curr.date <- str_split(curr.record[1], ":")[[1]][2];
+    curr.date <- str_split(curr.record[1], ":")[[1]];
     curr.date <- curr.date[-1];
     curr.date <- paste(curr.date, collapse="");
     output.df[i,]$analysis.date <- curr.date;
