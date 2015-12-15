@@ -1,4 +1,5 @@
-##  This script removes spiked records from a fastq file
+##  This script:
+#   
 
 #   load depdencies
 library(ShortRead);
@@ -49,6 +50,7 @@ count.spikes <- function(input.fastq,
         #   count spike occurences
         current.spike.counts <- vcountPattern(current.spike, sread(fastq.reads));
         output.table[i,]$spike.count <- sum(as.logical(current.spike.counts));
+        cat("\t", output.table[i,]$spike.count, " spikes detected\n", sep="");
         #   record read ids (as they'll need removed later)
         records.to.remove <- which(current.spike.counts > 0);
         if(length(records.to.remove) > 0)   {
@@ -56,6 +58,8 @@ count.spikes <- function(input.fastq,
             records.to.remove.ids <- c(records.to.remove.ids, 
                                         as.character(temp.reads@id));
         }   #   fi
+        if(spike.length == 9)
+            break;
     }   #   for i
     #   construct summary for QC purposes
     qc.summary <- data.frame(sample.id=character(),

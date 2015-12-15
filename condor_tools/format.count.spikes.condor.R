@@ -23,16 +23,16 @@ format.for.condor <- function(list.of.files) {
             "log=$(script_dir)/logs/count_spikes_parallel_9bp_fwd", i, ".log\n",
 #            "log=$(script_dir)/logs/count_spikes_parallel_9bp_rev", i, ".log\n",
 #            "log=$(script_dir)/logs/count_spikes_parallel_25bp_fwd", i, ".log\n",
-            "arguments=$(script_dir)count.spikes.wrapper.9bp.fwd.R\n",
-#            "arguments=$(script_dir)count.spikes.wrapper.9bp.rev\b",
-#            "arguments=$(script_dir)count.spikes.wrapper.25bp.fwd.R\n",
+            "arguments=$(script_dir)count.spikes.wrapper.9bp.fwd.R ",
+#            "arguments=$(script_dir)count.spikes.wrapper.9bp.rev.R ",
+#            "arguments=$(script_dir)count.spikes.wrapper.25bp.fwd.R ",
             "$(data_dir)", list.of.files[i], " ",
             "\nqueue 1\n",
             sep=""); 
     }   #   while
 
     write.table(formatted.vector,
-                file="formatted.txt",
+                file="formatted.9bp.fwd.txt",
                 row.names = FALSE,
                 col.names = FALSE,
                 quote = FALSE);
