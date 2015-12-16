@@ -53,9 +53,9 @@ working.dir <- "/Users/leyshock/Desktop/TCRseq/results/november/10_november/remo
 
 #	Specify relevant details
 #   usage on ExaCloud
-#source("/mnt/lustre1/CompBio/genomic_resources/tcrseq/optimized.remove.spikes.R");
+#source("/mnt/lustre1/CompBio/genomic_resources/tcrseq/tcr_sequencing_tools/process_spikes/optimized.remove.spikes.R");
 #   usage on personal laptop
-source("/Users/leyshock/Desktop/TCRseq/tools/tcr_sequencing_tools/optimized.remove.spikes.R");
+source("/Users/leyshock/Desktop/TCRseq/tools/tcr_sequencing_tools/tcr_sequencing_tools/process_spikes/optimized.remove.spikes.R");
 fastq.suffix <- ".fastq";
 reads.to.remove.suffix <- ".reads.to.remove.txt";
 

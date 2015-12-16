@@ -35,9 +35,9 @@ output.df <- data.frame(analysis.date=character(),  #   1
 
 for(i in 1:length(files.in.dir))	{
     #   get a QC file to process
-    curr.file <- files.in.dir[i];
-
-    curr.record <- readLines(curr.file);
+    curr.file <- file.path(working.dir, files.in.dir[i]);
+    
+	curr.record <- readLines(curr.file);
 
     #   misc QC
     if(length(curr.record) != 15)   {
@@ -84,5 +84,4 @@ write.table(output.df,
             quote=FALSE,
             sep=",",
             row.names=FALSE)
-
 
