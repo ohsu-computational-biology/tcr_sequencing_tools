@@ -82,7 +82,7 @@ count.spikes <- function(input.fastq,
     #   build names of output files
     #   strip ".fastq" from file name.  Not necessary, just more hygienic 
     filename.no.extension <- sub("[.][^.]*$", "", basename(input.fastq));
-    count.table <- paste(output.dir, filename.no.extension, "spike.counts.", spike.length, "bp.txt", sep="");
+    count.table <- paste(output.dir, filename.no.extension, ".spike.counts.", spike.length, "bp.txt", sep="");
 	#	TODO:  strip .fastq away before appending ".reads.to.remove.txt"
     reads.to.remove.list <- paste(output.dir, filename.no.extension, ".reads.to.remove.txt", sep="");
     qc.file <- paste(output.dir, filename.no.extension, ".qc.txt", sep="");
