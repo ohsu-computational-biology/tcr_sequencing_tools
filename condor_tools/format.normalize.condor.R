@@ -21,10 +21,10 @@ format.for.condor <- function(list.of.clone.files, list.of.count.files) {
             "error=$(log_dir)stderr_normalize_clonotypes_", i, ".out\n",
             "log=$(log_dir)condor_normalize_clonotypes_", i, ".log\n",
             "arguments=$(script_dir)normalize.clonotype.counts.condor.R ",
-            "$(mixcr_dir)exported/", list.of.clone.files[i], " ",   #   clone input
-            "$(count_dir)", list.of.count.files[i], " ",    #   count input
-            "$(mixcr_dir)normalized_clones/ ", #  ouput directory
-            "$(mixcr_dir)reference/scaling_factor.txt",
+            "$(normalization_dir)clones/", list.of.clone.files[i], " ",   #   clone input
+            "$(normalization_dir)counts/", list.of.count.files[i], " ",    #   count input
+            "$(normalization_dir)normalized_clones/ ", #  ouput directory
+            "$(normalization_dir)scaling_factor.txt",
             "\nqueue 1\n",
             sep=""); 
     }   #   while
