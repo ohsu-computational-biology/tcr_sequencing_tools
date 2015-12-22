@@ -32,6 +32,7 @@ remove.records <- function(input.file)    {
 
     output.file.name <- sub("[.][^.]*$", "", basename(input.file));
     output.file.name <- paste(output.file.name, "_no_fssc.txt", sep="");
+	output.file.name <- file.path(dirname(input.file), output.file.name);
 
     write.table(clonotypes, 
         file=output.file.name, 
