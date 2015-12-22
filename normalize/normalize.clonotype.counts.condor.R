@@ -17,7 +17,9 @@
 arguments <- commandArgs(trailingOnly = TRUE);
 exported.clone.file <- arguments[1];
 spike.count.file <- arguments[2];
-scaling.factor.file <- arguments[3];
+output.path <- arguments[3];
+scaling.factor.file <- arguments[4];
+
 
 
 #   TODO:  remove the dependency on column order, since this isn't guaranteed
@@ -149,8 +151,9 @@ postprocess.normalization.output <- function(input.table)   {
    
     #   make column-names VDJTools-compatible 
     MiTCR_file_data <- postprocess.normalization.output(MiTCR_file_data);
-    output.file.name <- basename(exported.clone.file);
-    output.file.name <- paste(output.file.name, "_normalized.txt", sep="");
+	output.file.name <- sub("[.][^.]*$", "", basename(exported.clone.file));
+    output.file.name <- paste(output.path, output.file.name, "_normalized.txt", sep="");
+	cat("Writing output to: ", output.file.name, "\n");
     write.table(MiTCR_file_data, 
                 output.file.name, 
                 quote = FALSE, 
