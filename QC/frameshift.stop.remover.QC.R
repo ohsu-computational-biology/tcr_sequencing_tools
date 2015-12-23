@@ -70,7 +70,13 @@ evaluate.work <- function(path.to.raw.counts, path.to.processed.counts)	{
 	#	Compare results
 	records.removed <- (lc.raw.counts - lc.processed.counts);
     percent.original.clones.retained <- round(((lc.processed.counts / lc.raw.counts) * 100), digits=0);
-	result.df <- data.frame(samples, records.removed, percent.original.clones.retained);
+	result.df <- data.frame(samples, lc.raw.counts, lc.processed.counts, records.removed, percent.original.clones.retained);
+	#	rename columns
+	names(result.df)[1] <- "Sample";
+	names(result.df)[2] <- "Clone count, original";
+	names(result.df)[3] <- "Clone count, after removal of frameshifts and stop codons";
+	names(result.df)[4] <- "Clones removed";
+	names(result.df)[5] <- "Percent of original clones retained";
 	output.file <- "frameshift.stop.remover.QC.results.txt";
 	write.table(result.df, 
 				file=output.file,
