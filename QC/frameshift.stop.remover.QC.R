@@ -69,14 +69,14 @@ evaluate.work <- function(path.to.raw.counts, path.to.processed.counts)	{
 
 	#	Compare results
 	records.removed <- (lc.raw.counts - lc.processed.counts);
-	result.df <- data.frame(samples, records.removed);
+    percent.original.clones.retained <- round(((lc.processed.counts / lc.raw.counts) * 100), digits=0);
+	result.df <- data.frame(samples, records.removed, percent.original.clones.retained);
 	output.file <- "frameshift.stop.remover.QC.results.txt";
 	write.table(result.df, 
 				file=output.file,
 				quote=FALSE,
 				sep=",",
 				row.names=FALSE);
-
 }	#	evaluate.work()
 
 
