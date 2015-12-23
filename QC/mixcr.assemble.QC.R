@@ -78,6 +78,8 @@ for(i in 1:length(files.in.dir))	{
      
 }	#	for i
 
+#   order table to make results more intuitive
+output.df <- output.df[order(output.df$pct.total.reads.used, decreasing=TRUE),];
 
 write.table(output.df, 
             file="mixcr.assemble.QC.summary.txt",

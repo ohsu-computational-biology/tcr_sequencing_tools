@@ -78,6 +78,8 @@ for(i in 1:length(files.in.dir))	{
      
 }	#	for i
 
+#   order results, to make them more intuitive
+output.df <- output.df[order(output.df$aligned.pct, decreasing=TRUE),];
 
 write.table(output.df, 
             file="mixcr.alignment.QC.summary.txt",
