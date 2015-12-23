@@ -55,13 +55,30 @@ evaluate.work <- function(path.to.raw.fastqs, path.to.despiked.fastqs)	{
 
 	#	Compare results
 	records.removed <- ((lc.raw.fastqs - lc.despiked.fastqs) / 4);
+    percent.original.reads.retained <- round(((lc.despiked.fastqs / lc.raw.fastqs) * 100), digits=0);
 	samples <- 1:length(raw.fastqs);
-	result.df <- data.frame(samples, records.removed);
-	output.file <- "results.txt";
-	cat("Records removed, per sample:\n", file=output.file);
-	#write(result.df, file=output.file );
-	cat("\nSummary statistics on records removed:\n", file=output.file);
-	print(summary(records.removed));
+	result.df <- data.frame(samples, 
+                            lc.raw.fastqs, 
+                            lc.despiked.fastqs,
+                            records.removed,
+                            percent.original.reads.retained);
+    #   sort data frame, to make results more intuitive
+    result.df <- result.df[order(result.df$percent.original.reads.retained, decreasing=TRUE),];
+    #   rename columns
+    names(result.df)[1] <- "Sample";
+    names(result.df)[2] <- "Number of reads (original)";
+    names(result.df)[3] <- "Number of reads (after removal of spiked reads";
+    names(result.df)[4] <- "Number of reads removed";
+    names(result.df)[5] <- "Percent of original reads retained";
+    #   write out results
+	output.file <- "remove.spikes.QC.result.txt";
+    write.table(result.df,
+                file=output.file,
+                quote=FALSE,
+                sep=",",
+                row.names=FALSE);
+
+    
 
 }	#	evaluate.work()
 
