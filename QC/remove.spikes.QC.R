@@ -54,10 +54,14 @@ evaluate.work <- function(path.to.raw.fastqs, path.to.despiked.fastqs)	{
 	}	#	for i
 
 	#	Compare results
-	records.removed <- ((lc.raw.fastqs - lc.despiked.fastqs) / 4);
-    percent.original.reads.retained <- round(((lc.despiked.fastqs / lc.raw.fastqs) * 100), digits=0);
-	samples <- 1:length(raw.fastqs);
-	result.df <- data.frame(samples, 
+    #   We divide by four (in a number of cases) because each fastq record contains four lines
+	records.removed <- (lc.raw.fastqs - lc.despiked.fastqs);
+	records.removed <- records.removed / 4;
+	lc.raw.fastqs <- lc.raw.fastqs / 4;
+	lc.despiked.fastqs <- lc.despiked.fastqs / 4;
+    percent.original.reads.retained <- (lc.despiked.fastqs / lc.raw.fastqs);
+    percent.original.reads.retained <- round(percent.original.reads.retained * 100, digits=1);
+	result.df <- data.frame(despiked.fastqs, 
                             lc.raw.fastqs, 
                             lc.despiked.fastqs,
                             records.removed,
@@ -65,7 +69,7 @@ evaluate.work <- function(path.to.raw.fastqs, path.to.despiked.fastqs)	{
     #   sort data frame, to make results more intuitive
     result.df <- result.df[order(result.df$percent.original.reads.retained, decreasing=TRUE),];
     #   rename columns
-    names(result.df)[1] <- "Sample";
+    names(result.df)[1] <- "Sample (despiked)";
     names(result.df)[2] <- "Number of reads (original)";
     names(result.df)[3] <- "Number of reads (after removal of spiked reads";
     names(result.df)[4] <- "Number of reads removed";
