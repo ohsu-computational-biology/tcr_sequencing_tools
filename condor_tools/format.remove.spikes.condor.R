@@ -2,38 +2,26 @@
 
 #   use readLines() to read in a list of file names
 
-format.for.condor <- function(list.of.files) {
+format.for.condor <- function(fastqs, reads.to.remove.forward, reads.to.remove.reverse) {
 
-    formatted.vector <- NULL;
+    formatted.vector <- character(length(fastqs));
 
-    #   Assumes that there are three files per sample:
-    #   
-    #       S1.fastq
-    #       S1.forward.reads.to.remove.txt
-    #       S1.reverse.reads.to.remove.txt
-  
-    i <- 1; 
-    j <- 1;
-    loop.control <- (length(list.of.files) + 1);
+    for (i in 1:length(fastqs)) {
 
-    while (i < loop.control)  {
-
-       formatted.vector[j] <- paste(
+       formatted.vector[i] <- paste(
             "output=$(script_dir)logs/stdout_remove_spikes_parallel_", i, ".out\n",
             "error=$(script_dir)logs/stderr_remove_spikes_parallel_", i, ".out\n",
             "log=$(script_dir)logs/remove_spikes_parallel_", i, ".log\n",
             "arguments=$(script_dir)tcr_sequencing_tools/optimized.remove.spikes.condor.R ",
-            "$(data_dir)", list.of.files[i], " ",
-            "$(data_dir)", list.of.files[i + 1], " ", 
-            "$(data_dir)", list.of.files[i + 2],
+            "$(data_dir)", fastqs[i], " ",
+            "$(data_dir)", reads.to.remove.forward[i], " ", 
+            "$(data_dir)", reads.to.remove.reverse[i],
             "\nqueue 1\n",
             sep=""); 
-       i <- i + 3;
-       j <- j + 1;
-    }   #   while
+    }   #   for i
 
     write.table(formatted.vector,
-                file="formatted.txt",
+                file="formatted.for.remove.spikes.condor.txt",
                 row.names = FALSE,
                 col.names = FALSE,
                 quote = FALSE);
