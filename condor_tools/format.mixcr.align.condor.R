@@ -1,4 +1,9 @@
 
+#   This script assumes the input files have the following format:
+#
+#       XXX_XX_xx.assembled.fastq.removed.fastq
+#
+#   (The part that really matters in the format are the "."s.)
 
 #   
 #   use readLines() to read in a list of file names
