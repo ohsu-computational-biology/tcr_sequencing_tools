@@ -6,7 +6,9 @@ options(scipen=999);
 #   load required libraries
 library(stringr);
 
-qc.normalization <- function(path.to.QC.files)  {
+
+arguments <- commandArgs(trailingOnly=TRUE);
+path.to.QC.files <- arguments[1];
 
 all.files <- list.files(path.to.QC.files);
 
@@ -46,4 +48,3 @@ write.table(output.data,
             sep=",",
             row.names=FALSE);
 
-}   #   qc.normalization()

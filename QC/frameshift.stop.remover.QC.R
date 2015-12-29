@@ -14,7 +14,10 @@
 #
 library(stringr);
 
-evaluate.work <- function(path.to.raw.counts, path.to.processed.counts)	{
+arguments <- commandArgs(trailingOnly=TRUE);
+path.to.raw.counts <- arguments[1];
+path.to.processed.counts <- arguments[2];
+
 
 	#	Get lists of files
 	raw.counts <- list.files(path.to.raw.counts);
@@ -88,7 +91,6 @@ evaluate.work <- function(path.to.raw.counts, path.to.processed.counts)	{
 				quote=FALSE,
 				sep=",",
 				row.names=FALSE);
-}	#	evaluate.work()
 
 
 
