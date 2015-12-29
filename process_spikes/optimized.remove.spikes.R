@@ -23,8 +23,14 @@ library(stringr);
 #   TODO: handle warnings more better.  At least read.delim() is generating warnings
 options(warn=-1);   
 
-remove.fastqs <- function(input.fastq, forward.reads.to.remove, reverse.reads.to.remove) {
-    
+#remove.fastqs <- function(input.fastq, forward.reads.to.remove, reverse.reads.to.remove) {
+   
+
+	arguments <- commandArgs(trailingOnly=TRUE);
+	input.fastq <- arguments[1];
+	forward.reads.to.remove <- arguments[2];
+	reverse.reads.to.remove <- arguments[3];
+
     #   Read in fastq file
     fastq.records <- readFastq(input.fastq);
     num.fastqs <- length(fastq.records);
@@ -86,7 +92,8 @@ remove.fastqs <- function(input.fastq, forward.reads.to.remove, reverse.reads.to
      
     #   write the fastq out
     output.file.name <- paste(input.fastq, ".removed.fastq", sep="");
+	cat("Writing output to: ", output.file.name, "\n", sep="");
     writeFastq(output.fastq.records, output.file.name, compress=FALSE);
 
-}   #   remove.fastqs()
+#}   #   remove.fastqs()
 

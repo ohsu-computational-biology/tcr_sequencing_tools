@@ -42,6 +42,8 @@
 #	Load required libraries
 library(stringr);
 
+#   Set this to TRUE if using both PEAR (single fastq input) AND you're using only
+#       ONE reads-to-remove file
 merged.reads <- FALSE;
 
 #	Get command-line arguments
@@ -49,13 +51,13 @@ arguments <- commandArgs(trailingOnly=TRUE);
 working.dir <- arguments[1];
 
 #   for debugging purposes
-working.dir <- "/Users/leyshock/Desktop/TCRseq/results/november/10_november/remove_fastq_testing/";
+#working.dir <- "/Users/leyshock/Desktop/TCRseq/results/november/10_november/remove_fastq_testing/";
 
 #	Specify relevant details
 #   usage on ExaCloud
-#source("/mnt/lustre1/CompBio/genomic_resources/tcrseq/tcr_sequencing_tools/process_spikes/optimized.remove.spikes.R");
+source("/mnt/lustre1/CompBio/genomic_resources/tcrseq/tcr_sequencing_tools/process_spikes/optimized.remove.spikes.R");
 #   usage on personal laptop
-source("/Users/leyshock/Desktop/TCRseq/tools/tcr_sequencing_tools/tcr_sequencing_tools/process_spikes/optimized.remove.spikes.R");
+#source("/Users/leyshock/Desktop/TCRseq/tools/tcr_sequencing_tools/tcr_sequencing_tools/process_spikes/optimized.remove.spikes.R");
 fastq.suffix <- ".fastq";
 reads.to.remove.suffix <- ".reads.to.remove.txt";
 

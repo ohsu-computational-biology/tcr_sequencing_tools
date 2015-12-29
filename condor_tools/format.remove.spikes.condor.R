@@ -12,7 +12,7 @@ format.for.condor <- function(fastqs, reads.to.remove.forward, reads.to.remove.r
             "output=$(script_dir)logs/stdout_remove_spikes_parallel_", i, ".out\n",
             "error=$(script_dir)logs/stderr_remove_spikes_parallel_", i, ".out\n",
             "log=$(script_dir)logs/remove_spikes_parallel_", i, ".log\n",
-            "arguments=$(script_dir)tcr_sequencing_tools/optimized.remove.spikes.condor.R ",
+            "arguments=$(script_dir)tcr_sequencing_tools/process_spikes/optimized.remove.spikes.R ",
             "$(data_dir)", fastqs[i], " ",
             "$(data_dir)", reads.to.remove.forward[i], " ", 
             "$(data_dir)", reads.to.remove.reverse[i],
