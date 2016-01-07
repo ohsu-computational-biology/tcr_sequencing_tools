@@ -11,7 +11,7 @@
 #   Ensures that numeric outputs are not expressed in scientific notation
 options(scipen=999);
 
-postprocess.clone.table <- function(input.file.path, remove.clone.table=FALSE)    {
+process.frameshifts.stop.codons <- function(input.file.path, remove.clone.table=FALSE)    {
 
     #   Specify characters to search for here.
     #       Note that since "grep()" is used to identify records containing these
@@ -71,7 +71,7 @@ postprocess.clone.table <- function(input.file.path, remove.clone.table=FALSE)  
         sep="\t",
         quote=FALSE);
 
-}   #   postprocess.clone.table()
+}   #   process.frameshifts.stop.codons()
 
 
 #   This is the original function, which took as input.file.paths formatted for use in
@@ -79,7 +79,7 @@ postprocess.clone.table <- function(input.file.path, remove.clone.table=FALSE)  
 #
 #               #count  freq    cdr3nt  cdr3aa  v   d   j   VEnd    DStart  DEnd    JStart
 #
-#postprocess.clone.table <- function(input.file.path)    {
+#process.frameshifts.stop.codons <- function(input.file.path)    {
 #
 #    #   Specify characters to search for here.
 #    #       Note that since "grep()" is used to identify records containing these
@@ -93,7 +93,7 @@ postprocess.clone.table <- function(input.file.path, remove.clone.table=FALSE)  
 #        aas <- clone.table$cdr3aa;
 #        dirty.clone.indices <- integer();
 #        dirty.clone.indices <- grep(special.characters[i], aas);
-#        #   postprocess.clone.table
+#        #   process.frameshifts.stop.codons
 #        if(length(dirty.clone.indices > 0))   {
 #            clone.table <- clone.table[-dirty.clone.indices,];
 #        }   #   fi
@@ -110,5 +110,5 @@ postprocess.clone.table <- function(input.file.path, remove.clone.table=FALSE)  
 #        sep="\t",
 #        quote=FALSE);
 #
-#}   #   postprocess.clone.table()
+#}   #   process.frameshifts.stop.codons()
 #

@@ -1,6 +1,11 @@
-##  This script:
-#   
-
+#  This script counts occurrences of spikes in a fastq file.
+#
+#   The script generates three types of output:
+#
+#       1.  Quality control summary
+#       2.  A list of fastq read ids; viz., reads containing spikes
+#       3.  A table containing spikes and counts for each spike
+#
 #   load depdencies
 library(ShortRead);
 library(stringr);

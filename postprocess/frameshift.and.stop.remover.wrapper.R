@@ -1,4 +1,4 @@
-
+#   Wrapper script for frameshift.and.stop.remover.R script
 #
 #	Get command-line arguments
 arguments <- commandArgs(trailingOnly=TRUE);
