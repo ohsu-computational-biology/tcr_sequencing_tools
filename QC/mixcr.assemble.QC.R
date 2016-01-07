@@ -1,4 +1,4 @@
-#	RScript that aggregates reports from MiXCR's alignment tool
+#	RScript that aggregates reports from MiXCR's assembly tool
 #   
 #   At this point the script simply accumulates results, but it'd be easy to add
 #       some visualization, analysis, etc. once the data is aggregated

@@ -1,14 +1,5 @@
-
-#	Assumptions:
-#
-#		1.  Naming format for raw clone count files:
-#
-#				SAMPLEX_exported_clones.txt
-#
-#		2.  Naming format for processed clone count files 
-#			(clones with frameshifts and stop codons removed):
-#
-#				SAMPLEX_exported_clones_no_fssc.txt
+#   Rscript that performs QC on the frameshift and stop codon removal step in
+#       the TCRseq analysis pipeline.
 #
 #	Import required libraries
 #

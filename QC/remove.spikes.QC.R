@@ -1,13 +1,7 @@
+#   Script that assesses quality of the "remove spikes" step in the TCRseq
+#       pipeline
 
-#	Assumptions:
-#
-#		1.  Naming format for raw fastq files:
-#
-#				SAMPLE_X.assembled.fastq
-#
-#		2.  Naming format for despiked fastq files:
-#
-#				SAMPLE_X.assembled.fastq.removed.fastq
+#   TODO:  convert to Rscript?
 
 evaluate.work <- function(path.to.raw.fastqs, path.to.despiked.fastqs)	{
 

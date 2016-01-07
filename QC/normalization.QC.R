@@ -1,4 +1,9 @@
-#   Script for normalizing R
+#   Rscript that performs quality control on the normalization step of the
+#       TCRseq workflow
+#
+#   Run this as an Rscript, with two arguments
+#
+#   Output is a csv file, suitable for further processing, or import into Excel
 
 #   disable scientific notation
 options(scipen=999);
