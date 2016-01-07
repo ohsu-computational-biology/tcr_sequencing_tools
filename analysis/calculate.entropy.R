@@ -24,6 +24,8 @@ for(i in 1:length(files.in.dir))	{
                             stringsAsFactors=FALSE);
 
     #   calculate entropy
+    #   Note:  The library's code throw's warnings about the input not summing to 1, even
+    #       though we're using the .do.norm parameter in the function call
     calculated.entropies[i] <- entropy(curr.record$"Clone fraction",
                                         .do.norm=TRUE);
 

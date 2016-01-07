@@ -1,5 +1,3 @@
-
-
 #   Use readLines() to read in a list of file names, which you feed to the format.for.condor()
 #       function below.
 #
