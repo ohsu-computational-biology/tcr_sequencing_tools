@@ -6,15 +6,18 @@
 #       2.  A list of fastq read ids; viz., reads containing spikes
 #       3.  A table containing spikes and counts for each spike
 #
+#   Note that runtimes are substantially shorter when spike.length
+#       equals 9
+#
 #   load depdencies
 library(ShortRead);
 library(stringr);
 library(Biostrings);
 
 count.spikes <- function(input.fastq, 
-                        spike.file, 
-                        spike.length=34, 
-                        output.dir,
+                        spike.file, #   for example:  text_barcodes.vj.txt
+                        spike.length=34, #  typically 9 (for spike removal) or 25 (for normalization)
+                        output.dir, #   where you want the results
                         direction="FWD")  {
 
     #   Read in fastq file
