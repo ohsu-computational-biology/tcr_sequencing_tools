@@ -12,7 +12,7 @@ library(stringr);
 library(Biostrings);
 
 count.spikes <- function(input.fastq, 
-                        spike.file,
+                        spike.file, 
                         spike.length=34, 
                         output.dir,
                         direction="FWD")  {
@@ -48,24 +48,38 @@ count.spikes <- function(input.fastq,
 
     #   count spikes - note there are two cases
     for(i in 1:length(spikes))  {
-        if((i %% 10) == 0)  {
-            cat("Processing spike ", i, " out of ", length(spikes), "\n", sep="");
-        }   #   fi
+       
+        #   get a single spike 
         current.spike <- spikes[i];
+
         #   count spike occurences
         current.spike.counts <- vcountPattern(current.spike, sread(fastq.reads));
         output.table[i,]$spike.count <- sum(as.logical(current.spike.counts));
         cat("\t", output.table[i,]$spike.count, " spikes detected\n", sep="");
-        #   record read ids (as they'll need removed later)
+
+        #   record readids (as they'll need removed later; we use the readid to do so)
         records.to.remove <- which(current.spike.counts > 0);
         if(length(records.to.remove) > 0)   {
             temp.reads <- fastq.reads[records.to.remove];
             records.to.remove.ids <- c(records.to.remove.ids, 
                                         as.character(temp.reads@id));
         }   #   fi
+        
+        #   In the case where spike.length == 9, all spikes are identical (since the
+        #       first nine characters of each spike are identical.  We use this break
+        #       to short-circuit the "for" loop, since we get all the information we
+        #       need in the first pass
+        #   TODO:  what if spikes don't share a common first nine characters?  Modify
+        #       the code to deal with this case
         if(spike.length == 9)
             break;
+
+        #   update progress to the user 
+        if((i %% 10) == 0)  {
+            cat("Processing spike ", i, " out of ", length(spikes), "\n", sep="");
+        }   #   fi
     }   #   for i
+
     #   construct summary for QC purposes
     qc.summary <- data.frame(sample.id=character(),
                              num.reads=integer(),
@@ -76,6 +90,7 @@ count.spikes <- function(input.fastq,
     qc.summary[1,]$num.reads <- num.fastqs;
     qc.summary[1,]$num.spiked.reads <- sum(output.table$spike.count);
     qc.summary[1,]$pct.spiked.reads <- (qc.summary$num.spiked.reads / num.fastqs) * 100;
+
     #   modify output.table so it'll become easily incorporated into qc.summary
     spike.count <- output.table$spike.count;
     qc.spike <- data.frame(spike.count);
