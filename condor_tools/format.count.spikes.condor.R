@@ -5,19 +5,26 @@
 #
 #   After the script is run, paste the output into an applicable condor.submit file
 
-format.for.condor <- function(list.of.files, bp="9bp", direction="fwd") {
+arguments <- commandArgs(trailingOnly=TRUE);
+list.of.files <- arguments[1];      # directory of raw files in fastq format
+bp <- arguments[2];                 # length of spike - 25 or 9
+direction <- arguments[3]           # should be FWD or REV (caps)
+
 
     formatted.vector <- NULL;
+    bp.dir <- paste(bp, "bp", sep="");
     bp.and.direction <- paste(bp, ".", direction, sep="");
+    files <- list.files(list.of.files)
+    sorted <- files[order(as.numberic(gsub(".*_S|\\..*", '', files)))] # sort by S## so that log numbers roughly correspond
   
     for (i in 1:length(list.of.files))   {
 
        formatted.vector[i] <- paste(
-            "output=$(script_dir)/logs/stdout_count_spikes_parallel.", bp.and.direction, ".", i, ".out\n",
-            "error=$(script_dir)/logs/stderr_count_spikes_parallel.", bp.and.direction, ".", i, ".out\n",
-            "log=$(script_dir)/logs/count_spikes_parallel.", bp.and.direction, ".", i, ".log\n",
-            "arguments=$(script_dir)count.spikes.wrapper.", bp.and.direction, ".R ",
-            "$(data_dir)", list.of.files[i], " ",
+            "output=$(log_dir)/", bp.dir, "/stdout_count_spikes_parallel.", bp.and.direction, ".", i, ".out\n",
+            "error=$(log_dir)/", bp.dir, "/stderr_count_spikes_parallel.", bp.and.direction, ".", i, ".out\n",
+            "log=$(log_dir)/", bp.dir, "/count_spikes_parallel.", bp.and.direction, ".", i, ".log\n",
+            "arguments=$(script_dir)/count.spikes.R","$(data_dir)/", sorted[i], " $(ref_dir)/text_barcodesvj.txt ", 
+            bp, " $(out_dir)/ ", direction,
             "\nqueue 1\n",
             sep=""); 
     }   #   while
@@ -29,6 +36,6 @@ format.for.condor <- function(list.of.files, bp="9bp", direction="fwd") {
                 col.names = FALSE,
                 quote = FALSE);
 
-}   #   format.for.condor()
+
 
 
