@@ -16,7 +16,7 @@ direction <- arguments[3]           # should be FWD or REV (caps)
     bp.dir <- paste(bp, "bp", sep="");
     bp.and.direction <- paste(bp, ".", direction, sep="");
     files <- list.files(list.of.files)
-    sorted <- files[order(as.numberic(gsub(".*_S|\\..*", '', files)))] # sort by S## so that log numbers roughly correspond
+    sorted <- files[order(as.numeric(gsub(".*_S|\\..*", '', files)))] # sort by S## so that log numbers roughly correspond
   
     for (i in 1:length(list.of.files))   {
 
