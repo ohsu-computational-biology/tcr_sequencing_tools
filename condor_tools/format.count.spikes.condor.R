@@ -7,6 +7,7 @@
 
 arguments <- commandArgs(trailingOnly=TRUE);
 list.of.files <- arguments[1];      # directory of raw files in fastq format
+                                    # /home/exacloud/lustre1/CompBio/data/tcrseq/dhaarini/DNAXXXXLC/peared_fastqs/assembled/
 bp <- arguments[2];                 # length of spike - 25 or 9
 direction <- arguments[3]           # should be FWD or REV (caps)
 
