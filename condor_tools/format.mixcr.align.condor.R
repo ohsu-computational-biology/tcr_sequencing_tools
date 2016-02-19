@@ -8,8 +8,14 @@
 #   
 #   use readLines() to read in a list of file names
 
-format.for.condor <- function(list.of.files) {
+#format.for.condor <- function(list.of.files) {
 
+arguments <- commandArgs(trailingOnly=TRUE);
+list.of.files <- arguments[1];      # /home/exacloud/lustre1/CompBio/data/tcrseq/dhaarini/DNAXXXXLC/mixcr/
+                                    # despiked_fastqs
+
+    list.of.files <- list.files(list.of.files)
+    list.of.files <- list.of.files[order(as.numeric(gsub(".*_S|\\..*", '', list.of.files)))]
     formatted.vector <- NULL;
     output.file.names <- NULL;
     #   strip extensions from file names, for output file names
@@ -43,6 +49,6 @@ format.for.condor <- function(list.of.files) {
                 col.names = FALSE,
                 quote = FALSE);
 
-}   #   format.for.condor()
+#}   #   format.for.condor()
 
 
