@@ -56,7 +56,7 @@ count.spikes <- function(input.fastq,
         current.spike <- spikes[i];
 
         #   count spike occurences
-        current.spike.counts <- vcountPattern(current.spike, sread(fastq.reads));
+        current.spike.counts <- vcountPattern(current.spike, sread(fastq.reads), max.mismatch = 1, with.indels = TRUE);
         output.table[i,]$spike.count <- sum(as.logical(current.spike.counts));
         cat("\t", output.table[i,]$spike.count, " spikes detected\n", sep="");
 
