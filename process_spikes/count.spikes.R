@@ -10,15 +10,19 @@
 #       equals 9
 #
 #   load depdencies
+.libPaths("/mnt/lustre1/CompBio/lib/R/library")
 library(ShortRead);
 library(stringr);
 library(Biostrings);
 
-count.spikes <- function(input.fastq, 
-                        spike.file, #   for example:  text_barcodes.vj.txt
-                        spike.length=34, #  typically 9 (for spike removal) or 25 (for normalization)
-                        output.dir, #   where you want the results
-                        direction="FWD")  {
+arguments <- commandArgs(trailingOnly=TRUE);
+input.fastq <- arguments[1];
+spike.file <- arguments[2]; # for example: text_barcodesvj.txt
+spike.length <- arguments[3]; # typically 9 for spike removal and 25 for normalization
+output.dir <- arguments[4]; # results are output here
+direction <- arguments[5]; # generally "FWD"
+
+# Begin count.spikes function here
 
     #   Read in fastq file
     fastq.reads <- readFastq(input.fastq);
@@ -130,5 +134,4 @@ count.spikes <- function(input.fastq,
                 sep=",",
                 row.names=FALSE);
 
-}   #   count.spikes()
 

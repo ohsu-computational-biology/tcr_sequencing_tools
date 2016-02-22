@@ -17,6 +17,7 @@
 #   2.  A text file reporting the work done by this script
 
 #   load depdencies
+.libPaths("/mnt/lustre1/CompBio/lib/R/library")
 library(ShortRead);
 library(stringr);
 

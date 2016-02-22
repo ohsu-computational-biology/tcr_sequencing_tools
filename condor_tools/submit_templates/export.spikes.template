@@ -1,0 +1,28 @@
+#!/bin/sh                                                                                                               
+
+script_dir=/home/exacloud/lustre1/CompBio/data/tcrseq/dhaarini/DNA151124LC/spike_counts/
+data_dir=/home/exacloud/lustre1/CompBio/data/tcrseq/dhaarini/DNA151124LC/peared_fastqs/assembled
+out_dir=/home/exacloud/lustre1/CompBio/data/tcrseq/dhaarini/DNA151124LC/spike_counts/25bp/counts/
+ref_dir=/home/exacloud/lustre1/CompBio/genomic_resources/tcrseq/references
+log_dir=/home/exacloud/lustre1/CompBio/data/tcrseq/dhaarini/DNA151124LC/condor_logs/spike_counts/
+getenv="True"
+
+#Program                                                                                                                
+executable=/usr/bin/Rscript
+
+# #processor cores requested                                                                                            
+request_cpus = 1
+
+#Memory requested                                                                                                       
+request_memory = 8 GB
+
+notify_user = hortowe@ohsu.edu
+
+#Arguments to the program                                                                                               
+
+output=$(log_dir)/25bp/stdout_count_spikes_parallel.25.FWD.1.out
+error=$(log_dir)/25bp/stderr_count_spikes_parallel.25.FWD.1.out
+log=$(log_dir)/25bp/count_spikes_parallel.25.FWD.1.log
+arguments=$(script_dir)/final.count.spikes.R $(data_dir)/DNA151124LC_1_S1.assembled.fastq $(ref_dir)/text_barcodesvj.tx\
+t 25 $(out_dir) FWD
+queue 1
