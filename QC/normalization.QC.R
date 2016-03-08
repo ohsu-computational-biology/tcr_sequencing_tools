@@ -24,8 +24,8 @@ sample.id.raw.clone.counts <- character(length(raw.clone.counts));
 sample.id.processed.clone.counts <- character(length(processed.clone.counts));
 #	TODO:  fix this, it relies on file naming convention
 for(i in 1:length(raw.clone.counts))  {
-    sample.id.raw.clone.counts[i] <- str_split(raw.clone.counts[i], "_")[[1]][1];
-    sample.id.processed.clone.counts[i] <- str_split(processed.clone.counts[i], "_")[[1]][1];
+    sample.id.raw.clone.counts[i] <- str_split(raw.clone.counts[i], "_")[[1]][2];
+    sample.id.processed.clone.counts[i] <- str_split(processed.clone.counts[i], "_")[[1]][2];
 }   #   for i
 
 #   Check for parallelism of files
