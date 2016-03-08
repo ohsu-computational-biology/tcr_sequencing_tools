@@ -24,8 +24,8 @@ sample.id.raw.clone.counts <- character(length(raw.clone.counts));
 sample.id.processed.clone.counts <- character(length(processed.clone.counts));
 #	TODO:  fix this, it relies on file naming convention
 for(i in 1:length(raw.clone.counts))  {
-    sample.id.raw.clone.counts[i] <- str_split(raw.clone.counts[i], "_")[[1]][1];
-    sample.id.processed.clone.counts[i] <- str_split(processed.clone.counts[i], "_")[[1]][1];
+    sample.id.raw.clone.counts[i] <- str_split(raw.clone.counts[i], "_")[[1]][2];
+    sample.id.processed.clone.counts[i] <- str_split(processed.clone.counts[i], "_")[[1]][2];
 }   #   for i
 
 #   Check for parallelism of files
@@ -59,9 +59,9 @@ for(i in 1:length(raw.clone.counts))  {
     }   #   fi
 
     combined.table <- data.frame(raw.clone.count=curr.raw$"Clone count");
-    combined.table$normalized.clone.count <- curr.normalized$"Clone count";
+    combined.table$normalized.clone.count <- curr.normalized$"Normalized clone count";
     combined.table$raw.clone.percent <- curr.raw$"Clone fraction";
-    combined.table$normalized.clone.percent <- curr.normalized$"Clone fraction";
+    combined.table$normalized.clone.percent <- curr.normalized$"Normalized clone fraction";
     combined.table$raw.file.name <- raw.clone.counts[i];
     combined.table$normalized.file.name <- processed.clone.counts[i];
     combined.table$normalization.factor <- round((combined.table$normalized.clone.count / combined.table$raw.clone.count), digits=1);
