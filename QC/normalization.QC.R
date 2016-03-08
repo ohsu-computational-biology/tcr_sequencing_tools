@@ -61,7 +61,7 @@ for(i in 1:length(raw.clone.counts))  {
     combined.table <- data.frame(raw.clone.count=curr.raw$"Clone count");
     combined.table$normalized.clone.count <- curr.normalized$"Normalized clone count";
     combined.table$raw.clone.percent <- curr.raw$"Clone fraction";
-    combined.table$normalized.clone.percent <- curr.normalized$"Clone fraction";
+    combined.table$normalized.clone.percent <- curr.normalized$"Normalized clone fraction";
     combined.table$raw.file.name <- raw.clone.counts[i];
     combined.table$normalized.file.name <- processed.clone.counts[i];
     combined.table$normalization.factor <- round((combined.table$normalized.clone.count / combined.table$raw.clone.count), digits=1);

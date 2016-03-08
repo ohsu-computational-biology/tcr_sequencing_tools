@@ -1,9 +1,12 @@
 #   Script that assesses quality of the "remove spikes" step in the TCRseq
 #       pipeline
 
-#   TODO:  convert to Rscript?
+# Get command line arguments
+arguments <- commandArgs9trailingOnly=TRUE);
+path.to.raw.fastqs <- arguments[1];		# /DNAXXXXLC/peared_fastqs/assembled/
+path.to.despiked.fastqs <- arguments[2];	# /DNAXXXXLC/mixcr/despiked_fastqs
 
-evaluate.work <- function(path.to.raw.fastqs, path.to.despiked.fastqs)	{
+
 
 	#	Get lists of files
 	raw.fastqs <- list.files(path.to.raw.fastqs);
@@ -75,17 +78,4 @@ evaluate.work <- function(path.to.raw.fastqs, path.to.despiked.fastqs)	{
                 quote=FALSE,
                 sep=",",
                 row.names=FALSE);
-
-    
-
-}	#	evaluate.work()
-
-
-
-
-
-
-
-
-
 

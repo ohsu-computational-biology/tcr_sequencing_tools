@@ -18,7 +18,7 @@ output.df <- data.frame();
 
 for(i in 1:length(files.in.dir))	{
     #   get a QC file to process
-    curr.file <- files.in.dir[i];
+    curr.file <- paste(working.dir, files.in.dir[i], sep='');
 
     curr.record <- read.table(curr.file,
                             header=TRUE,
