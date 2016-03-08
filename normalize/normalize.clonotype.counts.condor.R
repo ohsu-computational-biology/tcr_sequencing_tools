@@ -11,17 +11,15 @@
 #   3.  A CSV file detailing the barcode-to-VJ-region 
 #   4.  Spiked reads are supposed to be present in the exact same frequency
 
-#scaling.factor <- calculate.scaling.factor(spike.count.dir);
-#normalize.clonotype.counts(exported.clone.file, scaling.factor, sample.id);
 
 #	Ensure that numeric outputs are not expressed in scientific notation
 options(scipen=999);
 
 arguments <- commandArgs(trailingOnly = TRUE);
-exported.clone.file <- arguments[1];
-spike.count.file <- arguments[2];
-output.path <- arguments[3];
-scaling.factor.file <- arguments[4];
+exported.clone.file <- arguments[1];  	# /DNAXXXXLC/normalization/clones/XXX_alignment_clones_exported.txt
+spike.count.file <- arguments[2];	# /DNAXXXXLC/normalization/counts/XXX.assembled.spike.counts.25bp.txt
+output.path <- arguments[3];		# /DNAXXXXLC/normalization/normalized_clones/
+scaling.factor.file <- arguments[4];	# /DNAXXXXLC/normalization/scaling_factor.txt
 
 
 
