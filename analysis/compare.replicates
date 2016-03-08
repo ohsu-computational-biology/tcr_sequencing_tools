@@ -28,6 +28,8 @@ id <- numeric(length(clones.files)/2);
 spike.counts.1 <- numeric(length(counts.files)/2);
 spike.counts.2 <- numeric(length(counts.files)/2);
 spike.diff <- numeric(length(counts.files)/2);
+max.clonal.freq.1 <- numeric(length(counts.files)/2)
+max.clonal.freq.2 <- numeric(length(counts.files)/2)
 
 
 # Calculate various statistics for each pair of replicates
@@ -67,14 +69,30 @@ for (i in 1:(length(clones.files)/2)){
   tcr.counts.1[i] <- sum(curr.clone.data$`Clone count`)
   tcr.counts.2[i] <- sum(rep.clone.data$`Clone count`)
   tcr.counts.diff[i] <- (tcr.counts.1[i] - tcr.counts.2[i]) / tcr.counts.1[i] * 100
+
+  # Compare maximum clonal frequency
+  max.clonal.freq.1[i] <- max(curr.clone.data$`Normalized clone fraction`) * 100
+  max.clonal.freq.2[i] <- max(curr.clone.data$`Normalized clone fraction`) * 100
+  clonal.freq.diff[i] <- (max.clonal.freq.1[i] - max.clonal.freq.2[i]) / max.clonal.freq/1[i]
   
   # Create ID array. Replicate1-Replicate2
   id[i] <- paste("S", i, "-", "S", i+offset, sep="");
-}
+
+  # Update progress
+  if ((i %% 5) == 0({
+     cat("Processing file ", i, " (out of ", length(clones.files)/2, ")\n", sep="");
+  }  # fi
+} # for
 
 # Create output data frame  
 output.df <- data.frame(id, sample1.uniques, sample2.uniques, difference, spike.counts.1, spike.counts.2,
-                        spike.diff, tcr.counts.1, tcr.counts.2, tcr.counts.diff);
+                        spike.diff, tcr.counts.1, tcr.counts.2, tcr.counts.diff, max.clonal.freq.1, max.clonal.freq.2,
+			clonal.freq.diff);
+
+colnames(output.df) <- c("Samples", "Uniques 1", "Uniques 2", "Percent Diff Uniques", "Spiked Reads 1",
+		       "Spiked Reads 2", "Percent Diff Spiked Reads", "TCR Reads 1", "TCR Reads 2",
+		       "Percent Diff TCR Reads", "Max Clonal Freq 1", "Max Clonal Freq 2",
+		       "Percent Diff Clonal Freq")
 
 #   write output
 write.table(output.df, 

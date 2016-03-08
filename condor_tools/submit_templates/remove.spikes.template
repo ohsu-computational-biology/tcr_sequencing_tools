@@ -1,9 +1,9 @@
 #!/bin/sh                                                                                                               
-
-script_dir=/home/exacloud/lustre1/CompBio/genomic_resources/tcrseq
-data_dir=/home/exacloud/lustre1/CompBio/data/tcrseq/dhaarini/DNA151124LC/peared_fastqs/assembled/
-log_dir=/home/exacloud/lustre1/CompBio/data/tcrseq/dhaarini/DNA151124LC/condor_logs/mixcr/despiked
-remove_dir=/home/exacloud/lustre1/CompBio/data/tcrseq/dhaarini/DNA151124LC/spike_counts/9bp/reads_to_remove
+getenv="True"
+script_dir=$ENV(tool)
+data_dir=$ENV(data)/peared_fastqs/assembled/
+log_dir=$ENV(data)/condor_logs/mixcr/despiked
+remove_dir=$ENV(data)/spike_counts/9bp/reads_to_remove
 
 # Program                                                                                                               
 executable=/usr/bin/Rscript

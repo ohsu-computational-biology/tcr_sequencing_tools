@@ -3,7 +3,11 @@
 #   The factor is calculated using counts of EACH spike for ALL samples
 #   The calculated scaling factor should be applied to each sample's spike count
 
-calculate.scaling.factor <- function(spike.count.dir)  {
+# calculate.scaling.factor <- function(spike.count.dir)  {
+
+# Get command line arguments
+arguments <- commandArgs(trailingOnly=TRUE);
+spike.count.files <- arguments[1];	# DNAXXXXLC/normalization/counts/
     
     #   Get list of files in directory
     spike.count.files <- list.files(spike.count.dir);
@@ -46,4 +50,4 @@ calculate.scaling.factor <- function(spike.count.dir)  {
                 row.names=FALSE,
                 col.names=FALSE);
 
-}   #   calculate.scaling.factor()
+#}   #   calculate.scaling.factor()
