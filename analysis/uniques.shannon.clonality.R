@@ -20,7 +20,7 @@ count.dir <- arguments[2];    # Typically .../dhaarini/DNAXXXXLC/spike_counts/9b
 clone.files.in.dir <- list.files(clone.dir);
 clone.files.in.dir <- clone.files.in.dir[order(as.numeric(gsub(".*_S|_alignment_.*", '', clone.files.in.dir)))]
 count.files.in.dir <- list.files(count.dir);
-count.files.in.dir <- count.files.in.dir[order(as.numeric(gsub(".*_S|//..*", '', count.files.in.dir)))]
+count.files.in.dir <- count.files.in.dir[order(as.numeric(gsub(".*_S|\\..*", '', count.files.in.dir)))]
 
 
 # Create empty arrays
@@ -30,6 +30,9 @@ clonality <- NULL
 spike.counts <- numeric(length(count.files.in.dir));
 spike.percent <- numeric(length(count.files.in.dir));
 max.clonal.freq <- numeric(length(count.files.in.dir));
+norm.entropy <- numeric(length(clone.files.in.dir));
+adaptive.clonality <- numeric(length(clone.files.in.dir));
+adaptive.clonality <- NULL
 
 for(i in 1:length(clone.files.in.dir))	{
     #   get a clone file to process
@@ -54,8 +57,17 @@ for(i in 1:length(clone.files.in.dir))	{
     #   calculate entropy
     calculated.entropies[i] <- entropy(clone.curr.record$"Normalized clone fraction", method="ML", unit="log");
 
+
     #   calculate clonality
     clonality[i] <- 1 - (calculated.entropies[i] / log(unique.clones[i]))
+
+    #   calculate clonality as the inverse of normalized shannon entropy
+    	# Normalized shannon entropy
+#	norm.entropy[i] <- calculated.entropies[i] / log(sum(clone.curr.record$"Normalized clone count"))
+	norm.entropy[i] <- calculated.entropies[i] / log(unique.clones[i])
+	# New clonality
+	adaptive.clonality[i] <- 1 / norm.entropy[i]
+	
 
     #   Record Spike Counts
     spike.counts[i] <- count.curr.record[1,5];
@@ -68,17 +80,17 @@ for(i in 1:length(clone.files.in.dir))	{
 
     #   update progress
     if((i %%10) == 0)   {
-        cat("Processing file ", i, " (out of ", length(files.in.dir), ")\n", sep="");
+        cat("Processing file ", i, " (out of ", length(count.files.in.dir), ")\n", sep="");
     }   #   fi
 
 }	#	for i
 
 #   create output data.frame
-output.df <- data.frame(clone.files.in.dir, calculated.entropies, unique.clones, clonality,
-	     		spike.counts, spike.percent, max.clonal.freq);
+output.df <- data.frame(clone.files.in.dir, calculated.entropies, norm.entropy, unique.clones, clonality,
+	     		adaptive.clonality, spike.counts, spike.percent, max.clonal.freq);
 
-colnames(output.df) <- c("File", "Shannon Entropy", "Unique Clonotypes", "Clonality", "Spiked Reads",
-		       	"Percent Spiked Reads", "Max Clonal Freq");
+colnames(output.df) <- c("File", "Shannon Entropy", "Normalized Entropy", "Unique Clonotypes", "Clonality",
+		        "Adaptive Clonality", "Spiked Reads", "Percent Spiked Reads", "Max Clonal Freq");
 
 #   write output
 write.table(output.df, 
