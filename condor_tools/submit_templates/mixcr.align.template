@@ -1,8 +1,8 @@
 #!/bin/sh                                                                                                               
-
-script_dir=/home/exacloud/lustre1/CompBio/genomic_resources/tcrseq/mixcr/mixcr-1.6/mixcr.jar
-data_dir=/home/exacloud/lustre1/CompBio/data/tcrseq/dhaarini/DNA151124LC/mixcr/
-log_dir=/home/exacloud/lustre1/CompBio/data/tcrseq/dhaarini/DNA151124LC/condor_logs/mixcr/align/
+getenv="True"
+script_dir=$ENV(tool)/mixcr/mixcr-1.6/mixcr.jar
+data_dir=$ENV(data)/mixcr/
+log_dir=$ENV(data)/condor_logs/mixcr/align/
 
 
 # Program                                                                                                               

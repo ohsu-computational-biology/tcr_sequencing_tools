@@ -1,11 +1,10 @@
 #!/bin/sh                                                                                                               
-
-script_dir=/home/exacloud/lustre1/CompBio/data/tcrseq/dhaarini/DNA151124LC/spike_counts/
-data_dir=/home/exacloud/lustre1/CompBio/data/tcrseq/dhaarini/DNA151124LC/peared_fastqs/assembled
-out_dir=/home/exacloud/lustre1/CompBio/data/tcrseq/dhaarini/DNA151124LC/spike_counts/25bp/counts/
-ref_dir=/home/exacloud/lustre1/CompBio/genomic_resources/tcrseq/references
-log_dir=/home/exacloud/lustre1/CompBio/data/tcrseq/dhaarini/DNA151124LC/condor_logs/spike_counts/
 getenv="True"
+script_dir=$ENV(data)/spike_counts/
+data_dir=$ENV(data)/peared_fastqs/assembled
+out_dir=$ENV(data)/spike_counts/25bp/counts/
+ref_dir=$ENV(tool)/references
+log_dir=$ENV(data)/condor_logs/spike_counts/
 
 #Program                                                                                                                
 executable=/usr/bin/Rscript

@@ -3,6 +3,7 @@
 #   Input is a directory containing one or more files with MiXCR output format
 #   
 #   Load necessary libraries
+.libPaths("/mnt/lustre1/CompBio/lib/R/Library")
 library(entropy); # requires package "entropy" as well
 
 #	Get command-line arguments
@@ -26,7 +27,7 @@ for(i in 1:length(files.in.dir))	{
     #   calculate entropy
     #   Note:  The library's code throw's warnings about the input not summing to 1, even
     #       though we're using the .do.norm parameter in the function call
-    calculated.entropies[i] <- entropy(curr.record$"Clone fraction", method="ML", unit="log");
+    calculated.entropies[i] <- entropy(curr.record$"Normalized clone fraction", method="ML", unit="log");
 
     #   update progress
     if((i %%10) == 0)   {
