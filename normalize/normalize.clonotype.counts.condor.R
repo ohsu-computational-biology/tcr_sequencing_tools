@@ -61,6 +61,11 @@ scaling.factor.file <- arguments[4];	# /DNAXXXXLC/normalization/scaling_factor.t
   
   # Remove the extra characters for the V segments in the spiked counts, so matches occur
   spiked_reads$V <- gsub("-","", spiked_reads$V)
+  # Change V1212 to V121. TODO: figure out a way to make this adaptable to any situaiton.
+  spiked_reads$V <- gsbu("V1212", "V121", spiked_reads$V)
+
+  # Remove the dashes from the MiTCR data so that all V's correspond
+  MiTCR_file_data$`V segments` <- gsub("-", "", MiTCR_file_data$`V segments`)
 
   # TODO:  are we right to set these to zero? 
   MiTCR_file_data$"Normalized clone count" <- 0; 
