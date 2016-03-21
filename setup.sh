@@ -1,6 +1,6 @@
 #!/bin/sh
 
-cd $data/test/
+cd $data/
 
 # Directories to hold raw fastqs and associated files
 mkdir fastqs_from_core
