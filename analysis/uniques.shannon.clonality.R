@@ -43,7 +43,7 @@ for(i in 1:length(clone.files.in.dir))	{
 
     #   update progress
     if((i %%10) == 0)   {
-        cat("Processing file ", i, " (out of ", length(files.in.dir), ")\n", sep="");
+        cat("Processing file ", i, " (out of ", length(clone.files.in.dir), ")\n", sep="");
     }   #   fi
 
 }	#	for i
