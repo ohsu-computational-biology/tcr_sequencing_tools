@@ -1,6 +1,6 @@
 #!/bin/sh                                                                                                               
 getenv="True"
-script_dir=$ENV(data)/spike_counts/
+script_dir=$ENV(tool)/tcr_sequencing_tools/process_spikes
 data_dir=$ENV(data)/peared_fastqs/assembled
 out_dir=$ENV(data)/spike_counts/25bp/counts/
 ref_dir=$ENV(tool)/references
