@@ -64,7 +64,7 @@ scaling.factor.file <- arguments[4];	# /DNAXXXXLC/normalization/scaling_factor.t
   spiked_reads$V <- gsub("V1212", "V121", spiked_reads$V)
 
   # Remove dashes from MiTCR data as well
-  MiTCR_file_data$`V Segments` <- gsub("-", "", MiTCR_file_data$`V Segments`)
+  MiTCR_file_data$`V segments` <- gsub("-", "", MiTCR_file_data$`V segments`)
 
   # TODO:  are we right to set these to zero? 
   MiTCR_file_data$"Normalized clone count" <- 0; 
