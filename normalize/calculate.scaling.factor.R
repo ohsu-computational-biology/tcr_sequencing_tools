@@ -7,7 +7,7 @@
 
 # Get command line arguments
 arguments <- commandArgs(trailingOnly=TRUE);
-spike.count.files <- arguments[1];	# DNAXXXXLC/normalization/counts/
+spike.count.dir <- arguments[1];	# DNAXXXXLC/normalization/counts/
     
     #   Get list of files in directory
     spike.count.files <- list.files(spike.count.dir);
