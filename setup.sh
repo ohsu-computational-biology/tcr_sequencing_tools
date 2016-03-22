@@ -58,7 +58,7 @@ mkdir QC
 mkdir condor_logs
 mkdir condor_logs/spike_counts
 mkdir condor_logs/spike_counts/25bp
-mkdir condor_logs/spike_counts9bp
+mkdir condor_logs/spike_counts/9bp
 mkdir condor_logs/mixcr
 mkdir condor_logs/mixcr/align
 mkdir condor_logs/mixcr/assemble
