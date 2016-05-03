@@ -1,0 +1,23 @@
+<tool id="calculate.scaling.factor" name="Calculate Scaling Factor" version="0.1">
+  <description>for normalization step</description>
+
+  <command>R --vanilla --file=$__tool_directory__/calculate.scaling.factor.R
+  --args $output $inputs
+  </command>
+
+  <inputs>
+    <param name="inputs" type="data" multiple="True" label="Clonotype Counts"/>
+  </inputs>
+
+  <outputs>
+    <data name="output" format="tabular" label="Scaling Factor"/>
+  </outputs>
+
+
+
+  <help>
+    This tool takes all of the spike count files and calculates a scaling factor based on those counts.
+  </help>
+
+</tool>
+  
