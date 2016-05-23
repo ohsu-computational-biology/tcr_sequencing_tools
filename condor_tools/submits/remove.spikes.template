@@ -1,0 +1,26 @@
+#!/bin/sh                                                                                                               
+getenv="True"
+script_dir=$ENV(tool)
+data_dir=$ENV(data)/peared_fastqs/assembled/
+log_dir=$ENV(data)/condor_logs/mixcr/despiked
+remove_dir=$ENV(data)/spike_counts/9bp/reads_to_remove
+
+# Program                                                                                                               
+executable=/usr/bin/Rscript
+
+# Processor cores requested                                                                                             
+request_cpus = 1
+
+# Memory requested                                                                                                      
+request_memory = 4 GB
+
+notify_user = hortowe@ohsu.edu
+
+# Arguments                                                                                                             
+
+output=$(log_dir)/stdout_remove_spikes_parallel_1.out
+error=$(log_dir)/stderr_remove_spikes_parallel_1.out
+log=$(log_dir)/remove_spikes_parallel_1.log
+arguments=$(script_dir)/tcr_sequencing_tools/process_spikes/remove.spikes.R $(data_dir)DNA151124LC_1_S1.assembled.fastq\
+ $(remove_dir)/DNA151124LC_1_S1.assembled.reads.to.remove.txt $(remove_dir)/reverse.txt
+queue 1

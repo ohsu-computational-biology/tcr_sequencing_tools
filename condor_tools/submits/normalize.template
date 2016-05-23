@@ -1,0 +1,27 @@
+#!/bin/sh
+
+getenv="True"
+script_dir=$ENV(tool)/tcr_sequencing_tools/normalize/
+log_dir=$ENV(data)/condor_logs/normalization/
+normalization_dir=$ENV(data)/normalization/
+
+
+# Program
+executable=/usr/bin/Rscript
+
+# Processor cores requested
+request_cpus = 1
+
+# Memory requested
+request_memory = 4 GB
+
+notify_user = hortowe@ohsu.edu
+
+# Arguments 
+
+output=$(log_dir)stdout_normalize_clonotypes_1.out
+error=$(log_dir)stderr_normalize_clonotypes_1.out
+log=$(log_dir)condor_normalize_clonotypes_1.log
+arguments=$(script_dir)normalize.clonotype.counts.condor.R $(normalization_dir)clones/DNA160107LC_B1_S1_alignment_clones_exported.txt $(normalization_dir)counts/DNA160107LC_B1_S1.assembled.spike.counts.25bp.txt $(normalization_dir)normalized_clones/ $(normalization_dir)DNA150826LC_scaling_factor.txt
+queue 1
+

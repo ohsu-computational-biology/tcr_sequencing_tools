@@ -1,0 +1,24 @@
+#!/bin/sh                                                                                                               
+getenv="True"
+script_dir=$ENV(tool)/PEAR/scripts/
+data_dir=$ENV(data)/fastqs_from_core/fastqs
+out_dir=$ENV(data)/peared_fastqs/
+log_dir=$ENV(data)/condor_logs/PEAR/
+
+#Program                                                                                                                
+executable=/usr/bin/perl
+
+# #processor cores requested                                                                                            
+request_cpus = 1
+
+#Memory requested                                                                                                       
+request_memory = 16 GB
+
+notify_user = hortowe@ohsu.edu
+
+#Arguments to the program                                                                                               
+
+output=$(log_dir)pear.output
+error=$(log_dir)pear.error
+log=$(log_dir)pear.log
+arguments=$(script_dir)/run_pear_exacloud.pl) $(data_dir) -o $(out_dir) -p 4

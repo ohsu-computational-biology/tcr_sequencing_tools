@@ -1,0 +1,28 @@
+#!/bin/sh                                                                                                               
+getenv="True"
+script_dur=$ENV(tool)/mixcr/mixcr-1.6/mixcr.jar
+data_dir=$ENV(data)/mixcr/
+log_dir=$ENV(data)/condor_logs/mixcr/assemble/
+
+
+# Program                                                                                                               
+executable=/usr/bin/java
+
+# Processor cores requested                                                                                             
+
+request_cpus = 1
+
+# Memory requested                                                                                                      
+
+request_memory = 4 GB
+
+notify_user = hortowe@ohsu.edu
+
+# Arguments                                                                                                             
+
+output=$(log_dir)stdout_mixcr_assemble_1.out
+error=$(log_dir)stderr_mixcr_assemble_1.out
+log=$(log_dir)mixcr_assemble_1.log
+arguments=-Xmx10g -jar $(script_dir) assemble --report $(data_dir)reports/S1_assemble_report.txt --threads 4 $(data_dir\
+)alignments/DNA151124LC_1_S1_alignment.vdjca $(data_dir)assemblies/DNA151124LC_1_S1_alignment_clones.clns
+queue 1
