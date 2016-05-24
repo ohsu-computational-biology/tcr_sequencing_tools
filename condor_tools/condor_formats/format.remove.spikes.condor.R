@@ -18,7 +18,7 @@ formatted.vector <- character(length(fastqs));
 # Format vector
 for (i in 1:length(sorted)) {
    curr.file <- sorted[i]
-   index <- gsub(".*_S|\\..*", '', sorted)
+   index <- gsub(".*_S|\\..*", '', curr.file)
    formatted.vector[i] <- paste(
         "output=$(log_dir)/stdout_remove_spikes_parallel_", index, ".out\n",
         "error=$(log_dir)/stderr_remove_spikes_parallel_", index, ".out\n",
