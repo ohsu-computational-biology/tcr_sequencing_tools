@@ -17,20 +17,21 @@ formatted.vector <- character(length(fastqs));
 
 # Format vector
 for (i in 1:length(sorted)) {
+   curr.file <- sorted[i]
+   index <- gsub(".*_S|\\..*", '', curr.file)
    formatted.vector[i] <- paste(
-        "output=$(log_dir)/stdout_remove_spikes_parallel_", i, ".out\n",
-        "error=$(log_dir)/stderr_remove_spikes_parallel_", i, ".out\n",
-        "log=$(log_dir)/remove_spikes_parallel_", i, ".log\n",
+        "output=$(log_dir)/stdout_remove_spikes_parallel_", index, ".out\n",
+        "error=$(log_dir)/stderr_remove_spikes_parallel_", index, ".out\n",
+        "log=$(log_dir)/remove_spikes_parallel_", index, ".log\n",
         "arguments=$(script_dir)tcr_sequencing_tools/process_spikes/remove.spikes.R ",
         "$(data_dir)", sorted[i], " ",
         "$(data_dir)", sorted.to.remove.forward[i], " ", 
-        "$(data_dir)", "reverse.txt",
         "\nqueue 1\n",
         sep=""); 
 }   #   for i
 
 write.table(formatted.vector,
-            file="formatted.for.remove.spikes.condor.txt",
+            file="02_formatted.remove.spikes.txt",
             row.names = FALSE,
             col.names = FALSE,
             quote = FALSE);

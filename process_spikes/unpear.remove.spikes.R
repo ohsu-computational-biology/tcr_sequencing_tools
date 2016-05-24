@@ -24,12 +24,13 @@ library(stringr);
 #   TODO: handle warnings more better.  At least read.delim() is generating warnings
 options(warn=-1);   
 
-
+#remove.fastqs <- function(input.fastq, forward.reads.to.remove, reverse.reads.to.remove) {
    
 
 	arguments <- commandArgs(trailingOnly=TRUE);
 	input.fastq <- arguments[1];
 	forward.reads.to.remove <- arguments[2];
+	reverse.reads.to.remove <- arguments[3];
 
     #   Read in fastq file
     fastq.records <- readFastq(input.fastq);
@@ -38,7 +39,7 @@ options(warn=-1);
 
 	#	create variables to store read ids to remove
 	forward.ids.to.remove <- character();
-
+	reverse.ids.to.remove <- character();
     
 	#	Some samples returned an empty list of IDs to remove, raising an 
 	#		exception in the original filtering code.  We added some checks here
@@ -55,7 +56,17 @@ options(warn=-1);
 		forward.ids.to.remove <- c(forward.ids.to.remove, alt.forward.ids.to.remove);
 	}	#	fi
 
-    ids.to.remove <- forward.ids.to.remove
+	file.size.reverse <- file.size(reverse.reads.to.remove);
+	if(file.size.reverse > 0)	{
+		reverse.ids.to.remove <- read.delim(reverse.reads.to.remove,
+									header=FALSE,
+									stringsAsFactors=FALSE);
+		reverse.ids.to.remove <- reverse.ids.to.remove[,1];
+		alt.reverse.ids.to.remove <- str_replace(reverse.ids.to.remove, " 2", " 1");
+		reverse.ids.to.remove <- c(reverse.ids.to.remove, alt.reverse.ids.to.remove);
+	}
+    
+    ids.to.remove <- union(forward.ids.to.remove, reverse.ids.to.remove);
     #   strip leading snails from ids.  If we do not this will cause
     #       problemd below when using the S4 record ShortRead uses to 
     #       represent fastq records
@@ -81,10 +92,9 @@ options(warn=-1);
     cat("Removing ", num.records.removed, " fastq records\n", sep="");
      
     #   write the fastq out
-    out.fastq <- sub("[.][^.]*$", '', input.fastq)
-    output.file.name <- paste(out.fastq, ".removed.fastq", sep="");
+    output.file.name <- paste(input.fastq, ".removed.fastq", sep="");
 	cat("Writing output to: ", output.file.name, "\n", sep="");
     writeFastq(output.fastq.records, output.file.name, compress=FALSE);
 
-
+#}   #   remove.fastqs()
 

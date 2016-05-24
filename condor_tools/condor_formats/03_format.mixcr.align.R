@@ -26,27 +26,30 @@ for(i in 1:length(list.of.files))   {
     output.file.names[i] <-  sub("[.][^.]*$", "", list.of.files[i]);
     output.file.names[i] <-  sub("[.][^.]*$", "", output.file.names[i]);
     output.file.names[i] <-  sub("[.][^.]*$", "", output.file.names[i]);
-    output.file.names[i] <-  sub("[.][^.]*$", "", output.file.names[i]);
+#    output.file.names[i] <-  sub("[.][^.]*$", "", output.file.names[i]);
 }   # for 
   
 for (i in 1:length(list.of.files))   {
+   curr.file <- list.of.files[i]
+   index <- gsub(".*_S|\\..*", '', curr.file)
    formatted.vector[i] <- paste(
-        "output=$(log_dir)stdout_mixcr_align_", i, ".out\n",
-        "error=$(log_dir)stderr_mixcr_align_", i, ".out\n",
-        "log=$(log_dir)mixcr_align_", i, ".log\n",
-        "arguments=-Xmx10g -jar $(script_dir) ",
+        "output=$(log_dir)stdout_mixcr_align_", index, ".out\n",
+        "error=$(log_dir)stderr_mixcr_align_", index, ".out\n",
+        "log=$(log_dir)mixcr_align_", index, ".log\n",
+        "arguments=-Xmx15g -jar $(script_dir) ",
         "align ",
+	"-f ",
         "--loci TRB ",
         "--species mmu ",
-        "--report $(data_dir)reports/S", i, "_align_report.txt ",   #   report
-        "$(data_dir)despiked_fastqs/", list.of.files[i], " ",   #   input
-        "$(data_dir)alignments/", output.file.names[i], "_alignment.vdjca", #  ouput
+        "--report $(report_dir)/S", index, "_align_report.txt ",   #   report
+        "$(input_dir)/", list.of.files[i], " ",   #   input
+        "$(out_dir)/", output.file.names[i], "_alignment.vdjca", #  ouput
         "\nqueue 1\n",
         sep=""); 
 }   #   for
 
 write.table(formatted.vector,
-            file="formatted_for_mixcr_align.txt",
+            file="03_formatted_align.txt",
             row.names = FALSE,
             col.names = FALSE,
             quote = FALSE);
