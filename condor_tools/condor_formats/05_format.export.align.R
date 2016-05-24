@@ -25,6 +25,7 @@ for (i in 1:length(list.of.files))   {
         "log=$(log_dir)mixcr_export_align_", index, ".log\n",
         "arguments=-Xmx15g -jar $(script_dir) ",
         "exportAlignments ",
+	"--preset full ",
 	"-f ",
         "-vHit ",
         "-jHit ",
