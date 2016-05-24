@@ -41,6 +41,8 @@ for (i in 1:length(list.of.files))   {
 	"-f ",
         "--loci TRB ",
         "--species mmu ",
+	"--save-description ",
+	"--save-reads ",
         "--report $(report_dir)/S", index, "_align_report.txt ",   #   report
         "$(input_dir)/", list.of.files[i], " ",   #   input
         "$(out_dir)/", output.file.names[i], "_alignment.vdjca", #  ouput

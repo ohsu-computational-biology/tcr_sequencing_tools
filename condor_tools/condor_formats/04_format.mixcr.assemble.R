@@ -17,22 +17,26 @@ for(i in 1:length(list.of.files))   {
 
 # Format vector
 for (i in 1:length(list.of.files))   {
+   curr.file <- list.of.files[i]
+   index <- gsub(".*_S|_alignment.*", '', curr.file)
    formatted.vector[i] <- paste(
-        "output=$(log_dir)stdout_mixcr_assemble_", i, ".out\n",
-        "error=$(log_dir)stderr_mixcr_assemble_", i, ".out\n",
-        "log=$(log_dir)mixcr_assemble_", i, ".log\n",
+        "output=$(log_dir)stdout_mixcr_assemble_", index, ".out\n",
+        "error=$(log_dir)stderr_mixcr_assemble_", index, ".out\n",
+        "log=$(log_dir)mixcr_assemble_", index, ".log\n",
         "arguments=-Xmx10g -jar $(script_dir) ",
         "assemble ",
-        "--report $(data_dir)reports/S", i, "_assemble_report.txt ",   #   report
+	"-f ",
+	"--index $(index_dir)/S", index, "_index.txt ",
+        "--report $(report_dir)/S", index, "_assemble_report.txt ",   #   report
         "--threads 4 ",
-        "$(data_dir)alignments/", list.of.files[i], " ",   #   input
-        "$(data_dir)assemblies/", output.file.names[i], "_clones.clns", #  ouput
+        "$(input_dir)", list.of.files[i], " ",   #   input
+        "$(output_dir)", output.file.names[i], "_clones.clns", #  ouput
         "\nqueue 1\n",
         sep=""); 
 }   #   while
 
 write.table(formatted.vector,
-            file="formatted_for_mixcr_assemble.txt",
+            file="04_formatted_assemble.txt",
             row.names = FALSE,
             col.names = FALSE,
             quote = FALSE);
