@@ -71,13 +71,30 @@ write.table(assembled.ids, file = file.path(assemble.output, assemble.output.nam
               row.names = FALSE,
               col.names = FALSE)
 
+####################################################
+### Extract Read IDs of aligned without D region ###
+####################################################
+
+# How many reads are considered aligned even though they don't have D regions?
+align.missing.d <- align.data[!(complete.cases(align.data$All.D.hits)),]
+
+missing.d.ids <- as.data.frame(align.missing.d$Description.R1)
+
+missing.d.output.name <- paste("S", sample.number, "_align_no_d_ids.txt", sep = '')
+
+write.table(missing.d.ids, file = file.path(align.output, missing.d.output.name),
+            sep = '\t',
+            quote = FALSE,
+            row.names = FALSE,
+            col.names = FALSE)
+
+
 
 ##############################
 ### Extract QC Information ###
 ##############################
 
-# How many reads are considered aligned even though they don't have D regions?
-align.missing.d <- align.data[!(complete.cases(align.data$All.D.hits)),]
+# Percent of reads considered aligned even though they don't have D regions
 align.percent.missing.d <- length(align.missing.d[,1]) / total.aligned * 100
 
 
