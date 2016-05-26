@@ -2,7 +2,7 @@
 #       pipeline
 
 # Get command line arguments
-arguments <- commandArgs9trailingOnly=TRUE);
+arguments <- commandArgs(trailingOnly=TRUE);
 path.to.raw.fastqs <- arguments[1];		# /DNAXXXXLC/peared_fastqs/assembled/
 path.to.despiked.fastqs <- arguments[2];	# /DNAXXXXLC/mixcr/despiked_fastqs
 
