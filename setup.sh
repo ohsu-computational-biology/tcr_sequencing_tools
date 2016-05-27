@@ -18,7 +18,9 @@ mkdir mixcr
 mkdir mixcr/alignments
 mkdir mixcr/assemblies
 mkdir mixcr/despiked_fastqs
-mkdir mixcr/exported
+mkdir mixcr/export_align
+mkdir mixcr/export_clones
+mkdir mixcr/indexes
 mkdir mixcr/reports
 mkdir mixcr/reports/align
 mkdir mixcr/reports/assemble
@@ -63,5 +65,11 @@ mkdir condor_logs/mixcr
 mkdir condor_logs/mixcr/align
 mkdir condor_logs/mixcr/assemble
 mkdir condor_logs/mixcr/despiked
+<<<<<<< HEAD
+mkdir condor_logs/mixcr/export_align
+mkdir condor_logs/mixcr/export_clones
+mkdir condor_logs/normalization
+=======
 mkdir condor_logs/mixcr/export
 mkdir condor_logs/normalization
+>>>>>>> master

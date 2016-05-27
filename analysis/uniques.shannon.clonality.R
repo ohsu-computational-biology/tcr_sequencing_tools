@@ -33,6 +33,7 @@ max.clonal.freq <- numeric(length(count.files.in.dir));
 norm.entropy <- numeric(length(clone.files.in.dir));
 adaptive.clonality <- numeric(length(clone.files.in.dir));
 adaptive.clonality <- NULL
+max.clone.count <- numeric(length(clone.files.in.dir))
 
 for(i in 1:length(clone.files.in.dir))	{
     #   get a clone file to process
@@ -78,6 +79,9 @@ for(i in 1:length(clone.files.in.dir))	{
     #	Calculate Max. clonotype frequency
     max.clonal.freq[i] <- max(clone.curr.record$`Normalized clone fraction`) * 100
 
+    #   Record maximum clone count
+    max.clone.count[i] <- max(clone.curr.record$`Normalized clone count`)
+
     #   update progress
     if((i %%10) == 0)   {
         cat("Processing file ", i, " (out of ", length(count.files.in.dir), ")\n", sep="");
@@ -87,10 +91,11 @@ for(i in 1:length(clone.files.in.dir))	{
 
 #   create output data.frame
 output.df <- data.frame(clone.files.in.dir, calculated.entropies, norm.entropy, unique.clones, clonality,
-	     		adaptive.clonality, spike.counts, spike.percent, max.clonal.freq);
+	     		adaptive.clonality, spike.counts, spike.percent, max.clonal.freq, max.clone.count);
 
 colnames(output.df) <- c("File", "Shannon Entropy", "Normalized Entropy", "Unique Clonotypes", "Clonality",
-		        "Adaptive Clonality", "Spiked Reads", "Percent Spiked Reads", "Max Clonal Freq");
+		        "Adaptive Clonality", "Spiked Reads", "Percent Spiked Reads", "Max Clonal Freq",
+			"Max Clone Count");
 
 #   write output
 write.table(output.df, 

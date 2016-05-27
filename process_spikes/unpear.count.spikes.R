@@ -20,7 +20,7 @@ input.fastq <- arguments[1];
 spike.file <- arguments[2]; # for example: text_barcodesvj.txt
 spike.length <- arguments[3]; # typically 9 for spike removal and 25 for normalization
 output.dir <- arguments[4]; # results are output here
-
+direction <- arguments[5]; # generally "FWD"
 
 # Begin count.spikes function here
 
@@ -36,7 +36,15 @@ output.dir <- arguments[4]; # results are output here
     spikes <- spike.table$SPIKE;
     #   TODO:  add some error-checking, verifying that all spikes are of same length, etc.
 
-
+    #   modify spikes as required
+    if(direction == "REV")  {
+        #   first convert to a DNAString, to convert to reverse-complement,
+        #       then back to a character
+        #   I do not believe that DNAString is vectorized, so we loop
+       for(i in 1:length(spikes))   {
+           spikes[i] <- as.character(reverseComplement(DNAString(spikes[i]))); 
+       }   #   for i 
+    }   #   fi
     #    trim to length (regardless of whether we're using the spike or its reverse-compl.
     spikes <- strtrim(spikes, spike.length);
 
@@ -56,7 +64,7 @@ output.dir <- arguments[4]; # results are output here
         output.table[i,]$spike.count <- sum(as.logical(current.spike.counts));
         cat("\t", output.table[i,]$spike.count, " spikes detected\n", sep="");
 
-        #   record read ids (as they'll need removed later; we use the readid to do so)
+        #   record readids (as they'll need removed later; we use the readid to do so)
         records.to.remove <- which(current.spike.counts > 0);
         if(length(records.to.remove) > 0)   {
             temp.reads <- fastq.reads[records.to.remove];

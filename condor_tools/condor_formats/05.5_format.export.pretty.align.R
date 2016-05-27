@@ -1,6 +1,6 @@
 # Get command line arguments
 arguments <- commandArgs(trailingOnly=TRUE);
-list.of.files <- arguments[1];      # /home/exacloud/lustre1/CompBio/data/tcrseq/dhaarini/DNAXXXXLC/mixcr/assemblies/
+list.of.files <- arguments[1];      # /home/exacloud/lustre1/CompBio/data/tcrseq/dhaarini/DNAXXXXLC/mixcr/alignments/
 
 # List files from directory and sort them.
 list.of.files <- list.files(list.of.files);
@@ -17,25 +17,25 @@ for(i in 1:length(list.of.files))   {
 
 # Format vector
 for (i in 1:length(list.of.files))   {
+   curr.file <- list.of.files[i]
+   index <- gsub(".*_S|_alignment.*", '', curr.file)
    formatted.vector[i] <- paste(
-        "output=$(log_dir)stdout_mixcr_export_", i, ".out\n",
-        "error=$(log_dir)stderr_mixcr_export_", i, ".out\n",
-        "log=$(log_dir)mixcr_export_", i, ".log\n",
-        "arguments=-Xmx10g -jar $(script_dir) ",
-        "exportClones ",
-        "--filter-out-of-frames ",
-        "--filter-stops ",
-        "--preset full ",
-        "-vHit ",
-        "-jHit ",
-        "$(data_dir)assemblies/", list.of.files[i], " ",   #   input
-        "$(data_dir)exported/", output.file.names[i], "_exported.txt", #  ouput
+        "output=$(log_dir)stdout_mixcr_export_", index, ".out\n",
+        "error=$(log_dir)stderr_mixcr_export_", index, ".out\n",
+        "log=$(log_dir)mixcr_export_align_", index, ".log\n",
+        "arguments=-Xmx15g -jar $(script_dir) ",
+        "exportAlignmentsPretty ",
+	"-s 1000 ",
+	"-n 10 ",
+	"-t ",
+        "$(input_dir)/", list.of.files[i], " ",   #   input
+        "$(output_dir)/", output.file.names[i], "_exported_pretty.txt", #  ouput
         "\nqueue 1\n",
         sep=""); 
 }   #   while
 
 write.table(formatted.vector,
-            file="formatted_for_mixcr_export.txt",
+            file="05.5_formatted_export_pretty_align.txt",
             row.names = FALSE,
             col.names = FALSE,
             quote = FALSE);

@@ -4,6 +4,7 @@
 #       some visualization, analysis, etc. once the data is aggregated
 
 #   Load required libraries
+.libPaths("/mnt/lustre1/CompBio/lib/R/library")
 library(stringr);
 
 #	Get command-line arguments
