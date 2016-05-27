@@ -1,0 +1,27 @@
+<tool id="normalize.clonotype.counts.condor" name="Normalize Clonotype Counts">
+  <description>Use scaling factor to create normalized counts for clonotypes.</description>
+
+  <command>R --vanilla --file=$__tool_directory__/normalize.clonotype.counts.condor.R
+     --args $clone $count $scaling $spike $out
+  </command>
+
+  <inputs>
+    <param name="clone" type="data" format="tabular" label="Clone File" help="Tab-separated file produced by MiXCR.
+									      Contains counts, fractions, and identifying
+									      information about each clonotype."/>
+    <param name="count" type="data" label="Count File" help="Tab-separated file produced by Count Spikes.
+							     Identical to spike file, with an added column summing
+							     the number of occurrences of each spike in the sample."/>
+    <param name="scaling" type="data" label="Scaling Factor" help="Single column of integers to apply to clonotype counts.
+								   Produced by Calculate Scaling Factor."/>
+    <param name="spike" type="data" format="csv" label="Spike File" help="Reference file containing the sequence for each
+									  spike along with the corresponding V and J regions."/>
+  </inputs>
+
+  <outputs>
+    <data name="out" format="tabular" label="Normalized counts"/>
+  </outputs>
+
+    
+
+</tool>

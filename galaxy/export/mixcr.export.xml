@@ -1,0 +1,16 @@
+<tool id="mixcr.export" name="Export Clones (MiXCR)">
+  <description>Export tab-separated file of clonotype counts and identification.</description>
+
+  <command>
+    java -Xmx10g -jar $__tool_directory__/mixcr.jar exportClones --filter-out-of-frames --filter-stops --preset full -vHit -jHit -f $input $output 
+  </command>
+
+  <inputs>
+    <param name="input" type="data" label="Input Clone File" help="Clonotype file (.clns) exported by MiXCR assemble"/>
+  </inputs>
+
+  <outputs>
+    <data name="output" label="Exported Clones"/>
+  </outputs>
+
+</tool>

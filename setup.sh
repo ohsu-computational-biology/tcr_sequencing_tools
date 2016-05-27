@@ -60,11 +60,16 @@ mkdir QC
 mkdir condor_logs
 mkdir condor_logs/spike_counts
 mkdir condor_logs/spike_counts/25bp
-mkdir condor_logs/spike_counts9bp
+mkdir condor_logs/spike_counts/9bp
 mkdir condor_logs/mixcr
 mkdir condor_logs/mixcr/align
 mkdir condor_logs/mixcr/assemble
 mkdir condor_logs/mixcr/despiked
+<<<<<<< HEAD
 mkdir condor_logs/mixcr/export_align
 mkdir condor_logs/mixcr/export_clones
 mkdir condor_logs/normalization
+=======
+mkdir condor_logs/mixcr/export
+mkdir condor_logs/normalization
+>>>>>>> master
