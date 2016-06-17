@@ -28,6 +28,7 @@ for (i in 1:length(list.of.files))   {
 	"-s 1000 ",
 	"-n 10 ",
 	"-t ",
+	"--verbose ",
         "$(input_dir)/", list.of.files[i], " ",   #   input
         "$(output_dir)/", output.file.names[i], "_exported_pretty.txt", #  ouput
         "\nqueue 1\n",
