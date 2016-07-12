@@ -27,64 +27,87 @@ options(warn=-1);
 
    
 
-	arguments <- commandArgs(trailingOnly=TRUE);
-	input.fastq <- arguments[1];
-	forward.reads.to.remove <- arguments[2];
+arguments <- commandArgs(trailingOnly=TRUE);
+input.fastq <- arguments[1];
+forward.reads.to.remove <- arguments[2];
 
-    #   Read in fastq file
-    fastq.records <- readFastq(input.fastq);
-    num.fastqs <- length(fastq.records);
-    cat(num.fastqs, " fastq reads to process\n", sep="");
+#   Read in fastq file
+fastq.records <- readFastq(input.fastq);
+num.fastqs <- length(fastq.records);
+cat(num.fastqs, " fastq reads to process\n", sep="");
 
-	#	create variables to store read ids to remove
-	forward.ids.to.remove <- character();
+
+#   create variables to store read ids to remove
+forward.ids.to.remove <- character();
 
     
-	#	Some samples returned an empty list of IDs to remove, raising an 
-	#		exception in the original filtering code.  We added some checks here
-	#		to address this possibility.  TODO:  refine this
-	file.size.forward <- file.size(forward.reads.to.remove);
-	if(file.size.forward > 0)	{
-		#   Read in lists of fastqs to be removed and consolidate into one variable
-		#   TODO:  find a cleaner way to import
-		forward.ids.to.remove <- read.delim(forward.reads.to.remove,
-									header=FALSE,
-									stringsAsFactors=FALSE);
-		forward.ids.to.remove <- forward.ids.to.remove[,1];
-		alt.forward.ids.to.remove <- str_replace(forward.ids.to.remove, " 1", " 2");
-		forward.ids.to.remove <- c(forward.ids.to.remove, alt.forward.ids.to.remove);
-	}	#	fi
+#   Some samples returned an empty list of IDs to remove, raising an 
+#	exception in the original filtering code.  We added some checks here
+#	to address this possibility.  TODO:  refine this
 
-    ids.to.remove <- forward.ids.to.remove
-    #   strip leading snails from ids.  If we do not this will cause
-    #       problemd below when using the S4 record ShortRead uses to 
-    #       represent fastq records
-	#	Commenting the line out currently, since the new version of count.spikes.R
-	#		does not output the snail
-    #ids.to.remove <- sub("@", "", ids.to.remove);
+file.size.forward <- file.size(forward.reads.to.remove);
 
-	#	This conditional is another part of error-checking, for the case when
-	#		there are no reads to be removed (e.g. when both .reads.to.remove
-	#		files are empty)
-	if(length(ids.to.remove) > 0)	{
-		id.filter <- srFilter(function(x)   {
-								!(x@id %in% ids.to.remove)
-							},   #   function(x),
-							name="id.filter");
+if(file.size.forward > 0)	{
 
-		output.fastq.records <- fastq.records[id.filter(fastq.records)];
-	}	else	{	#	none to remove, so the input fastq is the output fastq
-		output.fastq.records <- fastq.records;
-	}	#	else
+   #   Read in lists of fastqs to be removed and consolidate into one variable
+   #   TODO:  find a cleaner way to import
+   
+   forward.ids.to.remove <- read.delim(forward.reads.to.remove,
+					header=FALSE,
+					stringsAsFactors=FALSE);
+   
+   forward.ids.to.remove <- forward.ids.to.remove[,1];
+   alt.forward.ids.to.remove <- str_replace(forward.ids.to.remove, " 1", " 2");
+   forward.ids.to.remove <- c(forward.ids.to.remove, alt.forward.ids.to.remove);
+}   #   fi
+
+
+ids.to.remove <- forward.ids.to.remove
+
+#   strip leading snails from ids.  If we do not this will cause
+#       problemd below when using the S4 record ShortRead uses to 
+#       represent fastq records
+#	Commenting the line out currently, since the new version of count.spikes.R
+#	does not output the snail
+#   ids.to.remove <- sub("@", "", ids.to.remove);
+
+#   This conditional is another part of error-checking, for the case when
+#	there are no reads to be removed (e.g. when both .reads.to.remove
+#	files are empty)
+
+if(length(ids.to.remove) > 0)	{
+   id.filter <- srFilter(function(x)   {
+	!(x@id %in% ids.to.remove)
+	},   #   function(x),
+   	name="id.filter");
+
+   id.keep <- srFilter(function(x)   {
+   	(x@id %in% ids.to.remove)
+	},  #   function(x)
+	name="id.keep")
+
+   output.fastq.records <- fastq.records[id.filter(fastq.records)];
+
+   output.spike.records <- fastq.records[id.keep(fastq.records)];
+}   else   {	#	none to remove, so the input fastq is the output fastq
+   output.fastq.records <- fastq.records;
+   output.spike.records <- NULL
+}   #   else
     
-	num.records.removed <- length(fastq.records) - length(output.fastq.records);
-    cat("Removing ", num.records.removed, " fastq records\n", sep="");
+num.records.removed <- length(fastq.records) - length(output.fastq.records);
+cat("Removing ", num.records.removed, " fastq records\n", sep="");
+
      
-    #   write the fastq out
-    out.fastq <- sub("[.][^.]*$", '', input.fastq)
-    output.file.name <- paste(out.fastq, ".removed.fastq", sep="");
-	cat("Writing output to: ", output.file.name, "\n", sep="");
-    writeFastq(output.fastq.records, output.file.name, compress=FALSE);
+#   write the fastq out
+
+out.fastq <- sub("[.][^.]*$", '', input.fastq)
+output.file.name <- paste(out.fastq, ".removed.fastq", sep="");
+cat("Writing output to: ", output.file.name, "\n", sep="");
+writeFastq(output.fastq.records, output.file.name, compress=FALSE);
 
 
-
+#   write the spikes out
+out.spike <- sub(".assembled.fastq", '', input.fastq)
+out.spike.name <- paste(out.spike, ".spikes.fastq", sep="")
+cat("Writing output to: ", out.spike.name, "\n", sep = "")
+writeFastq(output.spike.records, out.spike.name, compress=FALSE)

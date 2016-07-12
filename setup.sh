@@ -1,6 +1,6 @@
 #!/bin/sh
 
-cd $data/test/
+cd $data/
 
 # Directories to hold raw fastqs and associated files
 mkdir fastqs_from_core
@@ -18,7 +18,9 @@ mkdir mixcr
 mkdir mixcr/alignments
 mkdir mixcr/assemblies
 mkdir mixcr/despiked_fastqs
-mkdir mixcr/exported
+mkdir mixcr/export_align
+mkdir mixcr/export_clones
+mkdir mixcr/indexes
 mkdir mixcr/reports
 mkdir mixcr/reports/align
 mkdir mixcr/reports/assemble
@@ -58,10 +60,17 @@ mkdir QC
 mkdir condor_logs
 mkdir condor_logs/spike_counts
 mkdir condor_logs/spike_counts/25bp
-mkdir condor_logs/spike_counts9bp
+mkdir condor_logs/spike_counts/9bp
 mkdir condor_logs/mixcr
 mkdir condor_logs/mixcr/align
 mkdir condor_logs/mixcr/assemble
 mkdir condor_logs/mixcr/despiked
-mkdir condor_logs/mixcr/export
+mkdir condor_logs/mixcr/export_align
+mkdir condor_logs/mixcr/export_clones
 mkdir condor_logs/normalization
+
+# Directory for tools
+mkdir tools
+mkdir tools/formatted
+cp -r $tool/condor_tools/condor_formats $data/tools/
+cp -r $tool/condor_tools/submits $data/tools/

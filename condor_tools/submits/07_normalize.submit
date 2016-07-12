@@ -1,0 +1,21 @@
+#!/bin/sh
+
+getenv="True"
+script_dir=$ENV(tool)/tcr_sequencing_tools/normalize/
+log_dir=$ENV(data)/condor_logs/normalization/
+normalization_dir=$ENV(data)/normalization/
+
+
+# Program
+executable=/usr/bin/Rscript
+
+# Processor cores requested
+request_cpus = 1
+
+# Memory requested
+request_memory = 4 GB
+
+notify_user = hortowe@ohsu.edu
+
+# Arguments 
+

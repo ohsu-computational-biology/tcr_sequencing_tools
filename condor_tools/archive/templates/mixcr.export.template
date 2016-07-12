@@ -1,0 +1,28 @@
+#!/bin/sh                                                                                                               
+getenv="True"
+script_dir=$ENV(tool)/mixcr/mixcr-1.6/mixcr.jar
+data_dir=$ENV(data)/mixcr/
+log_dir=$ENV(data)/condor_logs/mixcr/export/
+
+
+# Program                                                                                                               
+executable=/usr/bin/java
+
+# Processor cores requested                                                                                             
+request_cpus = 1
+
+# Memory requested                                                                                                      
+request_memory = 4 GB
+
+notify_user = hortowe@ohsu.edu
+
+# Arguments                                                                                                             
+
+output=$(log_dir)stdout_mixcr_export_1.out
+error=$(log_dir)stderr_mixcr_export_1.out
+log=$(log_dir)mixcr_export_1.log
+arguments=-Xmx10g -jar $(script_dir) exportClones --filter-out-of-frames --filter-stops -count -fraction -sequence -aaF\
+eature CDR3 -vHit -jHit $(data_dir)assemblies/DNA151124LC_1_S1_alignment_clones.clns $(data_dir)exported/DNA151124LC_1_\
+S1_alignment_clones_exported.txt
+queue 1
+

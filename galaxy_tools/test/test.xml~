@@ -1,0 +1,25 @@
+<tool id="test" name="Testing" version="0.1">
+  <description>Print a table</description>
+
+  <command>R --vanilla --file=/Users/hortowe/galaxy/tools/working_tools/test/test.R
+     --args <!--$goo $coo $out--> $out2
+  </command>
+
+  <inputs>
+<!--    <param name="goo" size="4" type="text" format="integer"/> -->
+<!--    <param name="coo" size="4" type="text" format="integer"/> -->
+  </inputs>
+
+  <outputs>
+<!--    <data name="out" format="tabular" label="Test output"/> -->
+    <data name="out2" format="tabular" label="Test2 output"/> 
+  </outputs>
+
+  <tests>
+  </tests>
+
+  <help>
+    Testing
+  </help>
+
+</tool>

@@ -25,7 +25,7 @@ for (i in 1:length(sorted)) {
         "log=$(log_dir)/remove_spikes_parallel_", index, ".log\n",
         "arguments=$(script_dir)tcr_sequencing_tools/process_spikes/remove.spikes.R ",
         "$(data_dir)", sorted[i], " ",
-        "$(data_dir)", sorted.to.remove.forward[i], " ", 
+        "$(remove_dir)", sorted.to.remove.forward[i], " ", 
         "\nqueue 1\n",
         sep=""); 
 }   #   for i
