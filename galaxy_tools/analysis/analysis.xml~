@@ -1,0 +1,21 @@
+<tool id="analysis" name="Clonotype Analysis">
+  <description>Calculate unique clonotypes, Shannon Entropy, and Clonality for samples.</description>
+
+  <command>R --vanilla --file=$__tool_directory__/analysis.R
+      --args $clone_input $count_input $output
+  </command>
+
+  <inputs>
+    <param name="clone_input" type="data" multiple="True" label="MiXCR Clone File" help="Normalized Clonotype File"/>
+    <param name="count_input" type="data" multiple="True" label="Spike Count File" help="Count file from 9bp count.spikes run"/>
+  </inputs>
+
+  <outputs>
+    <data name="output" type="data" format="csv" label="Analysis Metrics"/>
+  </outputs>
+
+  <help>
+    This tool calculates a variety of analysis metrics for each sample.
+  </help>
+
+</tool>

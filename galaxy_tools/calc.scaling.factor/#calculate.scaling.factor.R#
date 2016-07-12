@@ -1,0 +1,55 @@
+
+#   This function calculates a "global" scaling factor
+#   The factor is calculated using counts of EACH spike for ALL samples
+#   The calculated scaling factor should be applied to each sample's spike count
+
+# calculate.scaling.factor <- function(spike.count.dir)  {
+
+# Get command line arguments
+#arguments <- commandArgs(trailingOnly=TRUE);
+#spike.count.dir <- arguments[1];	# DNAXXXXLC/normalization/counts/
+
+# Testing
+inputs <- commandArgs(trailingOnly=TRUE)[2]
+output <- commandArgs(trailingOnly=TRUE)[1]
+#print(inputs)
+# Separate multiple input files into a list of individual files
+files <- strsplit(inputs, ',')
+#print(files)
+
+     temp.file <- files[[1]][1]
+    temp <- read.csv(temp.file);
+    num.rows <- length(temp[[1]]);
+    num.cols <- length(files[[1]])
+    counts.and.samples <- matrix(nrow = num.rows, ncol = num.cols);
+
+#    write.table(counts.and.samples, file=output, quote=FALSE)
+
+#   Read in each of the spike count files
+    for(i in 1:length(files[[1]]))   {
+    	  # Read in file
+     	   curr.file <- files[[1]][i]
+	   curr.spike.counts <- read.csv(curr.file)
+	  # Add counts to matrix
+	   counts.and.samples[,i] <- curr.spike.counts$spike.count
+    }   #   for
+
+# add one to all cells
+counts.and.samples <- apply(counts.and.samples, c(1,2), function(x) x + 1)
+
+   # #   Calculate mean number of spikes found, across all samples
+   # #   The "apply" function calculates the sum across rows (across samples) [1 specifies row]
+    sum.across.samples <- apply(counts.and.samples, 1, sum);
+    spike.count.mean <- sum(sum.across.samples) / num.rows;
+
+    #   Use the mean to calculate the scaling factor
+    scaling.factor <- sum.across.samples / spike.count.mean;
+    scaling.factor <- 1 / scaling.factor;
+
+    write.table(scaling.factor,
+                file=output,
+                quote=FALSE,
+                row.names=FALSE,
+                col.names=FALSE);
+
+#}   #   calculate.scaling.factor()

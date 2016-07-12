@@ -1,0 +1,19 @@
+<tool id="mixcr.export.clones" name="Export Clones (MiXCR)">
+  <description>Export tab-separated file of clonotype counts and identification.</description>
+
+  <command>
+    java -Xmx10g -jar $__tool_directory__/mixcr.jar exportClones --filter-out-of-frames --filter-stops --preset full -vHit -jHit -f $input $output 
+  </command>
+
+  <inputs>
+    <param name="input" type="data" label="Input Clone File" help="Clonotype file (.clns) exported by MiXCR assemble"/>
+  </inputs>
+
+  <outputs>
+    <data name="output" format="tabular" label="Exported Clones"/>
+  </outputs>
+
+  <help>
+    This tool exports the important information describing the gene regions extracted during the MiXCR Assemble tool. It contains the sequence of the extracted gene region, as well as the identity of V, D, and J alignments. It also contains a count of occurrences of each clone (unique gene region). Currently the index function is not supported by MiXCR Align, so we cannot export clone IDs at this time, although this option is available if run through exacloud.
+  </help>
+</tool>

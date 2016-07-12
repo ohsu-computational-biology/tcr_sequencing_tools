@@ -1,0 +1,24 @@
+<tool id="remove.spikes" name="Remove Spikes" version="0.1.0">
+  <description>Remove synthetic template reads from fastqs</description>
+  <command> R --vanilla --file=$__tool_directory__/remove.spikes.R
+      --args $input_fastq $reads_to_remove $output_fastq $output_removed
+  </command>
+
+  <inputs>
+    <param name="input_fastq" type="data" format="fastq" label="Input Fastq" help="Fastq file output by PEAR."/>
+    <param name="reads_to_remove" type="data" label="Reads to Remove" help="Fastq read ids of synthetic templates.
+									    Produced by count spikes with 9 bp spike"/>
+  </inputs>
+
+  <outputs>
+    <data name="output_fastq" format="fastq" label="Fastq Reads"/>
+    <data name="output_removed" format="fastq" label="Spike Reads"/>
+  </outputs>
+
+
+  <help>
+    This tool takes an input file containing all of the fastq read ids for the synthetic templates from a particular sample and removes the read from the corresponding fastq file. It outputs the new fastq sample file w/o these template reads, as well as a fastq file containing the template reads.
+  </help>
+
+
+</tool>

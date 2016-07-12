@@ -1,0 +1,32 @@
+<tool id="normalize.clonotype.counts" name="Normalize Clonotype Counts">
+  <description>Use scaling factor to create normalized counts for clonotypes.</description>
+
+  <command>R --vanilla --file=$__tool_directory__/normalize.clonotype.counts.R
+     --args $clone $count $scaling $spike $out
+  </command>
+
+  <inputs>
+    <param name="clone" type="data" label="MiXCR Clone File" help="Tab-separated file produced by MiXCR.
+							      Contains counts, fractions, and identifying
+							      information about each clonotype."/>
+    
+    <param name="count" type="data" label="Spike Count File" help="Tab-separated file produced by Count Spikes (25bp).
+							     Identical to spike file, with an added column summing
+							     the number of occurrences of each spike in the sample."/>
+    
+    <param name="scaling" type="data" label="Scaling Factor" help="Single column of integers to apply to clonotype counts.
+								   Produced by Calculate Scaling Factor."/>
+    
+    <param name="spike" type="data" format="csv" label="Spike Reference File" help="Reference file containing the sequence for each
+									  spike along with the corresponding V and J regions."/>
+  </inputs>
+
+  <outputs>
+    <data name="out" format="tabular" label="Normalized counts"/>
+  </outputs>
+
+  <help>
+    This tool attempts to use the amplification of each synthetic template to normalize the clonotype counts in such a way that amplification bias of different primers is minimized. These counts should better reflect the true differences in clone occurrences within a sample than the raw counts do. The output of this program is identical to that output by 'Export Clones', but contains two additional columns for normalized counts and fractions.
+  </help>
+
+</tool>
