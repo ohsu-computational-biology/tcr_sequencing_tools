@@ -65,12 +65,20 @@ mkdir condor_logs/mixcr
 mkdir condor_logs/mixcr/align
 mkdir condor_logs/mixcr/assemble
 mkdir condor_logs/mixcr/despiked
+<<<<<<< HEAD
 mkdir condor_logs/mixcr/export_align
 mkdir condor_logs/mixcr/export_clones
 mkdir condor_logs/normalization
+<<<<<<< HEAD
 
 # Directory for tools
 mkdir tools
 mkdir tools/formatted
 cp -r $tool/condor_tools/condor_formats $data/tools/
 cp -r $tool/condor_tools/submits $data/tools/
+=======
+=======
+mkdir condor_logs/mixcr/export
+mkdir condor_logs/normalization
+>>>>>>> master
+>>>>>>> 221c73a29d8165a7b50df9325fce2e001a6c66fe

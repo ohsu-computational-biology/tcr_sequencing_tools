@@ -1,0 +1,25 @@
+<tool id="fwd.count.spikes" name="Count Spikes" version="0.1.0">
+  <description>for spike removal or normalization.</description>
+  <command> R --vanilla --file=$__tool_directory__/fwd.count.spikes.R
+      --args $input_fastq $spike_file $spike_length $output_count $output_remove
+   </command>
+
+   <inputs>
+    <param name="input_fastq" type="data" format="fastq"/>
+    <param name="spike_file" type="data"  format="csv"/>
+    <param  name="spike_length" type="text" format="integer" value="9"/>
+  </inputs>
+
+  <outputs>
+    <data name="output_count" format="csv" label="Spike Count"/>
+    <data name="output_remove" format="tabular" label="Reads to remove"/>
+  </outputs>
+
+  <tests>
+  </tests>
+  
+  <help>
+    This tool searches for spiked reads within a fastq file, aggregates spiked read IDs for subsequent removal, and counts occurrences of individual spikes.
+  </help>
+
+</tool>

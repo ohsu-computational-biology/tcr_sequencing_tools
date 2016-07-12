@@ -1,6 +1,10 @@
 #!/bin/sh                                                                                                               
 getenv="True"
+<<<<<<< HEAD:condor_tools/submits/01_count.spikes.submit
 script_dir=$ENV(tool2)/process_spikes
+=======
+script_dir=$ENV(tool)/tcr_sequencing_tools/process_spikes
+>>>>>>> 221c73a29d8165a7b50df9325fce2e001a6c66fe:condor_tools/submits/count.spikes.template
 data_dir=$ENV(data)/peared_fastqs/assembled
 out_dir=$ENV(data)/spike_counts/25bp/counts/
 ref_dir=$ENV(tool)/references
