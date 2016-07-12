@@ -3,6 +3,7 @@
 #   Input is a directory containing one or more files with MiXCR output format
 #   
 #   Load necessary libraries
+.libPaths("/home/exacloud/lustre1/CompBio/lib/R/library")
 library(entropy);
 
 #	Get command-line arguments
