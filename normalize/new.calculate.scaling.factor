@@ -55,7 +55,7 @@ ref.file <- arguments[2];		# /tcr_sequencing_tools/reference/text_barcodesvj.txt
     #   Extract the V121/V122 spike
     v.122 <- temp.vj[temp.vj$V1 == "V12-1-2-",]
     #   rename V12-1-2 to V121 and V122
-    temp.vj$V1 <- gsub("V12-1-2-", V12-1-", temp.vj$V1)
+    temp.vj$V1 <- gsub("V12-1-2-", "V12-1-", temp.vj$V1)
     v.122$V1 <- gsub("V12-1-2-", "V12-2-", v.122$V1)
     #   Add V122 to the other scaling factors
     final.vj <- as.data.frame(rbind(temp.vj, v.122), stringsAsFactors = F)
