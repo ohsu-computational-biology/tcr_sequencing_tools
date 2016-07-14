@@ -68,6 +68,7 @@ mkdir condor_logs/mixcr/despiked
 mkdir condor_logs/mixcr/export_align
 mkdir condor_logs/mixcr/export_clones
 mkdir condor_logs/normalization
+mkdir condor_logs/pear
 
 # Directory for tools
 mkdir tools
