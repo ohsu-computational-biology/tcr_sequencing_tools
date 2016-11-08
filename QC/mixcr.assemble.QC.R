@@ -22,15 +22,21 @@ output.df <- data.frame(analysis.date=character(),  #   1
                         output=character(),
                         command=character(),
                         clonotype.count=integer(),  #   5
+			avg.reads.per.clonotype=integer(),
                         total.reads.used=integer(),
                         pct.total.reads.used=numeric(),
-                        pct.reads.used.as.core=numeric(),
+			pct.total.clonal.seq.analyzed=numeric(),
+                        pct.reads.used.as.core=numeric(),	#   10
                         pct.reads.used.mapped.low.quality=numeric(),
-                        pct.reads.used.PCR.error.corr.clustered=numeric(),  #   10
-                        clonotypes.elim.error.corr=numeric(),
+                        pct.reads.used.PCR.error.corr.clustered=numeric(),
+			pct.reads.used.pre.clust.similar.VJC=numeric(),
                         pct.reads.dropped.no.clonal.sequence=numeric(),
-                        pct.reads.dropped.low.quality=numeric(),
-                        pct.reads.dropped.failed.mapping=numeric(),   #   14
+                        pct.reads.dropped.low.quality=numeric(),	# 15
+                        pct.reads.dropped.failed.mapping=numeric(),
+			pct.reads.dropped.low.qual.clones=numeric(),
+			clonotypes.elim.error.corr=numeric(),
+			clonotypes.dropped.low.qual=numeric(),
+			clonotypes.pre.clust.similar.VJC=numeric(),	# 20
                         stringsAsFactors=FALSE);
 
 for(i in 1:length(files.in.dir))	{
@@ -40,7 +46,7 @@ for(i in 1:length(files.in.dir))	{
     curr.record <- readLines(curr.file);
 
     #   misc QC
-    if(length(curr.record) != 15)   {
+    if(length(curr.record) != 21)   {
         stop("Unexpected length of report for file: ", curr.file, "\n", sep="");
     }   #   fi
 
@@ -66,15 +72,24 @@ for(i in 1:length(files.in.dir))	{
     
     curr.count <- str_split(curr.record[5], ":")[[1]][2];
     output.df[i,]$clonotype.count <- curr.count;
+
+    curr.avg.per.clone <- str_split(curr.record[6], ":")[[1]][2];
+    output.df[i,]$avg.reads.per.clonotype <- curr.avg.per.clone;
     
-    curr.total <- str_split(curr.record[6], ":")[[1]][2];
+    curr.total <- str_split(curr.record[7], ":")[[1]][2];
     output.df[i,]$total.reads.used <- curr.total;
 
-    for(j in 7:14)  {
+    for(j in 8:17)  {
         curr.temp <- str_split(curr.record[j], ":")[[1]][2];
         curr.temp <- as.numeric(str_replace(curr.temp, "%", ""));
         output.df[i,j]<- curr.temp;
     }   #   for j
+
+    for (j in 18:20) {
+    	curr.temp <- str_split(curr.record[j], ":")[[1]][2];
+	curr.temp <- as.numeric(str_replace(curr.temp, "%", ""));
+	output.df[i,j] <- curr.temp;
+    } # for j
      
 }	#	for i
 

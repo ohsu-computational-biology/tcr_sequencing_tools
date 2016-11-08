@@ -1,9 +1,9 @@
 #!/bin/sh                                                                                                               
 getenv="True"
-script_dir=$ENV(tool2)/process_spikes
+script_dir=$ENV(tool)/process_spikes
 data_dir=$ENV(data)/peared_fastqs/assembled
 out_dir=$ENV(data)/spike_counts/25bp/counts/
-ref_dir=$ENV(tool)/references
+ref_dir=$ENV(tool)/reference
 log_dir=$ENV(data)/condor_logs/spike_counts/
 
 #Program                                                                                                                
