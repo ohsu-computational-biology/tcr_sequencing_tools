@@ -1,6 +1,6 @@
 #!/bin/sh                                                                                                               
 getenv="True"
-script_dir=$ENV(tool2)../
+script_dir=$ENV(tool)/
 data_dir=$ENV(data)/peared_fastqs/assembled/
 log_dir=$ENV(data)/condor_logs/mixcr/despiked
 remove_dir=$ENV(data)/spike_counts/9bp/reads_to_remove/

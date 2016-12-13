@@ -39,10 +39,11 @@ for (i in 1:length(list.of.files))   {
         "arguments=-Xmx15g -jar $(script_dir) ",
         "align ",
 	"-f ",
-        "--loci TRB ",
+        "-c TRB ",
         "--species mmu ",
 	"--save-description ",
 	"--save-reads ",
+	"-v ",
         "--report $(report_dir)/S", index, "_align_report.txt ",   #   report
         "$(input_dir)/", list.of.files[i], " ",   #   input
         "$(out_dir)/", output.file.names[i], "_alignment.vdjca", #  ouput

@@ -28,6 +28,12 @@ scaling.factor.file <- arguments[4];	# /DNAXXXXLC/normalization/scaling_factor.t
   spiked_reads <- read.csv(spike.count.file, 
   							header = TRUE, 
 							stringsAsFactors = FALSE);
+  # Add V122 to file and rename V12-1-2 to V121 and V122
+  add.V122 <- spiked_reads[spiked_reads$V == "V12-1-2-",]
+  spiked_reads$V <- gsub("V12-1-2-", "V12-1-", spiked_reads$V)
+  add.V122$V <- gsub("V12-1-2-", "V12-2-", add.V122$V)
+  add.V122$SPIKE_ID <- sprintf("DM_%d", 261:273)
+  spiked_reads <- rbind(spiked_reads, add.V122)
   
   # Originally Jacob calculated the scaling factors in this function; the original code is
   #     reproduced below (though commented out)
@@ -61,7 +67,7 @@ scaling.factor.file <- arguments[4];	# /DNAXXXXLC/normalization/scaling_factor.t
   
   # Remove the extra characters for the V segments in the spiked counts, so matches occur
   spiked_reads$V <- gsub("-","", spiked_reads$V)
-  spiked_reads$V <- gsub("V1212", "V121", spiked_reads$V)
+#  spiked_reads$V <- gsub("V1212", "V121", spiked_reads$V)
 
   # Remove dashes from MiTCR data as well
   MiTCR_file_data$`V segments` <- gsub("-", "", MiTCR_file_data$`V segments`)

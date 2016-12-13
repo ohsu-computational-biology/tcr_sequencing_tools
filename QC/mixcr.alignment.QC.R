@@ -21,17 +21,17 @@ files.in.dir <- list.files(working.dir);
 output.df <- data.frame(analysis.date=character(),  #   1
                         inputs=character(),
                         output=character(),
+			version=character(),
+			time=character(),	# 5
                         command=character(),
-                        total.reads=integer(),  #   5
-                        aligned.reads=integer(),
-                        aligned.pct=numeric(),
-                        filtered.diff.v.j.loci=numeric(),
-                        failed.alignment.v.hits=numeric(),
-                        failed.alignment.j.hits=numeric(),  #   10
-                        failed.alignment.low.score=numeric(),
-                        overlapped.pct=numeric(),
-                        overlapped.and.aligned.pct=numeric(),
-                        overlapped.and.not.aligned.pct=numeric(),   #   14
+                        total.reads=integer(),  
+                        aligned.reads=integer(), aligned.pct=numeric(),
+                        failed.alignment.no.hits=numeric(), pct.no.hits=numeric(),
+                        failed.alignment.no.j.hits=numeric(), pct.no.j.hits=numeric(),	# 10
+                        failed.alignment.low.score=numeric(), pct.low.score=numeric(),
+                        num.overlapped=numeric(), pct.overlapped=numeric(),
+                        num.overlapped.and.aligned=numeric(), pct.overlapped.and.aligned=numeric(),
+                        num.overlapped.and.not.aligned=numeric(), pct.overlapped.and.not.aligned=numeric(),   #   14
                         stringsAsFactors=FALSE);
 
 for(i in 1:length(files.in.dir))	{
@@ -60,21 +60,35 @@ for(i in 1:length(files.in.dir))	{
     curr.output <- basename(curr.output);
     output.df[i,]$output <- curr.output;
 
-    curr.command <- str_split(curr.record[4], ":")[[1]][2];
+    curr.version <- str_split(curr.record[4], ":|;")[[1]][2];
+    curr.version <- str_trim(curr.version);
+    output.df[i,]$version <- curr.version;
+
+    curr.time <- str_split(curr.record[5], ":")[[1]][2]
+    curr.time <- str_trim(curr.time)
+    output.df[i,]$time <- curr.time
+
+    curr.command <- str_split(curr.record[6], ":")[[1]][2];
     curr.command <- str_trim(curr.command);
     curr.command <- basename(curr.command);
     output.df[i,]$command <- curr.command;
     
-    curr.total <- str_split(curr.record[5], ":")[[1]][2];
+    curr.total <- str_split(curr.record[7], ":")[[1]][2];
     output.df[i,]$total.reads <- curr.total;
     
-    curr.aligned <- str_split(curr.record[6], ":")[[1]][2];
-    output.df[i,]$aligned.reads <- curr.aligned;
+#    curr.aligned <- str_split(curr.record[6], ":")[[1]][2];
+#    output.df[i,]$aligned.reads <- curr.aligned;
 
-    for(j in 7:14)  {
-        curr.temp <- str_split(curr.record[j], ":")[[1]][2];
-        curr.temp <- as.numeric(str_replace(curr.temp, "%", ""));
-        output.df[i,j]<- curr.temp;
+    counter <- 0
+    for(j in 8:14)  {
+        curr.temp <- str_trim(str_split(curr.record[j], ":")[[1]][2]);
+	curr.temp <- unlist(str_split(curr.temp, " "));
+	curr.num <- as.numeric(curr.temp[1])
+	curr.pct <- curr.temp[2]
+	curr.pct <- as.numeric(str_replace_all(curr.pct, "\\(|%|\\)", ""))
+        output.df[i,(j+counter)]<- curr.num;
+	output.df[i,(j+counter+1)] <- curr.pct
+	counter <- counter + 1
     }   #   for j
      
 }	#	for i

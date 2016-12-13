@@ -8,6 +8,7 @@
 # Get command line arguments
 arguments <- commandArgs(trailingOnly=TRUE);
 spike.count.dir <- arguments[1];	# DNAXXXXLC/normalization/counts/
+ref.file <- arguments[2];		# /tcr_sequencing_tools/reference/text_barcodesvj.txt
     
     #   Get list of files in directory
     spike.count.files <- list.files(spike.count.dir);
@@ -43,6 +44,23 @@ spike.count.dir <- arguments[1];	# DNAXXXXLC/normalization/counts/
     #   Use the mean to calculate the scaling factor
     scaling.factor <- sum.across.samples / spike.count.mean;
     scaling.factor <- 1 / scaling.factor;
+
+####### Have to now add entry for V122 because we use the same spike/scaling factor for V121 and V122 #######
+
+    #   Read in reference spike table
+    ref_spikes <- read.table(ref.file, header = T, sep = ' ', stringsAsFactors = F)
+
+    #	Combine V and J columns with spike counts
+    temp.vj <- as.data.frame(cbind(ref_spikes$V, ref_spikes$J, scaling.factor), stringsAsFactors = F)
+    #   Extract the V121/V122 spike
+    v.122 <- temp.vj[temp.vj$V1 == "V12-1-2-",]
+    #   rename V12-1-2 to V121 and V122
+    temp.vj$V1 <- gsub("V12-1-2-", "V12-1-", temp.vj$V1)
+    v.122$V1 <- gsub("V12-1-2-", "V12-2-", v.122$V1)
+    #   Add V122 to the other scaling factors
+    final.vj <- as.data.frame(rbind(temp.vj, v.122), stringsAsFactors = F)
+    #   Extract just scaling factor values
+    scaling.factor <- final.vj$scaling.factor
 
     write.table(scaling.factor,
                 file="scaling_factor.txt",

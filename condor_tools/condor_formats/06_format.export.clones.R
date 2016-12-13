@@ -38,7 +38,7 @@ for (i in 1:length(list.of.files))   {
 	"-vHit ",
 	"-dHit ",
 	"-jHit ",
-	"-readIds ",
+	"-readIds $(index_dir)S", index, "_index.txt ",
 	"-cloneId $(index_dir)S", index, "_index.txt ",
         "$(input_dir)", list.of.files[i], " ",   #   input
         "$(output_dir)", output.file.names[i], "_exported.txt", #  ouput
