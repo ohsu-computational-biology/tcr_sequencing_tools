@@ -1,0 +1,18 @@
+#!/bin/sh
+
+getenv="True"
+script_dir=$ENV(tool)/misc/
+data_dir=$ENV(data)/fastqs_from_core/fastqs
+log_dir=$ENV(data)/condor_logs/unzip
+
+# Program
+executable=/bin/sh
+
+# Cores
+request_cpus = 4
+
+# Memory
+request_memory = 4 GB
+
+# Arguments
+

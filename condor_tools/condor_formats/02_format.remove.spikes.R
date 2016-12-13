@@ -23,7 +23,7 @@ for (i in 1:length(sorted)) {
         "output=$(log_dir)/stdout_remove_spikes_parallel_", index, ".out\n",
         "error=$(log_dir)/stderr_remove_spikes_parallel_", index, ".out\n",
         "log=$(log_dir)/remove_spikes_parallel_", index, ".log\n",
-        "arguments=$(script_dir)tcr_sequencing_tools/process_spikes/remove.spikes.R ",
+        "arguments=$(script_dir)process_spikes/remove.spikes.R ",
         "$(data_dir)", sorted[i], " ",
         "$(remove_dir)", sorted.to.remove.forward[i], " ", 
         "\nqueue 1\n",
