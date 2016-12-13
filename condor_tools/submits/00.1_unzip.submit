@@ -1,7 +1,7 @@
 #!/bin/sh
 
 getenv="True"
-script_dir=$ENV(tool)
+script_dir=$ENV(tool)/misc/
 data_dir=$ENV(data)/fastqs_from_core/fastqs
 log_dir=$ENV(data)/condor_logs/unzip
 

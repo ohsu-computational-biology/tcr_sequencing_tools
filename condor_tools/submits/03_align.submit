@@ -1,6 +1,6 @@
 #!/bin/sh                                                                                                               
 getenv="True"
-script_dir=$ENV(tool)/mixcr/mixcr-1.7.1/mixcr.jar
+script_dir=$ENV(tool)/mixcr/mixcr-2.0/mixcr.jar
 data_dir=$ENV(data)/mixcr/
 input_dir=$(data_dir)/despiked_fastqs
 report_dir=$(data_dir)reports/align
