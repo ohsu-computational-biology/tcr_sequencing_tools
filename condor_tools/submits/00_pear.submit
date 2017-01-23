@@ -1,6 +1,6 @@
 #!/bin/sh
 
-getenv="True"
+getenv=True
 script_dir=$ENV(tool2)/PEAR/scripts
 data_dir=$ENV(data)/fastqs_from_core/fastqs
 out_dir=$ENV(data)/peared_fastqs/

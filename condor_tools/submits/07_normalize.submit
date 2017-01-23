@@ -1,6 +1,6 @@
 #!/bin/sh
 
-getenv="True"
+getenv=True
 script_dir=$ENV(tool)/normalize/
 log_dir=$ENV(data)/condor_logs/normalization/
 normalization_dir=$ENV(data)/normalization/

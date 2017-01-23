@@ -1,5 +1,5 @@
 #!/bin/sh                                                                                                               
-getenv="True"
+getenv=True
 script_dir=$ENV(tool)/
 data_dir=$ENV(data)/peared_fastqs/assembled/
 log_dir=$ENV(data)/condor_logs/mixcr/despiked

@@ -52,6 +52,7 @@ mkdir spike_counts/9bp
 mkdir spike_counts/9bp/counts
 mkdir spike_counts/9bp/qc
 mkdir spike_counts/9bp/reads_to_remove
+mkdir spike_counts/9bp/spikes
 
 # QC directory
 mkdir QC
