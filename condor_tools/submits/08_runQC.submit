@@ -1,0 +1,22 @@
+#!/bin/sh
+
+getenv=True
+script_dir=$ENV(tool)/QC/
+log_dir=$ENV(data)/condor_logs/QC
+
+# Program
+executable=/bin/bash
+
+# Cores
+request_cpus = 4
+
+# Memory
+request_memory = 16 GB
+
+# Arguments
+
+output=$(log_dir)/stdout_QC.out
+error=$(log_dir)/stderr_QC.err
+log=$(log_dir)/QC.log
+arguments=$(script_dir)/runQC.sh
+queue 1
