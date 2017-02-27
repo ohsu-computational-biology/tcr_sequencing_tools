@@ -7,6 +7,7 @@
 arguments <- commandArgs(trailingOnly=TRUE);
 #   Directory should contain all and only QC files for a given "batch"
 working.dir <- arguments[1];
+out.dir <- arguments[2]
 
 #   for debugging purposes
 #working.dir <- "/Users/leyshock/Desktop/TCRseq/tools/temp/QC/";
@@ -29,7 +30,7 @@ for(i in 1:length(files.in.dir))	{
 }	#	for i
 
 write.table(output.df, 
-            file="count.spikes.QC.summary.txt",
+            file=file.path(out.dir, "count.spikes.QC.summary.txt"),
             quote=FALSE,
             sep=",",
             row.names=FALSE)

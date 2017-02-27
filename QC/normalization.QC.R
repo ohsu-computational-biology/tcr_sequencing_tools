@@ -14,6 +14,7 @@ library(stringr);
 arguments <- commandArgs(trailingOnly=TRUE);
 path.to.raw.clone.counts <- arguments[1];
 path.to.normalized.clone.counts <- arguments[2];
+out.dir <- arguments[3]
 
 
 raw.clone.counts <- list.files(path.to.raw.clone.counts);
@@ -67,11 +68,11 @@ for(i in 1:length(raw.clone.counts))  {
     combined.table$normalization.factor <- round((combined.table$normalized.clone.count / combined.table$raw.clone.count), digits=1);
 
     output.file.name <- paste(sample.id.raw.clone.counts[i], "_normalization_QC.txt", sep="");
-    output.file.name <- file.path(path.to.normalized.clone.counts, output.file.name);
+#    output.file.name <- file.path(path.to.normalized.clone.counts, output.file.name);
     cat("Writing output to: ", output.file.name, "\n", sep="");
-
+#    cat(file.path(out.dir, output.file.name))
     write.table(combined.table,
-                file=output.file.name,
+                file=file.path(out.dir, output.file.name),
                 quote=FALSE,
                 sep=",",
                 row.names=FALSE);

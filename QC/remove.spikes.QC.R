@@ -5,6 +5,7 @@
 arguments <- commandArgs(trailingOnly=TRUE);
 path.to.raw.fastqs <- arguments[1];		# /DNAXXXXLC/peared_fastqs/assembled/
 path.to.despiked.fastqs <- arguments[2];	# /DNAXXXXLC/mixcr/despiked_fastqs
+path.to.output <- arguments[3]
 
 
 
@@ -74,7 +75,7 @@ path.to.despiked.fastqs <- arguments[2];	# /DNAXXXXLC/mixcr/despiked_fastqs
     #   write out results
 	output.file <- "remove.spikes.QC.result.txt";
     write.table(result.df,
-                file=output.file,
+                file=file.path(path.to.output, output.file),
                 quote=FALSE,
                 sep=",",
                 row.names=FALSE);
