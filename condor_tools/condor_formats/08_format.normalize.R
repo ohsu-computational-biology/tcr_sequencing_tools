@@ -1,7 +1,7 @@
 # Get command line args
 arguments <- commandArgs(trailingOnly=TRUE);
 list.of.clone.files <- arguments[1];		# /home/exacloud/lustre1/CompBio/data/tcrseq/dhaarini/DNAXXXXLC/
-		       				# normalization/clones/
+		       				# normalization/decontam/
 list.of.count.files <- arguments[2];		# /home/exacloud/lustre1/CompBio/data/tcrseq/dhaarini/DNAXXXXLC/
 		       				# normalizaiton/counts/
 
@@ -40,7 +40,7 @@ for (i in 1:length(list.of.clone.files))   {
          	"error=$(log_dir)stderr_normalize_clonotypes_", index, ".out\n",
          	"log=$(log_dir)condor_normalize_clonotypes_", index, ".log\n",
          	"arguments=$(script_dir)normalize.clonotype.counts.condor.R ",
-         	"$(normalization_dir)clones/", list.of.clone.files[i], " ",   #   clone input
+         	"$(normalization_dir)decontam/", list.of.clone.files[i], " ",   #   clone input
          	"$(normalization_dir)counts/", list.of.count.files[i], " ",    #   count input
          	"$(normalization_dir)normalized_clones/ ", #  ouput directory
          	"$(normalization_dir)scaling_factor.txt",
