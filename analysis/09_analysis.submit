@@ -1,0 +1,27 @@
+#!/bin/sh
+
+getenv=True
+script_dir=$ENV(tool)/analysis/
+log_dir=$ENV(data)/condor_logs/QC/
+clone_dir=$ENV(data)/normalization/decontam_clones
+count_dir=$ENV(data)/spike_counts/9bp/counts
+out_dir=$ENV(data)/QC
+
+# Program
+executable=/usr/bin/Rscript
+
+# Processor cores requested
+request_cpus = 1
+
+# Memory requested
+request_memory = 16 GB
+
+notify_user = hortowe@ohsu.edu
+
+# Arguments 
+
+output=$(log_dir)stdout_analysis.out
+error=$(log_dir)stderr_analysis.out
+log=$(log_dir)condor_analysis.log
+arguments=$(script_dir)analysis.R $(clone_dir)/ $(count_dir)/ $(out_dir)/
+queue 1

@@ -128,5 +128,5 @@ for (i in 1:length(clone.files)){
 
 cat(clean.counter, "clone files were uncontaminated!\n")
 
-write.table(contam_reads_mat, paste0(out.dir, batch_v, "_contam_clone_reads.txt"),
+write.table(contam_reads_mat, paste0(qc.dir, batch_v, "_contam_clone_reads.txt"),
             sep = '\t', quote = F, row.names = F)

@@ -136,6 +136,7 @@ cat("Writing QC summary to: ", qc.file, "\n", sep="");
 write.table(output.table,
             file=count.table,
             quote=FALSE,
+            row.names=FALSE,
             sep="\t");
 
 
