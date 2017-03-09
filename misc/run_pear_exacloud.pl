@@ -76,7 +76,9 @@ foreach my $name (sort keys %paired_files){
 	print "Skipping this sample because output file already exists: $assembled_out_file\n";
 	next;
     }
-    my $cmd="/home/exacloud/lustre1/CompBio/genomic_resources/tcrseq/PEAR/bin/pear-0.9.6-bin-64 -f $paired_files{$name}[0] -r $paired_files{$name}[1] -j $cpu_count -o $out_file >>$full_log";
+#    my $cmd="/home/exacloud/lustre1/CompBio/genomic_resources/tcrseq/PEAR/bin/pear-0.9.6-bin-64 -f $paired_files{$name}[0] -r $paired_files{$name}[1] -j $cpu_count -o $out_file >>$full_log";
+        my $cmd="/home/exacloud/lustre1/BioCoders/Applications/miniconda3/bin/pear -f $paired_files{$name}[0] -r $paired_files{$name}[1] -j $cpu_count -o $out_file >>$full_log";
+
     print $cmd,"\n";
     die if system($cmd);
 
