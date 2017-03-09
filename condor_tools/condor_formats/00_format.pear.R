@@ -10,21 +10,27 @@ list.of.files <- arguments[1];      # directory of raw files in fastq format
                                     # /home/exacloud/lustre1/CompBio/data/tcrseq/dhaarini/DNAXXXXLC/
 				    # fastqs_from_core/fastqs/
 
-# Initialize vector and get files
-    formatted.vector <- NULL;
-    files <- list.files(list.of.files)
+### Initialize vector and get files
+formatted.vector <- NULL;
+files <- list.files(list.of.files)
 
-# Separate into forward and reverse and order by sample number
-    forward <- files[gsub(".*_R", '', files) == "1_001.fastq"]
-    forward <- forward[order(as.numeric(gsub(".*_S|_R.*", '', forward)))]
+### Separate into forward and reverse and order by sample number
+forward <- files[gsub(".*_R", '', files) == "1_001.fastq"]
+forward <- forward[order(as.numeric(gsub(".*_S|_R.*", '', forward)))]
 
-    reverse <- files[gsub(".*_R", '', files) == "2_001.fastq"]
-    reverse <- reverse[order(as.numeric(gsub(".*_S|_R.*", '', reverse)))]
-  
+reverse <- files[gsub(".*_R", '', files) == "2_001.fastq"]
+reverse <- reverse[order(as.numeric(gsub(".*_S|_R.*", '', reverse)))]
+
+### Check file order
+no_match <- length(which(forward != reverse))
+if (length(no_match) > 0) stop("Files do not match!")
+
+### Begin formatting  
 for (i in 1:length(forward))   {
    
    curr.forward <- forward[i]
    curr.reverse <- reverse[i]
+    
    forward.index <- gsub(".*_S|_R.*", '', curr.forward)
    reverse.index <- gsub(".*_S|_R.*", '', curr.reverse)
 
@@ -38,7 +44,7 @@ for (i in 1:length(forward))   {
         "error=$(log_dir)/stderr_pear.", index, ".out\n",
         "log=$(log_dir)/pear.", index, ".log\n",
         "arguments=$(script_dir)/run_pear_exacloud.pl ", "$(data_dir)/", curr.forward, " $(data_dir)/", curr.reverse,
-	" -o ", "$(out_dir)/ -p 4",
+	" -o $(out_dir)/ -f $(qc_dir)/pear_full_log.txt -s $(qc_dir)/pear_summary_log.txt",
         "\nqueue 1\n",
         sep=""); 
 }   #   while

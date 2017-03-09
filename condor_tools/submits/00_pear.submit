@@ -1,8 +1,10 @@
 #!/bin/sh
 
 getenv="True"
-script_dir=$ENV(tool2)/PEAR/scripts
+#script_dir=$ENV(tool2)/PEAR/scripts # Leaving just in case
+script_dir=$ENV(tool)/misc
 data_dir=$ENV(data)/fastqs_from_core/fastqs
+qc_dir=$ENV(data)/QC
 out_dir=$ENV(data)/peared_fastqs/
 log_dir=$ENV(data)/condor_logs/pear
 
@@ -10,10 +12,10 @@ log_dir=$ENV(data)/condor_logs/pear
 executable=/usr/bin/perl
 
 # Cores
-request_cpus = 4
+request_cpus = 6
 
 # Memory
-request_memory = 4 GB
+request_memory = 8 GB
 
 # Arguments
 
