@@ -114,6 +114,10 @@ rownames(qc.spike) <- output.table$SPIKE_ID;
 qc.spike <- t(qc.spike);
 rownames(qc.spike) <- NULL;
 qc.summary <- cbind(qc.summary, qc.spike);
+
+### Change read vector to data.table
+records.to.remove.ids.dt <- as.data.table(records.to.remove.ids)
+colnames(records.to.remove.ids.dt) <- "Reads"
     
 ###   build names of output files
 ###   strip ".fastq" from file name.  Not necessary, just more hygienic
@@ -134,11 +138,11 @@ write.table(output.table,
             quote=FALSE,
             sep="\t");
 
-write.table(records.to.remove.ids,
+
+write.table(records.to.remove.ids.dt,
             file=reads.to.remove.list,
             quote=FALSE,
-            row.names=FALSE,
-            col.names=FALSE);
+            row.names=FALSE);
 
 write.table(qc.summary,
             file=qc.file,
