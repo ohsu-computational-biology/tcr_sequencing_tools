@@ -27,7 +27,7 @@ mkdir mixcr/reports/assemble
 
 # Directories to hold normalization output
 mkdir normalization
-mkdir normalization/clones
+mkdir normalization/decontam
 mkdir normalization/counts
 mkdir normalization/normalized_clones
 mkdir normalization/QC
@@ -70,6 +70,7 @@ mkdir condor_logs/mixcr/export_clones
 mkdir condor_logs/normalization
 mkdir condor_logs/pear
 mkdir condor_logs/unzip
+mkdir condor_logs/decontaminate
 
 # Directory for tools
 mkdir tools

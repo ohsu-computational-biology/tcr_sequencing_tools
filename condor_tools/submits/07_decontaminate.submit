@@ -1,0 +1,29 @@
+#!/bin/sh
+
+getenv="True"
+script_dir=$ENV(tool)/misc/
+log_dir=$ENV(data)/condor_logs/decontaminate/
+data_dir=$ENV(data)/mixcr/export_clones
+output_dir=$ENV(data)/normalization/decontam
+qc_dir=$ENV(data)/QC
+
+
+# Program
+executable=/usr/bin/Rscript
+
+# Processor cores requested
+request_cpus = 4
+
+# Memory requested
+request_memory = 16 GB
+
+notify_user = hortowe@ohsu.edu
+
+# Arguments 
+
+output=$(log_dir)/stdout_decontaminate.out
+error=$(log_dir)/stderr_decontaminate.out
+log=$(log_dir)/decontaminate.log
+arguments=$(script_dir)decontaminate_clones.R $(data_dir)/ $(output_dir)/ $(qc_dir)/
+queue 1
+
