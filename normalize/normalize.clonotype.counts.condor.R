@@ -57,20 +57,19 @@ scaling.factor.file <- arguments[4];	# /DNAXXXXLC/normalization/scaling_factor.t
     #   Similarly, we shouldn't assume there is always a leading "TRB" (unless we can validate
     #       that assumption.
   # TODO:  put some immediate error-checking in
-#  MiTCR_file_data$V.segments <- gsub("^.*?V", "V", MiTCR_file_data$Best.V.hit)
-#  MiTCR_file_data$J.segments <- gsub("^.*?J", "J", MiTCR_file_data$Best.J.hit)
-  MiTCR_file_data$"V segments" <- sub("TRB", "", MiTCR_file_data$"Best V hit");
-  MiTCR_file_data$"J segments" <- sub("TRB", "", MiTCR_file_data$"Best J hit");
+# THIS SHOULD BE OBSOLETE WITH ADDITION OF DECONTAM SCRIPT (DOES IT THERE INSTEAD)
+#  MiTCR_file_data$"V segments" <- sub("TRB", "", MiTCR_file_data$"Best V hit");
+#  MiTCR_file_data$"J segments" <- sub("TRB", "", MiTCR_file_data$"Best J hit");
   #	TODO:  do these next two lines do any work??
-  MiTCR_file_data$"V segments" <- sub("\\*00", "", MiTCR_file_data$"V segments");
-  MiTCR_file_data$"J segments" <- sub("\\*00", "", MiTCR_file_data$"J segments");
+#  MiTCR_file_data$"V segments" <- sub("\\*00", "", MiTCR_file_data$"V segments");
+#  MiTCR_file_data$"J segments" <- sub("\\*00", "", MiTCR_file_data$"J segments");
   
   # Remove the extra characters for the V segments in the spiked counts, so matches occur
   spiked_reads$V <- gsub("-","", spiked_reads$V)
 #  spiked_reads$V <- gsub("V1212", "V121", spiked_reads$V)
 
-  # Remove dashes from MiTCR data as well
-  MiTCR_file_data$`V segments` <- gsub("-", "", MiTCR_file_data$`V segments`)
+  # Remove dashes from MiTCR data as well ALSO SHOULD BE OBSOLETE BY DECONTAM SCRIPT
+#  MiTCR_file_data$`V segments` <- gsub("-", "", MiTCR_file_data$`V segments`)
 
   # TODO:  are we right to set these to zero? 
   MiTCR_file_data$"Normalized clone count" <- 0; 

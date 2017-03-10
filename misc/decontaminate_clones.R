@@ -51,6 +51,12 @@ for (i in 1:length(clone.files)){
     
     ## Get a clone file
     curr.clone <- fread(paste(clone.dir, clone.files[i], sep = ''))
+
+    ## Update column names and contents for V and J segments
+    curr.clone$`V segments` <- gsub("TRB|\\*00", "", curr.clone$`Best V hit`)
+    curr.clone$`V segments` <- gsub("-", "", curr.clone$`V segments`)
+    curr.clone$`J segments` <- gsub("TRB|\\*00", "", curr.clone$`Best J hit`)
+
     
     ## Extract clones (take just the first entry if more than one clone matches the criteria)
     offending.clone.1 <- curr.clone[(curr.clone$`V segments` == "V133" # p14
