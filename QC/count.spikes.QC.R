@@ -4,9 +4,11 @@
 #       some visualization, analysis, etc. once the data is aggregated
 
 ### Get command-line arguments
+library(data.table)
 arguments <- commandArgs(trailingOnly=TRUE);
 
 working.dir <- arguments[1]; # $data/spike_counts/[bp]/qc/
+out.dir <- arguments[2]
 
 
 ### Examine the current directory for the files to process
@@ -23,7 +25,7 @@ for(i in 1:length(files.in.dir))	{
 }	#	for i
 
 write.table(output.df, 
-            file="count.spikes.QC.summary.txt",
+            file=file.path(out.dir, "count.spikes.QC.summary.txt"),
             quote=FALSE,
             sep="\t",
             row.names=FALSE)

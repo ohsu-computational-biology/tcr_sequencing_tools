@@ -71,6 +71,7 @@ mkdir condor_logs/normalization
 mkdir condor_logs/pear
 mkdir condor_logs/unzip
 mkdir condor_logs/decontaminate
+mkdir condor_logs/QC
 
 # Directory for tools
 mkdir tools

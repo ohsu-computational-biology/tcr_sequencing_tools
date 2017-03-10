@@ -10,6 +10,7 @@ library(stringr);
 arguments <- commandArgs(trailingOnly=TRUE);
 #   Directory should contain all and only MiXCR alignment reports for a given "batch"
 working.dir <- arguments[1];
+out.dir <- arguments[2]
 
 #   for debugging purposes
 #working.dir <- "/Users/leyshock/Desktop/TCRseq/tools/temp/QC/";
@@ -96,7 +97,7 @@ for(i in 1:length(files.in.dir))	{
 output.df <- output.df[order(output.df$aligned.pct, decreasing=TRUE),];
 
 write.table(output.df, 
-            file="mixcr.alignment.QC.summary.txt",
+            file=file.path(out.dir, "mixcr.alignment.QC.summary.txt"),
             quote=FALSE,
             sep="\t",
             row.names=FALSE)

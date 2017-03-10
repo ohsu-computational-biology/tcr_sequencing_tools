@@ -1,19 +1,21 @@
 #   Script that assesses quality of the "remove spikes" step in the TCRseq
 #       pipeline
 
-# Get command line arguments
+                                        # Get command line arguments
+library(data.table)
 arguments <- commandArgs(trailingOnly=TRUE);
 path.to.raw.fastqs <- arguments[1];		# /DNAXXXXLC/peared_fastqs/assembled/
 path.to.despiked.fastqs <- arguments[2];	# /DNAXXXXLC/mixcr/despiked_fastqs
+path.to.output <- arguments[3]
 
 
 
 ### Get lists of files
 raw.fastqs <- list.files(path.to.raw.fastqs);
-raw.fastq.samples <- sapply(raw.fastqs, function(x) gsub("^[A-Z0-9]+_|\\.assembled.fastq", "", x))
+raw.fastq.samples <- sapply(raw.fastqs, function(x) gsub("^[A-Z0-9]+_|\\.assembled.fastq", "", x), USE.NAMES = F)
 
 despiked.fastqs <- list.files(path.to.despiked.fastqs);
-despiked.fastq.samples <- sapply(raw.fastqs, function(x) gsub("^[A-Z0-9]+_|\\.assembled.removed.fastq", "", x))
+despiked.fastq.samples <- sapply(despiked.fastqs, function(x) gsub("^[A-Z0-9]+_|\\.assembled.removed.fastq", "", x), USE.NAMES = F)
 
 ### Check for parallelism of files
 sample.comparison <- raw.fastq.samples == despiked.fastq.samples;
@@ -77,7 +79,7 @@ names(result.df)[5] <- "Percent of original reads retained";
 ###   write out results
 output.file <- "remove.spikes.QC.result.txt";
 write.table(result.df,
-            file=output.file,
+            file=file.path(path.to.output, output.file),
             quote=FALSE,
             sep="\t",
             row.names=FALSE);
