@@ -143,5 +143,5 @@ file.name <- "uniques.shannon.clonality.txt"
 write.table(output.df, 
             file=paste(out.dir, file.name, sep = ''),
             quote=FALSE,
-            sep=",",
+            sep="\t",
             row.names=FALSE)
