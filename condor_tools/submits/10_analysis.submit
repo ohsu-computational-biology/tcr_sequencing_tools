@@ -3,7 +3,7 @@
 getenv=True
 script_dir=$ENV(tool)/analysis/
 log_dir=$ENV(data)/condor_logs/QC/
-clone_dir=$ENV(data)/normalization/decontam_clones
+clone_dir=$ENV(data)/normalization/normalized_clones
 count_dir=$ENV(data)/spike_counts/9bp/counts
 out_dir=$ENV(data)/QC
 
