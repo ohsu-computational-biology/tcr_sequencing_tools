@@ -4,23 +4,26 @@
 #       where the directory contains all and only the files output from
 #       running normalization.QC.R
 #
-#  Script outputs a csv file, suitable for further processing, or 
+#  Script outputs a txt file, suitable for further processing, or 
 #       import into Excel 
 
 #   disable scientific notation
 options(scipen=999);
 
-#   load required libraries
+###   load required libraries
+library(data.table)
 library(stringr);
 
 
 arguments <- commandArgs(trailingOnly=TRUE);
 path.to.QC.files <- arguments[1];
+out.dir <- arguments[2]
 
 all.files <- list.files(path.to.QC.files);
 
 #   check for parallelism of samples
 sample.ids <- character(length(all.files));
+
 for(i in 1:length(sample.ids))  {
     sample.ids[i] <- str_split(all.files[i], "_")[[1]][1];
 }   #   for i
@@ -28,14 +31,9 @@ for(i in 1:length(sample.ids))  {
 output.data <- NULL;
 
 for(i in 1:length(sample.ids))  {
-    #   Note that we use check.names=FALSE; this preserves the original column names,
-    #       which is useful since some downstream tools (e.g. VDJTools' Convert() function)
-    #       assume certain column names
-    curr.data <- read.table(file.path(path.to.QC.files, all.files[i]),
-                            stringsAsFactors=FALSE,
-                            sep="\t",
-                            header=TRUE);
-
+    ## Read data
+    curr.data <- fread(file.path(path.to.QC.files, all.files[i]))
+    ## Get norm factor and add to output
     curr.normalization.factor <- curr.data$normalization.factor;
     output.data <- rbind(output.data, summary(curr.normalization.factor));
 
@@ -50,7 +48,7 @@ output.file.name <- file.path(path.to.QC.files, "aggregate_normalization_factor_
 cat("Writing output to: ", output.file.name, "\n", sep="");
 
 write.table(output.data,
-            file=output.file.name,
+            file=file.path(out.dir, output.file.name),
             quote=FALSE,
             sep="\t",
             row.names=FALSE);

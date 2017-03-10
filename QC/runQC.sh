@@ -27,7 +27,7 @@ echo "assemble"
 Rscript $SCRIPTS/mixcr.assemble.QC.R $DATA/mixcr/reports/assemble/ $OUT/
 
 # NORMALIZATION
-# echo "normalization"
-# Rscript $SCRIPTS/normalization.QC.R $DATA/normalization/clones/ $DATA/normalization/normalized_clones/ $DATA/normalization/QC/
+echo "normalization"
+Rscript $SCRIPTS/normalization.QC.R $DATA/normalization/decontam/ $DATA/normalization/normalized_clones/ $DATA/normalization/QC/
 
-# Rscript $SCRIPTS/aggregate.normalization.QC.R $DATA/normalization/QC/ $OUT/
+Rscript $SCRIPTS/aggregate.normalization.QC.R $DATA/normalization/QC/ $OUT/

@@ -50,7 +50,7 @@ for (i in 1:length(list.of.clone.files))   {
 }   #   for
 
  write.table(formatted.vector,
-             file="07_formatted_normalize_clonotype_counts.txt",
+             file="08_formatted_normalize_clonotype_counts.txt",
              row.names = FALSE,
              col.names = FALSE,
              quote = FALSE);
