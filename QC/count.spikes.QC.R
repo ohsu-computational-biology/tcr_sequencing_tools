@@ -3,27 +3,21 @@
 #   At this point the script simply accumulates results, but it'd be easy to add
 #       some visualization, analysis, etc. once the data is aggregated
 
-#	Get command-line arguments
+### Get command-line arguments
 arguments <- commandArgs(trailingOnly=TRUE);
-#   Directory should contain all and only QC files for a given "batch"
-working.dir <- arguments[1];
 
-#   for debugging purposes
-#working.dir <- "/Users/leyshock/Desktop/TCRseq/tools/temp/QC/";
+working.dir <- arguments[1]; # $data/spike_counts/[bp]/qc/
 
-#	Examine the current directory for the files to process
+
+### Examine the current directory for the files to process
 files.in.dir <- list.files(working.dir);
 
 output.df <- data.frame();
 
 for(i in 1:length(files.in.dir))	{
-    #   get a QC file to process
+    ##   get a QC file to process
     curr.file <- paste(working.dir, files.in.dir[i], sep='');
-
-    curr.record <- read.table(curr.file,
-                            header=TRUE,
-                            sep=",",
-                            stringsAsFactors=FALSE);
+    curr.record <- fread(curr.file)
     output.df <- rbind(output.df, curr.record);
 
 }	#	for i
@@ -31,6 +25,6 @@ for(i in 1:length(files.in.dir))	{
 write.table(output.df, 
             file="count.spikes.QC.summary.txt",
             quote=FALSE,
-            sep=",",
+            sep="\t",
             row.names=FALSE)
 

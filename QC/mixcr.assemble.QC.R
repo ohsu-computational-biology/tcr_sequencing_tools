@@ -113,6 +113,6 @@ output.df <- output.df[order(output.df$pct.used.of.total, decreasing=TRUE),];
 write.table(output.df, 
             file="mixcr.assemble.QC.summary.txt",
             quote=FALSE,
-            sep=",",
+            sep="\t",
             row.names=FALSE)
 

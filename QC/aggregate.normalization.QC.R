@@ -33,7 +33,7 @@ for(i in 1:length(sample.ids))  {
     #       assume certain column names
     curr.data <- read.table(file.path(path.to.QC.files, all.files[i]),
                             stringsAsFactors=FALSE,
-                            sep=",",
+                            sep="\t",
                             header=TRUE);
 
     curr.normalization.factor <- curr.data$normalization.factor;
@@ -52,6 +52,6 @@ cat("Writing output to: ", output.file.name, "\n", sep="");
 write.table(output.data,
             file=output.file.name,
             quote=FALSE,
-            sep=",",
+            sep="\t",
             row.names=FALSE);
 

@@ -73,7 +73,7 @@ for(i in 1:length(raw.clone.counts))  {
     write.table(combined.table,
                 file=output.file.name,
                 quote=FALSE,
-                sep=",",
+                sep="\t",
                 row.names=FALSE);
 
     #   reset value

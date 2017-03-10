@@ -4,7 +4,6 @@
 #       some visualization, analysis, etc. once the data is aggregated
 
 #   Load required libraries
-.libPaths("/mnt/lustre1/CompBio/lib/R/library")
 library(stringr);
 
 #	Get command-line arguments
@@ -99,6 +98,6 @@ output.df <- output.df[order(output.df$aligned.pct, decreasing=TRUE),];
 write.table(output.df, 
             file="mixcr.alignment.QC.summary.txt",
             quote=FALSE,
-            sep=",",
+            sep="\t",
             row.names=FALSE)
 
