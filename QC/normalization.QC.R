@@ -58,8 +58,8 @@ for(i in 1:length(raw.clone.counts))  {
     combined.table$normalization.factor <- round((combined.table$normalized.clone.count / combined.table$raw.clone.count), digits=1);
 
     output.file.name <- paste(sample.id.raw.clone.counts[i], "_normalization_QC.txt", sep="");
-    output.file.name <- file.path(path.to.normalized.clone.counts, output.file.name);
-    cat("Writing output to: ", output.file.name, "\n", sep="");
+#    output.file.name <- file.path(path.to.normalized.clone.counts, output.file.name);
+    cat("Writing output to: ", file.path(out.dir,output.file.name), "\n", sep="");
 
     write.table(combined.table,
                 file=file.path(out.dir, output.file.name),

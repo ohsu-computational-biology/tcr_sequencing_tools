@@ -44,7 +44,7 @@ output.data$sample.id <- sample.ids;
 #   arrange data so it's more intuitively presented
 output.data <- output.data[order(output.data$Mean, decreasing=TRUE),];
 
-output.file.name <- file.path(path.to.QC.files, "aggregate_normalization_factor_QC.txt");
+output.file.name <-  "aggregate_normalization_factor_QC.txt"
 cat("Writing output to: ", output.file.name, "\n", sep="");
 
 write.table(output.data,
