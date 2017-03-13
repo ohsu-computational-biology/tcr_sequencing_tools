@@ -31,8 +31,6 @@ if (length(clone.files.in.dir) != length(count.files.in.dir)) stop("Files do not
 calculated.entropies <- numeric(length(clone.files.in.dir));
 unique.clones <- NULL
 clonality <- NULL
-spike.counts <- numeric(length(count.files.in.dir));
-spike.percent <- numeric(length(count.files.in.dir));
 max.clonal.freq <- numeric(length(count.files.in.dir));
 norm.entropy <- numeric(length(clone.files.in.dir));
 adaptive.clonality <- numeric(length(clone.files.in.dir));
@@ -96,13 +94,6 @@ for(i in 1:length(clone.files.in.dir))	{
 	adaptive.clonality[i] <- 1 / norm.entropy[i]
 	
 
-    #   Record Spike Counts
-    spike.counts[i] <- unlist(as.data.frame(count.curr.record[1,5, with = F]))    
-
-    #   Record % spiked reads
-#    spike.percent[i] <- spike.counts[i] / sum(clone.curr.record$"Normalized.clone.count") * 100
-    spike.percent[i] <- spike.counts[i] / sum(clone.curr.record$"Normalized clone count") * 100
-
     #	Calculate Max. clonotype frequency
     max.clonal.freq[i] <- max(clone.curr.record[[column]]) * 100
 
@@ -130,13 +121,12 @@ top.50.summary <- t(apply(top.50, 2, function(x) c(mean(x), median(x), sum(x))))
 
 #   create output data.frame
 output.df <- data.frame(clone.files.in.dir, calculated.entropies, norm.entropy, unique.clones, clonality,
-	     		adaptive.clonality, spike.counts, spike.percent, max.clonal.freq, max.clone.count,
+	     		adaptive.clonality, max.clonal.freq, max.clone.count,
 			top.10.summary, top.25.summary, top.50.summary);
 
 colnames(output.df) <- c("File", "Shannon Entropy", "Normalized Entropy", "Unique Clonotypes", "Clonality",
-		        "Adaptive Clonality", "Spiked Reads", "Percent Spiked Reads", "Max Clonal Freq",
-			"Max Clone Count", "top10.mean", "top10.median", "top10.sum", "top25.mean", "top25.median",
-			"top25.sum", "top50.mean", "top50.median", "top50.sum");
+                         "Adaptive Clonality", "Max Clonal Freq", "Max Clone Count", "top10.mean", "top10.median",
+                         "top10.sum", "top25.mean", "top25.median", "top25.sum", "top50.mean", "top50.median", "top50.sum");
 
 #   write output
 file.name <- "uniques.shannon.clonality.txt"
