@@ -121,15 +121,15 @@ Unless otherwise stated, instructions below assume that you&#39;re at the root o
 
 **PREPROCESS**
 
-Use scp to copy the fastq files from the Core&#39;s IGL server (mpssr) to the &quot;fastqs\_from\_core&quot; directory on ExaCloud.  For example:
+Use scp (or rsync) to copy the fastq files from the Core&#39;s IGL server (mpssr) to the &quot;fastqs\_from\_core&quot; directory on ExaCloud.  For example:
 
         ~% pwd
-
         /home/exacloud/lustre1/CompBio/data/tcrseq/dhaarini/DNA150826LC
-
         ~% nohup scp -r leyshock@igl-fs.ohsu.edu:/projects/DNA150826LC/150\*
-
         /home/exacloud/lustre1/CompBio/data/tcrseq/dhaarini/DNA150826LC/fastqs\_from\_core/fastqs
+        ~or~
+        ~% rync -avhe ssh mpssr1:/path/to/project /exacloud/path/to/project/
+        
 
 Use the instructions provided by the Core to find the files on the IGL server.  (You can ssh into the server if necessary – the Core typically provides a temporary password giving you access for ~two weeks.)
 
