@@ -17,15 +17,10 @@ files <- list.files(list.of.files)
 ### Separate into forward and reverse and order by sample number
 forward <- files[gsub(".*_R", '', files) == "1_001.fastq"]
 forward <- forward[order(as.numeric(gsub(".*_S|_R.*", '', forward)))]
-forward <- gsub(".*_S|_R.*", '', forward)
 
 reverse <- files[gsub(".*_R", '', files) == "2_001.fastq"]
 reverse <- reverse[order(as.numeric(gsub(".*_S|_R.*", '', reverse)))]
-reverse <- gsub(".*_S|_R.*", '', reverse)
 
-### Check file order
-no_match <- length(which(forward != reverse))
-if (no_match != 0) stop("Files do not match!")
 
 ### Begin formatting  
 for (i in 1:length(forward))   {
