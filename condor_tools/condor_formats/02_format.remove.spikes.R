@@ -17,15 +17,21 @@ formatted.vector <- character(length(fastqs));
 
 # Format vector
 for (i in 1:length(sorted)) {
-   curr.file <- sorted[i]
-   index <- gsub(".*_S|\\..*", '', curr.file)
+    curr.file <- sorted[i]
+    curr.remove <- sorted.to.remove.forward[i]
+    
+    fastq.index <- gsub(".*_S|\\..*", '', curr.file)
+    reads.index <- gsub(".*_S|\\..*", '', curr.remove)
+    if (fastq.index != reads.index) {stop(c("Files don't match ", i))}
+    index <- fastq.index
+    
    formatted.vector[i] <- paste(
         "output=$(log_dir)/stdout_remove_spikes_parallel_", index, ".out\n",
         "error=$(log_dir)/stderr_remove_spikes_parallel_", index, ".out\n",
         "log=$(log_dir)/remove_spikes_parallel_", index, ".log\n",
         "arguments=$(script_dir)process_spikes/remove.spikes.R ",
-        "$(data_dir)", sorted[i], " ",
-        "$(remove_dir)", sorted.to.remove.forward[i], " ", 
+        "$(data_dir)", curr.file, " ",
+        "$(remove_dir)", curr.remove, " ", 
         "\nqueue 1\n",
         sep=""); 
 }   #   for i
