@@ -56,11 +56,7 @@ for(i in 1:length(clone.files.in.dir))	{
     count.curr.file <- count.files.in.dir[i];
     count.index <- strsplit(count.curr.file, split = "_|\\.")[[1]][2]
 
-    count.curr.record <- fread(file.path(count.dir, count.curr.file), sep = ',',
-   		     		check.names=FALSE, stringsAsFactors=FALSE);
-
-    count.curr.record <- count.curr.record[,V1 := NULL]
-    colnames(count.curr.record) <- c("SPIKE_ID", "SPIKE", "V", "J", "spike.count")
+    count.curr.record <- fread(file.path(count.dir, count.curr.file))
 
     if (count.index != clone.index) stop("Mismatching files, check index: ", i)
 
