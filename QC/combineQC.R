@@ -24,8 +24,11 @@ for (i in 1:length(input.files)){
     ## Skip non-txt files
     if (curr.name[length(curr.name)] != "txt") next
 
-    ## Read input
-    curr.data <- fread(file.path(input.dir, curr.file))
+    ## Read input - pear full log is weird, so just don't read it.
+    if (!(curr.name[1] == "pear" & curr.name[2] == "full")){
+        curr.data <- fread(file.path(input.dir, curr.file))
+    }
+    
 
     ## Determine output name
     if (curr.name[1] == "aggregate") {
