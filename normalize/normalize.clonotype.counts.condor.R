@@ -14,6 +14,7 @@
 
 #	Ensure that numeric outputs are not expressed in scientific notation
 options(scipen=999);
+require(data.table)
 
 arguments <- commandArgs(trailingOnly = TRUE);
 exported.clone.file <- arguments[1];  	# /DNAXXXXLC/normalization/clones/XXX_alignment_clones_exported.txt
