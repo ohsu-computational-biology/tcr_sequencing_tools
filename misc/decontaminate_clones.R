@@ -179,14 +179,13 @@ for (i in 1:length(clone.files)){
 
 cat(clean.counter, "clone files were uncontaminated!\n")
 
-write.table(contam_reads_mat, paste0(qc.dir, batch_v, "_contam_clone_reads.txt"),
-            sep = '\t', quote = F, row.names = F)
-
 
 if (which.outputs %in% c("qc", "both")){
     ## Write QC output
     write.table(contamination.qc, file = paste0(qc.dir, batch_v, "_contaminationQC.txt"),
                 sep = '\t', quote = F, row.names = F)
+    write.table(contam_reads_mat, paste0(qc.dir, batch_v, "_contam_clone_reads.txt"),
+            sep = '\t', quote = F, row.names = F)
     ## Update
     print(c("Writing QC output to ", paste0(qc.dir, batch_v, "_contaminationQC.txt")))
 } # fi
