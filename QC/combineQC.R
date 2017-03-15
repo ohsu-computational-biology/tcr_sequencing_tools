@@ -19,6 +19,7 @@ for (i in 1:length(input.files)){
     ## Get file and name
     curr.file <- input.files[i]
     curr.name <- strsplit(curr.file, split = "\\.|_")[[1]]
+    print(curr.name)
 
     ## Skip non-txt files
     if (curr.name[length(curr.name)] != "txt") next
@@ -43,9 +44,14 @@ for (i in 1:length(input.files)){
         sheet.name <- "remove"
     } else if (curr.name[1] == "uniques"){
         sheet.name <- "analysis"
-    } else if (curr.name[2] == "contam"){
+    } else if (curr.name[2] == "contaminationQC"){
         sheet.name <- "decontam"
-    } # fi
+    } else if (curr.name[2] == "treatment"){
+        next
+    } else if (curr.name[2] == "contam"){
+        next
+    } # fi{
+        
 
     ## Determine if create workbook or append to workbook
     if (i == 1){
