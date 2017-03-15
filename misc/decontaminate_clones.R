@@ -82,7 +82,7 @@ for (i in 1:length(clone.files)){
     if (is.na(offending.clone.1$Reads[1])) {
         count.clone.1 <- 0
     } else {
-        count.clone.1 <- length(unlist(strsplit(offending.clone.1$Reads, split = ',')))
+        count.clone.1 <- length(unlist(strsplit(as.character(offending.clone.1$Reads), split = ',')))
     }
     curr_contam_count_v <- curr_contam_count_v + count.clone.1
     
@@ -102,7 +102,7 @@ for (i in 1:length(clone.files)){
     if (is.na(offending.clone.2$Reads[1])) {
         count.clone.2 <- 0
     } else {
-        count.clone.2 <- length(unlist(strsplit(offending.clone.2$Reads, split = ',')))
+        count.clone.2 <- length(unlist(strsplit(as.character(offending.clone.2$Reads), split = ',')))
     }
     curr_contam_count_v <- curr_contam_count_v + count.clone.2
     
@@ -120,7 +120,7 @@ for (i in 1:length(clone.files)){
     if (is.na(offending.clone.3$Reads[1])) {
         count.clone.3 <- 0
     } else {
-        count.clone.3 <- length(unlist(strsplit(offending.clone.3$Reads, split = ',')))
+        count.clone.3 <- length(unlist(strsplit(as.character(offending.clone.3$Reads), split = ',')))
     }
     curr_contam_count_v <- curr_contam_count_v + count.clone.3
     
