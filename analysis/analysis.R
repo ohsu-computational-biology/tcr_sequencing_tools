@@ -47,7 +47,7 @@ for(i in 1:length(clone.files.in.dir))	{
     ###
     #   get a clone file to process
     clone.curr.file <- clone.files.in.dir[i];
-    clone.index <- strsplit(clone.curr.file, split = "_")[[1]][2]
+    clone.index <- strsplit(clone.curr.file, split = "_|\\.")[[1]][2]
 
     clone.curr.record <- fread(file.path(clone.dir, clone.curr.file),
                             check.names=FALSE,
