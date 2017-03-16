@@ -12,10 +12,10 @@ path.to.output <- arguments[3]
 
 ### Get lists of files
 raw.fastqs <- list.files(path.to.raw.fastqs);
-raw.fastq.samples <- sapply(raw.fastqs, function(x) gsub("^[A-Z0-9]+_|\\.assembled.fastq", "", x), USE.NAMES = F)
+raw.fastq.samples <- sapply(raw.fastqs, function(x) gsub("^[A-Z0-9]+_|\\.assembled.*", "", x), USE.NAMES = F)
 
 despiked.fastqs <- list.files(path.to.despiked.fastqs);
-despiked.fastq.samples <- sapply(despiked.fastqs, function(x) gsub("^[A-Z0-9]+_|\\.assembled.removed.fastq", "", x), USE.NAMES = F)
+despiked.fastq.samples <- sapply(despiked.fastqs, function(x) gsub("^[A-Z0-9]+_|\\.assembled.*", "", x), USE.NAMES = F)
 
 ### Check for parallelism of files
 sample.comparison <- raw.fastq.samples == despiked.fastq.samples;
