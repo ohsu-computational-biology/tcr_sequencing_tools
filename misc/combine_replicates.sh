@@ -2,8 +2,8 @@
 
 # This script takes replicates that are offset by a specific amount and combines them together
 
-firstSet=$1
-offset=$2
+firstSet=$1 # how many until the first set of replicates ends
+offset=$2 # offset b/w replicates (should be same as firstSet)
 
 # Set Up
 cd $data
