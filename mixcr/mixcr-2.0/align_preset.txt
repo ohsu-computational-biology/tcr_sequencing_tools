@@ -16,4 +16,3 @@
 -jAlignment
 -readId
 -descrR1
--cloneId
