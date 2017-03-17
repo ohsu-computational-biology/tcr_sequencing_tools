@@ -1,0 +1,19 @@
+-sequence
+-vHits
+-dHits
+-jHits
+-vAlignments
+-dAlignments
+-jAlignments
+-nFeature CDR3
+-minFeatureQuality CDR3
+-aaFeature CDR3
+-vHit
+-dHit
+-jHit
+-vAlignment
+-dAlignment
+-jAlignment
+-readId
+-descrR1
+-cloneId
