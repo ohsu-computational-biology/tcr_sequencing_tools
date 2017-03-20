@@ -20,7 +20,7 @@ out.dir <- arguments[3];
 
 #	Examine the current directory for the files to process and sort them.
 clone.files.in.dir <- list.files(clone.dir);
-clone.files.in.dir <- clone.files.in.dir[order(as.numeric(gsub(".*_S|_alignment_.*", '', clone.files.in.dir)))]
+clone.files.in.dir <- clone.files.in.dir[order(as.numeric(gsub(".*_S|_.*$|\\..*$", '', clone.files.in.dir)))]
 count.files.in.dir <- list.files(count.dir);
 count.files.in.dir <- count.files.in.dir[order(as.numeric(gsub(".*_S|\\..*", '', count.files.in.dir)))]
 
@@ -90,8 +90,11 @@ for(i in 1:length(clone.files.in.dir))	{
 	adaptive.clonality[i] <- 1 / norm.entropy[i]
 	
 
-    #	Calculate Max. clonotype frequency
-    max.clonal.freq[i] <- max(clone.curr.record[[column]])
+    ## Change clone frequency column to a percentage
+    clone.curr.record[[column]] <- clone.curr.record[[column]] * 100
+    
+    ##	Calculate Max. clonotype frequency
+    max.clonal.freq[i] <- round(max(clone.curr.record[[column]]), digits = 4)
 
     #   Record maximum clone count
     max.clone.count[i] <- max(clone.curr.record$`Normalized clone count`)
@@ -111,9 +114,9 @@ for(i in 1:length(clone.files.in.dir))	{
 }	#	for i
 
 # Summarize top10 and top25 data
-top.10.summary <- t(apply(top.10, 2, function(x) c(mean(x), median(x), sum(x))))
-top.25.summary <- t(apply(top.25, 2, function(x) c(mean(x), median(x), sum(x))))
-top.50.summary <- t(apply(top.50, 2, function(x) c(mean(x), median(x), sum(x))))
+top.10.summary <- round(t(apply(top.10, 2, function(x) c(mean(x), median(x), sum(x)))), digits = 4)
+top.25.summary <- round(t(apply(top.25, 2, function(x) c(mean(x), median(x), sum(x)))), digits = 4)
+top.50.summary <- round(t(apply(top.50, 2, function(x) c(mean(x), median(x), sum(x)))), digits = 4)
 
 #   create output data.frame
 output.df <- data.frame(clone.files.in.dir, calculated.entropies, norm.entropy, unique.clones, clonality,
