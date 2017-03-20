@@ -91,7 +91,7 @@ for(i in 1:length(clone.files.in.dir))	{
 	
 
     #	Calculate Max. clonotype frequency
-    max.clonal.freq[i] <- max(clone.curr.record[[column]]) * 100
+    max.clonal.freq[i] <- max(clone.curr.record[[column]])
 
     #   Record maximum clone count
     max.clone.count[i] <- max(clone.curr.record$`Normalized clone count`)
