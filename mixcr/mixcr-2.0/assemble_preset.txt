@@ -1,5 +1,3 @@
---filter-out-of-frames
---filter-stops
 -cloneId
 -count
 -fraction
