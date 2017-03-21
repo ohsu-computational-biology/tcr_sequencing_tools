@@ -10,7 +10,7 @@ library(data.table);
 arguments <- commandArgs(trailingOnly=TRUE);
 
 clone.dir <- arguments[1];    # Typically .../dhaarini/DNAXXXXLC/normalization/normalized_clones/
-out.dir <- arguments[3];
+out.dir <- arguments[2];
 
 
 ##	Examine the current directory for the files to process and sort them.
