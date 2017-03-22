@@ -21,7 +21,7 @@ clone.files.in.dir <- clone.files.in.dir[order(as.numeric(gsub(".*_S|_.*$|\\..*$
 clone.indexes <- NULL
 calculated.entropies <- numeric(length(clone.files.in.dir));
 clonality <- numeric(length(clone.files.in.dir));
-max.clonal.freq <- numeric(length(count.files.in.dir));
+max.clonal.freq <- numeric(length(clone.files.in.dir));
 max.clone.count <- numeric(length(clone.files.in.dir));
 
 for(i in 1:length(clone.files.in.dir))	{
@@ -49,15 +49,15 @@ for(i in 1:length(clone.files.in.dir))	{
     ## Calculate Clonality
     clonality[i] <- 1 - (calculated.entropies[i] / log(50))
         
-    ##	Calculate Max. clonotype frequency
-    max.clonal.freq[i] <- round(max(top50.clones[[column]]), digits = 4)
+    ##	Calculate Max. clonotype frequency (times by 100 to turn into percent)
+    max.clonal.freq[i] <- round(max(top50.clones[[column]])*100, digits = 4)
 
     ##   Record maximum clone count
     max.clone.count[i] <- max(top50.clones$`Normalized clone count`)
 
     ##   update progress
     if((i %%10) == 0)   {
-        cat("Processing file ", i, " (out of ", length(count.files.in.dir), ")\n", sep="");
+        cat("Processing file ", i, " (out of ", length(clone.files.in.dir), ")\n", sep="");
     }   #   fi
 
 }	#	for i
