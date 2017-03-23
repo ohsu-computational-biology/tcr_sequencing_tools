@@ -75,7 +75,31 @@ if (!is.null(all_nonstandard_v_v)){
     nonstandard_v_output_dt <- as.data.table(nonstandard_v_output_mat)
     nonstandard_v_output_dt$sample <- rownames(nonstandard_v_output_mat)
     nonstandard_v_output_dt <- nonstandard_v_output_dt[,c(ncol(nonstandard_v_output_dt), 1:(ncol(nonstandard_v_output_dt)-1)), with = F]
-    write.table(nonstandard_v_output_mat, file = paste0(out_dir_v, "nonstandardVHits.txt"), quote = F, sep = '\t', row.names = F)
+    write.table(nonstandard_v_output_mat, file = paste0(out_dir_v, "nonStandard_VHits.txt"), quote = F, sep = '\t', row.names = F)
+} else {
+    print("There were no nonstandard V regions in this batch!")
+} #fi
+
+
+## Create output
+if (!is.null(all_nonstandard_j_v)){
+    nonstandard_j_output_mat <- matrix(nrow = length(nonstandard_j_lsdt), ncol = length(all_nonstandard_j_v))
+    colnames(nonstandard_j_output_mat) <- all_nonstandard_j_v
+    rownames(nonstandard_j_output_mat) <- names(nonstandard_j_lsdt)
+    for (i in 1:length(nonstandard_j_lsdt)){
+        curr_dt <- nonstandard_j_lsdt[[i]]
+        curr_name_v <- names(nonstandard_j_lsdt)[i]
+        for (j in curr_dt[,.N]){
+            curr_j_v <- curr_dt$curr_nonstandard_j_v[j]
+            curr_count_v <- curr_dt$N[j]
+            nonstandard_j_output_mat[rownames(nonstandard_j_output_mat) == curr_name_v,
+                                     colnames(nonstandard_j_output_mat) == curr_j_v] <- curr_count_v
+        } # for j
+    } # for i
+    nonstandard_j_output_dt <- as.data.table(nonstandard_j_output_mat)
+    nonstandard_j_output_dt$sample <- rownames(nonstandard_j_output_mat)
+    nonstandard_j_output_dt <- nonstandard_j_output_dt[,c(ncol(nonstandard_j_output_dt), 1:(ncol(nonstandard_j_output_dt)-1)), with = F]
+    write.table(nonstandard_j_output_mat, file = paste0(out_dir_v, "nonStandard_JHits.txt"), quote = F, sep = '\t', row.names = F)
 } else {
     print("There were no nonstandard V regions in this batch!")
 } #fi

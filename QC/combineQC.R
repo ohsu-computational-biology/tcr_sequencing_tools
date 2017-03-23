@@ -53,7 +53,9 @@ for (i in 1:length(input.files)){
         next
     } else if (curr.name[2] == "contam"){
         next
-    } # fi{
+    } else if (curr.name[1] == "nonStandard"){
+        sheet.name <- paste("nonStandard", curr.name[2], sep = '_')
+    } # fi
         
 
     ## Determine if create workbook or append to workbook

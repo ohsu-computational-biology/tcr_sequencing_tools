@@ -3,6 +3,7 @@
 # Run all of the QC scripts at one time
 
 SCRIPTS=$tool/QC/
+REF=$tool/reference/
 DATA=$data/
 OUT=$data/QC/
 
@@ -25,6 +26,10 @@ Rscript $SCRIPTS/mixcr.alignment.QC.R $DATA/mixcr/reports/align/ $OUT/
 # ASSEMBLE
 echo "assemble"
 Rscript $SCRIPTS/mixcr.assemble.QC.R $DATA/mixcr/reports/assemble/ $OUT/
+
+# NON-STANDARD ALIGNMENTS
+echo "non-standard alignments"
+Rscript $SCRIPTS/countNonStandardHits.R $DATA/normalization/decontam $REF/text_barcodesvj.txt $OUT/
 
 # NORMALIZATION
 echo "normalization"
