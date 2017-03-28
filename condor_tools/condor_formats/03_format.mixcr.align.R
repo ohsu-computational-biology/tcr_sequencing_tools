@@ -40,7 +40,7 @@ for (i in 1:length(list.of.files))   {
 	"-v ",
         "--report $(report_dir)/S", index, "_align_report.txt ",   #   report
         "$(input_dir)/", list.of.files[i], " ",   #   input
-        "$(out_dir)/", output.file.names[i], "_alignment.vdjca", #  ouput
+        "$(out_dir)/", output.file.name, "_alignment.vdjca", #  ouput
         "\nqueue 1\n",
         sep=""); 
 }   #   for
