@@ -20,6 +20,7 @@ mkdir mixcr/assemblies
 mkdir mixcr/despiked_fastqs
 mkdir mixcr/export_align
 mkdir mixcr/export_clones
+mkdir mixcr/empty_clones
 mkdir mixcr/indexes
 mkdir mixcr/reports
 mkdir mixcr/reports/align
@@ -53,6 +54,7 @@ mkdir spike_counts/9bp/counts
 mkdir spike_counts/9bp/qc
 mkdir spike_counts/9bp/reads_to_remove
 mkdir spike_counts/9bp/spikes
+mkdir spike_counts/9bp/empty
 
 # QC directory
 mkdir QC
