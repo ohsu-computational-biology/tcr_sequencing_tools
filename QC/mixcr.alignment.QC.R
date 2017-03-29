@@ -70,7 +70,8 @@ for(i in 1:length(files.in.dir))	{
 
     curr.command <- str_split(curr.record[6], ":")[[1]][2];
     curr.command <- str_trim(curr.command);
-    curr.command <- basename(curr.command);
+    ##    curr.command <- basename(curr.command);
+    curr.command <- gsub(" --report.*", "", curr.command)
     output.df[i,]$command <- curr.command;
     
     curr.total <- str_split(curr.record[7], ":")[[1]][2];
