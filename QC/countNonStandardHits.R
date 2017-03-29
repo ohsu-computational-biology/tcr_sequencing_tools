@@ -20,7 +20,7 @@ standard_j_regions_v <- unique(spike_data_dt$J)
 standard_v_regions_v <- unique(spike_data_dt$V)
 standard_v_regions_v <- gsub("-", '', standard_v_regions_v)
 standard_v_regions_v <- c(standard_v_regions_v, "V121", "V122")
-standard_v_regions_v <- standard_v_regions_v[-which(standard_v_regions == "V1212")]
+standard_v_regions_v <- standard_v_regions_v[-which(standard_v_regions_v == "V1212")]
 
 nonstandard_v_lsdt <- list()
 nonstandard_j_lsdt <- list()
