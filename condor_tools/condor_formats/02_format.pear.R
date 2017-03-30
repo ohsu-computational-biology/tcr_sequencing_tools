@@ -46,7 +46,7 @@ for (i in 1:length(forward))   {
         sep=""); 
 }   #   while
 
-output.file.name <- paste("00_formatted.pear.txt", sep="");
+output.file.name <- paste("02_formatted.pear.txt", sep="");
 write.table(formatted.vector,
             file=output.file.name,
             row.names = FALSE,

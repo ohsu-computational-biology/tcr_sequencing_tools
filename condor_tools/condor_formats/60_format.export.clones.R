@@ -47,7 +47,7 @@ for (i in 1:length(list.of.files))   {
 }   #   while
 
 write.table(formatted.vector,
-            file="06_formatted_export_clones.txt",
+            file="60_formatted_export_clones.txt",
             row.names = FALSE,
             col.names = FALSE,
             quote = FALSE);

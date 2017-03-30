@@ -18,7 +18,7 @@ request_cpus = 4
 
 # Memory requested                                                                                                      
 
-request_memory = 4 GB
+request_memory = 12 GB
 
 # Arguments                                                                                                             
 

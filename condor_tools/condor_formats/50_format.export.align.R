@@ -50,7 +50,7 @@ for (i in 1:length(list.of.files))   {
 }   #   while
 
 write.table(formatted.vector,
-            file="05_formatted_export_align.txt",
+            file="50_formatted_export_align.txt",
             row.names = FALSE,
             col.names = FALSE,
             quote = FALSE);

@@ -15,7 +15,7 @@ executable=/usr/bin/java
 request_cpus = 1
 
 # Memory requested                                                                                                      
-request_memory = 8 GB
+request_memory = 12 GB
 
 notify_user = hortowe@ohsu.edu
 

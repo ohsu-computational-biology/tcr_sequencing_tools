@@ -36,7 +36,7 @@ bp <- arguments[2];                 # length of spike - 25 or 9
             sep=""); 
     }   #   while
 
-    output.file.name <- paste("01_formatted.", bp.dir, ".txt", sep="");
+    output.file.name <- paste("10_formatted.", bp.dir, ".txt", sep="");
     write.table(formatted.vector,
                 file=output.file.name,
                 row.names = FALSE,

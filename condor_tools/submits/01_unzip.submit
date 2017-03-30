@@ -3,7 +3,7 @@
 getenv="True"
 script_dir=$ENV(tool)/misc/
 data_dir=$ENV(data)/fastqs_from_core/fastqs
-log_dir=$ENV(data)/condor_logs/unzip
+log_dir=$ENV(data)/condor_logs/setup/unzip
 
 # Program
 executable=/bin/sh
@@ -12,7 +12,7 @@ executable=/bin/sh
 request_cpus = 4
 
 # Memory
-request_memory = 4 GB
+request_memory = 8 GB
 
 # Arguments
 

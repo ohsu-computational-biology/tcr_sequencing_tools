@@ -36,7 +36,7 @@ for (i in 1:length(list.of.files))   {
 }   #   while
 
 write.table(formatted.vector,
-            file="04_formatted_assemble.txt",
+            file="40_formatted_assemble.txt",
             row.names = FALSE,
             col.names = FALSE,
             quote = FALSE);

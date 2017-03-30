@@ -37,7 +37,7 @@ for (i in 1:length(sorted)) {
 }   #   for i
 
 write.table(formatted.vector,
-            file="02_formatted.remove.spikes.txt",
+            file="20_formatted.remove.spikes.txt",
             row.names = FALSE,
             col.names = FALSE,
             quote = FALSE);

@@ -46,7 +46,7 @@ for (i in 1:length(list.of.files))   {
 }   #   for
 
 write.table(formatted.vector,
-            file="03_formatted_align.txt",
+            file="30_formatted_align.txt",
             row.names = FALSE,
             col.names = FALSE,
             quote = FALSE);
