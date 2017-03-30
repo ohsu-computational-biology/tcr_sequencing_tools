@@ -72,9 +72,11 @@ mkdir condor_logs/mixcr/export_align
 mkdir condor_logs/mixcr/export_clones
 mkdir condor_logs/normalization
 mkdir condor_logs/pear
-mkdir condor_logs/unzip
 mkdir condor_logs/decontaminate
 mkdir condor_logs/QC
+mkdir condor_logs/setup
+mkdir condor_logs/setup/unzip
+mkdir condor_logs/setup/md5
 
 # Directory for tools
 mkdir tools

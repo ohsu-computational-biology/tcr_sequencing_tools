@@ -9,13 +9,12 @@
 #
 #   Run this script from the command line as following:
 #
-#           ~% Rscript compute.md5.Rscript "input_directory/"
+#           ~% Rscript process.md5.R "input_directory/"
 #
 #	If the files have been transferred without error, diffing the files as
 #		specified in the program output should return an empty result
 
 #   Load appropriate libraries
-.libPaths("/home/exacloud/lustre1/CompBio/lib/R/library")
 library(digest);
 
 #	get appropriate command line directories
