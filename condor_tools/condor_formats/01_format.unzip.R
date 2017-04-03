@@ -8,13 +8,22 @@
 arguments <- commandArgs(trailingOnly=TRUE);
 fastq.dir <- arguments[1];      # directory of raw files in fastq format (gzipped)
                                     # /home/exacloud/lustre1/CompBio/data/tcrseq/dhaarini/DNAXXXXLC/
-				    # fastqs_from_core/fastqs/
+                                        # fastqs_from_core/fastqs/
+out.dir <- arguments[2];
 
-## Initialize vector and get files
-formatted.vector <- NULL;
+## Initialize vector and fill with submission information
+formatted.vector <- paste('#!/bin/sh\n',
+                          'getenv="True"',
+                          'script_dir=$ENV(tool)/misc/',
+                          'data_dir=$ENV(data)/fastqs_from_core/fastqs/',
+                          'log_dir=$ENV(data)/condor_logs/setup/unzip\n',
+                          '# Program', 'executable=/bin/sh\n',
+                          '# Cores', 'request_cpus = 4\n',
+                          '# Memory', 'request_memory = 8 GB\n', '# Arguments', sep = '\n')
+
+
+## Get files and check parallelism
 files <- list.files(fastq.dir)
-
-## Check parallelism
 fwd_files <- files[which(gsub(".*_R|_001.fastq.gz", '', files) == "1")]
 rev_files <- files[which(gsub(".*_R|_001.fastq.gz", '', files) == "2")]
 if (length(fwd_files) != length(rev_files)) stop("Unequal number of fwd and rev files.")
@@ -47,7 +56,7 @@ for (i in 0:max_tens){
         cat(curr.file, "\n")
     } # fi
 
-    formatted.vector[i+1] <- paste(
+    formatted.vector[i+2] <- paste(
         "output=$(log_dir)/stdout_unzip.", i, ".out\n",
         "error=$(log_dir)/stderr_unzip.", i, ".out\n",
         "log=$(log_dir)/unzip.", i, ".log\n",
@@ -74,7 +83,9 @@ for (i in 0:max_tens){
 ##         sep=""); 
 ## }   #   while
 
-output.file.name <- paste("01_formatted.unzip.txt", sep="");
+##output.file.name <- paste("01_formatted.unzip.txt", sep="");
+output.file.name <- paste0(out.dir, "01_unzip.submit")
+
 write.table(formatted.vector,
             file=output.file.name,
             row.names = FALSE,

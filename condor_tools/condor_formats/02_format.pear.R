@@ -8,13 +8,25 @@
 arguments <- commandArgs(trailingOnly=TRUE);
 list.of.files <- arguments[1];      # directory of raw files in fastq format
                                     # /home/exacloud/lustre1/CompBio/data/tcrseq/dhaarini/DNAXXXXLC/
-				    # fastqs_from_core/fastqs/
+                                        # fastqs_from_core/fastqs/
+out.dir <- arguments[2]
 
-### Initialize vector and get files
-formatted.vector <- NULL;
+### Initialize vector 
+formatted.vector <- paste('#!/bin/sh',
+                          'getenv="True"',
+                          'script_dir=$ENV(tool)/misc',
+                          'data_dir=$ENV(data)/fastqs_from_core/fastqs',
+                          'qc_dir=$ENV(data)/QC',
+                          'out_dir=$ENV(data)peared_fastqs/',
+                          'log_dir=$ENV(data)/condor_logs/pear\n',
+                          '# Program', 'executable=/usr/bin/perl\n',
+                          '# Cores', 'request_cpus = 6\n',
+                          '# Memory', 'request_memory = 12 GB', '# Arguments\n', sep = "\n")
+
+
+### Get files and separate into forward and reverse and order by sample number
 files <- list.files(list.of.files)
 
-### Separate into forward and reverse and order by sample number
 forward <- files[gsub(".*_R", '', files) == "1_001.fastq"]
 forward <- forward[order(as.numeric(gsub(".*_S|_R.*", '', forward)))]
 
@@ -36,7 +48,7 @@ for (i in 1:length(forward))   {
 
    index <- forward.index
 
-   formatted.vector[i] <- paste(
+   formatted.vector[i+1] <- paste(
         "output=$(log_dir)/stdout_pear.", index, ".out\n",
         "error=$(log_dir)/stderr_pear.", index, ".out\n",
         "log=$(log_dir)/pear.", index, ".log\n",
@@ -46,7 +58,9 @@ for (i in 1:length(forward))   {
         sep=""); 
 }   #   while
 
-output.file.name <- paste("02_formatted.pear.txt", sep="");
+##output.file.name <- paste("02_formatted.pear.txt", sep="");
+output.file.name <- paste0(out.dir, "02_pear.submit")
+
 write.table(formatted.vector,
             file=output.file.name,
             row.names = FALSE,
