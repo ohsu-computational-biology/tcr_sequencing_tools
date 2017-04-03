@@ -2,7 +2,7 @@
 getenv="True"
 script_dir=$ENV(tool)/process_spikes
 data_dir=$ENV(data)/peared_fastqs/assembled
-out_dir=$ENV(data)/spike_counts/25bp/counts/
+out_dir=$ENV(data)/spike_counts/25bp/
 ref_dir=$ENV(tool)/reference
 log_dir=$ENV(data)/condor_logs/spike_counts/
 

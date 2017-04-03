@@ -29,6 +29,8 @@ options(warn=-1);
 arguments <- commandArgs(trailingOnly=TRUE);
 input.fastq <- arguments[1];
 forward.reads.to.remove <- arguments[2];
+out.remove.dir <- arguments[3];
+out.spike.dir <- arguments[4];
 
 ###   Read in fastq file
 fastq.records <- readFastq(input.fastq);
@@ -95,13 +97,15 @@ cat("Removing ", num.records.removed, " fastq records\n", sep="");
    
 ###   write the fastq out
 out.fastq <- sub("[.][^.]*$", '', input.fastq)
-output.file.name <- paste(out.fastq, ".removed.fastq", sep="");
+output.file.name <- basename(paste(out.fastq, ".removed.fastq", sep=""))
+output.file.name <- file.path(out.remove.dir, output.file.name)
 cat("Writing output to: ", output.file.name, "\n", sep="");
 writeFastq(output.fastq.records, output.file.name, compress=FALSE);
 
 ###   write the spikes out
 out.spike <- sub(".assembled.fastq", '', input.fastq)
-out.spike.name <- paste(out.spike, ".spikes.fastq", sep="")
+out.spike.name <- basename(paste(out.spike, ".spikes.fastq", sep=""))
+out.spike.name <- file.path(out.spike.dir, out.spike.name)
 cat("Writing output to: ", out.spike.name, "\n", sep = "")
 writeFastq(output.spike.records, out.spike.name, compress=FALSE)
 

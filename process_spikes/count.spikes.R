@@ -122,9 +122,9 @@ colnames(records.to.remove.ids.dt) <- "Reads"
 ###   build names of output files
 ###   strip ".fastq" from file name.  Not necessary, just more hygienic
 filename.no.extension <- sub("[.][^.]*$", "", basename(input.fastq));
-count.table <- paste(output.dir, filename.no.extension, ".spike.counts.", spike.length, "bp.txt", sep="");
-reads.to.remove.list <- paste(output.dir, filename.no.extension, ".reads.to.remove.txt", sep="");
-qc.file <- paste(output.dir, filename.no.extension, ".qc.txt", sep="");
+count.table <- paste(output.dir, "counts/", filename.no.extension, ".spike.counts.", spike.length, "bp.txt", sep="");
+reads.to.remove.list <- paste(output.dir, "reads_to_remove/", filename.no.extension, ".reads.to.remove.txt", sep="");
+qc.file <- paste(output.dir, "qc/", filename.no.extension, ".qc.txt", sep="");
 
 ### Update
 cat("Writing spike count file to: ", count.table, "\n", sep="");

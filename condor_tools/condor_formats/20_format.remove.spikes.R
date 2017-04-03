@@ -31,7 +31,7 @@ for (i in 1:length(sorted)) {
         "log=$(log_dir)/remove_spikes_parallel_", index, ".log\n",
         "arguments=$(script_dir)process_spikes/remove.spikes.R ",
         "$(data_dir)", curr.file, " ",
-        "$(remove_dir)", curr.remove, " ", 
+        "$(remove_dir)", curr.remove, " $(remove_out_dir) $(spike_out_dir)", 
         "\nqueue 1\n",
         sep=""); 
 }   #   for i

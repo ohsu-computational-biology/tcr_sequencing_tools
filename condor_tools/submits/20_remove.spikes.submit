@@ -4,6 +4,9 @@ script_dir=$ENV(tool)/
 data_dir=$ENV(data)/peared_fastqs/assembled/
 log_dir=$ENV(data)/condor_logs/mixcr/despiked
 remove_dir=$ENV(data)/spike_counts/9bp/reads_to_remove/
+remove_out_dir=$ENV(data)/mixcr/despiked_fastqs/
+spike_out_dir=$ENV(data)/spike_counts/9bp/spikes/
+
 
 # Program                                                                                                               
 executable=/usr/bin/Rscript
@@ -12,7 +15,7 @@ executable=/usr/bin/Rscript
 request_cpus = 1
 
 # Memory requested                                                                                                      
-request_memory = 4 GB
+request_memory = 12 GB
 
 notify_user = hortowe@ohsu.edu
 
