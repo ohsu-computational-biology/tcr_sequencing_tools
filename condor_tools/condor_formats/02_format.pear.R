@@ -12,7 +12,7 @@ list.of.files <- arguments[1];      # directory of raw files in fastq format
 out.dir <- arguments[2]
 
 ### Initialize vector 
-formatted.vector <- paste('#!/bin/sh',
+formatted.vector <- paste('#!/bin/sh\n',
                           'getenv="True"',
                           'script_dir=$ENV(tool)/misc',
                           'data_dir=$ENV(data)/fastqs_from_core/fastqs',
@@ -59,7 +59,7 @@ for (i in 1:length(forward))   {
 }   #   while
 
 ##output.file.name <- paste("02_formatted.pear.txt", sep="");
-output.file.name <- paste0(out.dir, "02_pear.submit")
+output.file.name <- file.path(out.dir, "02_pear.submit")
 
 write.table(formatted.vector,
             file=output.file.name,

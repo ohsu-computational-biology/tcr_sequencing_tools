@@ -3,7 +3,8 @@ arguments <- commandArgs(trailingOnly=TRUE);
 list.of.clone.files <- arguments[1];		# /home/exacloud/lustre1/CompBio/data/tcrseq/dhaarini/DNAXXXXLC/
 		       				# normalization/decontam/
 list.of.count.files <- arguments[2];		# /home/exacloud/lustre1/CompBio/data/tcrseq/dhaarini/DNAXXXXLC/
-		       				# normalizaiton/counts/
+                                        # normalizaiton/counts/
+out.dir <- arguments[3]
 
 # List files from directory and sort them.
 list.of.clone.files <- list.files(list.of.clone.files);
@@ -12,13 +13,15 @@ list.of.count.files <- list.files(list.of.count.files);
 list.of.count.files <- list.of.count.files[order(as.numeric(gsub(".*_S|\\..*", '', list.of.count.files)))]
 
 # Initialize vectors
-formatted.vector <- NULL;
-output.file.names <- NULL;
+formatted.vector <- paste("#!/bin/sh\n",
+                          'getenv="True"',
+                          "sript_dir=$ENV(tool)/normalize/",
+                          "log_dir=$ENV(data)/condor_logs/normalization/",
+                          "normalization_dir=$ENV(data)/normalization/",
+                          "# Program", "executable=/usr/bin/Rscript\n",
+                          "# Cores", "request_cpus = 1",
+                          "# Memory", "request_memory = 4 GB\n", "# Arguments\n", sep = '\n')
 
-#   strip extensions from file names, for output file names
-for(i in 1:length(list.of.clone.files))   {
-    output.file.names[i] <-  sub("[.][^.]*$", "", list.of.clone.files[i]);
-}   # for 
 
 #   TODO - verify paralellity of input files
   
@@ -49,8 +52,10 @@ for (i in 1:length(list.of.clone.files))   {
 	} # if
 }   #   for
 
+
+out.file <- file.path(out.dir, "80_normalize.submit")
  write.table(formatted.vector,
-             file="80_formatted_normalize_clonotype_counts.txt",
+             file=out.file,
              row.names = FALSE,
              col.names = FALSE,
              quote = FALSE);

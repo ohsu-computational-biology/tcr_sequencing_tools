@@ -67,6 +67,18 @@ for (i in 0:max_tens){
 } # for    
 
 
+
+##output.file.name <- paste("01_formatted.unzip.txt", sep="");
+output.file.name <- file.path(out.dir, "01_unzip.submit")
+
+write.table(formatted.vector,
+            file=output.file.name,
+            row.names = FALSE,
+            col.names = FALSE,
+            quote = FALSE);
+ 
+
+
 ## for (i in 1:length(files))   {
    
 ##     curr.file <- files[i]
@@ -82,15 +94,3 @@ for (i in 0:max_tens){
 ##         "\nqueue 1\n",
 ##         sep=""); 
 ## }   #   while
-
-##output.file.name <- paste("01_formatted.unzip.txt", sep="");
-output.file.name <- paste0(out.dir, "01_unzip.submit")
-
-write.table(formatted.vector,
-            file=output.file.name,
-            row.names = FALSE,
-            col.names = FALSE,
-            quote = FALSE);
- 
-
-
