@@ -38,7 +38,7 @@ for (i in 1:length(list.of.clone.files))   {
 
        index <- clone.index
 
-       formatted.vector[i] <- paste(
+       formatted.vector[i+1] <- paste(
          	"output=$(log_dir)stdout_normalize_clonotypes_", index, ".out\n",
          	"error=$(log_dir)stderr_normalize_clonotypes_", index, ".out\n",
          	"log=$(log_dir)condor_normalize_clonotypes_", index, ".log\n",

@@ -12,7 +12,7 @@
 arguments <- commandArgs(trailingOnly=TRUE);
 list.of.files <- arguments[1];      # /home/exacloud/lustre1/CompBio/data/tcrseq/dhaarini/DNAXXXXLC/mixcr/
                                         # despiked_fastqs
-out.dir <- arguments[3]
+out.dir <- arguments[2]
 
 # Get files and sort them
 list.of.files <- list.files(list.of.files)

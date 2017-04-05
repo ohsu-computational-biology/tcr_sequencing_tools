@@ -26,7 +26,7 @@ for (i in 1:length(list.of.files))   {
    curr.file <- list.of.files[i]
    index <- gsub(".*_S|_alignment.*", '', curr.file)
    output.file.name <- sub("[.][^.]*$", "", curr.file)
-   formatted.vector[i] <- paste(
+   formatted.vector[i+1] <- paste(
         "output=$(log_dir)stdout_mixcr_export_", index, ".out\n",
         "error=$(log_dir)stderr_mixcr_export_", index, ".out\n",
         "log=$(log_dir)mixcr_export_align_", index, ".log\n",

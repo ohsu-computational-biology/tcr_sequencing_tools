@@ -1,6 +1,7 @@
 # Get command line arguments.
 arguments <- commandArgs(trailingOnly=TRUE);
 list.of.files <- arguments[1];      # /home/exacloud/lustre1/CompBio/data/tcrseq/dhaarinig/DNAXXXXLC/mixcr/alignments/
+out.dir <- arguments[2]
 
 # Get files from directory and sort them
 list.of.files <- list.files(list.of.files);
@@ -26,7 +27,7 @@ for (i in 1:length(list.of.files))   {
    curr.file <- list.of.files[i]
    index <- gsub(".*_S|_alignment.*", '', curr.file)
    output.file.name <- sub("[.][^.]*$", "", curr.file)
-   formatted.vector[i] <- paste(
+   formatted.vector[i+1] <- paste(
         "output=$(log_dir)stdout_mixcr_assemble_", index, ".out\n",
         "error=$(log_dir)stderr_mixcr_assemble_", index, ".out\n",
         "log=$(log_dir)mixcr_assemble_", index, ".log\n",
