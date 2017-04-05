@@ -16,7 +16,7 @@ formatted.vector <- paste("#!/bin/sh\n",
                           "index_dir=$(data_dir)indexes",
                           "output_dir=$(data_dir)/export_clones",
                           "log_dir=$ENV(data)/condor_logs/mixcr/export_clones/",
-                          "# Program", "executable=/usr/bin/java/\n",
+                          "# Program", "executable=/usr/bin/java\n",
                           "# Cores", "request_cpus = 1\n",
                           "# Memory", "request_memory = 12 GB\n", "# Arguments\n", sep = '\n')
 
