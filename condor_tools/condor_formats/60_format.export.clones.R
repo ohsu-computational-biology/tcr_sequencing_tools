@@ -47,7 +47,7 @@ for (i in 1:length(list.of.files))   {
 	"-readIds $(index_dir)S", index, "_index.txt ",
 	"-cloneId $(index_dir)S", index, "_index.txt ",
         "$(input_dir)", list.of.files[i], " ",   #   input
-        "$(output_dir)", output.file.names[i], "_exported.txt", #  ouput
+        "$(output_dir)", output.file.name, "_exported.txt", #  ouput
         "\nqueue 1\n",
         sep=""); 
 }   #   while

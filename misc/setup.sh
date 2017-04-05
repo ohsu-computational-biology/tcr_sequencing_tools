@@ -80,6 +80,5 @@ mkdir condor_logs/setup/md5
 
 # Directory for tools
 mkdir tools
-mkdir tools/formatted
 cp -r $tool/condor_tools/condor_formats $data/tools/
 cp -r $tool/condor_tools/submits $data/tools/

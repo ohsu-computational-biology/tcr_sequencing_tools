@@ -15,7 +15,7 @@ list.of.count.files <- list.of.count.files[order(as.numeric(gsub(".*_S|\\..*", '
 # Initialize vectors
 formatted.vector <- paste("#!/bin/sh\n",
                           'getenv="True"',
-                          "sript_dir=$ENV(tool)/normalize/",
+                          "script_dir=$ENV(tool)/normalize/",
                           "log_dir=$ENV(data)/condor_logs/normalization/",
                           "normalization_dir=$ENV(data)/normalization/",
                           "# Program", "executable=/usr/bin/Rscript\n",
