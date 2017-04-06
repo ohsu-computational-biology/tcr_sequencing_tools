@@ -2,7 +2,7 @@
   <description>Extract specific gene regions from aligned reads</description>
 
   <command>
-    java -Xmx10g -jar $__tool_directory__/mixcr.jar assemble -r $report -t 4 $input $output -f
+    java -Xmx10g -jar $__tool_directory__/mixcr.jar assemble -r $report -i $index -t 4 $input $output -f
   </command>
 
   <inputs>
@@ -11,6 +11,7 @@
 
   <outputs>
     <data name="report" format="tabular" label="Assemble Report"/>
+    <data name="index" label="Index"/>
     <data name="output" label="Assembly"/>
   </outputs>
 
