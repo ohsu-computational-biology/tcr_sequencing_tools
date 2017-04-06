@@ -28,7 +28,7 @@ options(warn=-1);
 ### Arguments
 arguments <- commandArgs(trailingOnly=TRUE);
 input.fastq <- arguments[1];
-forward.reads.to.remove <- arguments[2];
+reads.to.remove <- arguments[2];
 out.remove.dir <- arguments[3];
 out.spike.dir <- arguments[4];
 
@@ -39,7 +39,7 @@ cat(num.fastqs, " fastq reads to process\n", sep="");
 
 
 ###   create variables to store read ids to remove
-forward.ids.to.remove <- character();
+ids.to.remove <- character();
 
     
 ###   Some samples returned an empty list of IDs to remove, raising an 
@@ -47,21 +47,18 @@ forward.ids.to.remove <- character();
 ###	to address this possibility.  TODO:  refine this
 
 ### Get file size
-file.size.forward <- file.size(forward.reads.to.remove);
+file.size.to.remove <- file.size(reads.to.remove);
 
 ### If reads in file
-if(file.size.forward > 0)	{
+if(file.size.to.remove > 0)	{
 
     ##   Read in lists of fastqs to be removed and consolidate into one variable
-    forward.ids.to.remove <- fread(forward.reads.to.remove, sep = '\t')$Reads
+    ids.to.remove <- fread(reads.to.remove, sep = '\t')$Reads
 
     ##   Add alternate version in case header is different
-    alt.forward.ids.to.remove <- str_replace(forward.ids.to.remove, " 1", " 2");
-    forward.ids.to.remove <- c(forward.ids.to.remove, alt.forward.ids.to.remove);
+    alt.ids.to.remove <- str_replace(ids.to.remove, " 1", " 2");
+    ids.to.remove <- c(ids.to.remove, alt.ids.to.remove);
 }   #   fi
-
-# Assign to new variable name
-ids.to.remove <- forward.ids.to.remove
 
 ###   This conditional is another part of error-checking, for the case when
 ###	there are no reads to be removed (e.g. when both .reads.to.remove
