@@ -99,5 +99,13 @@ if (file.exists(output.spikes)){
     file.remove(output.spikes)
 }
 
+
 writeFastq(output.fastq.records, file=output.fastq, compress=FALSE, mode = "w");
-writeFastq(output.spike.records, file=output.spikes, compress=FALSE, mode = "w")
+
+# Can't write NULL fastq file, so improvise
+if(is.null(output.spike.records)){
+    write.table(matrix(nrow=1,ncol=1,data="No.spikes"),sep = '\t', quote = F, row.names=F, col.names=F)
+} else {
+    writeFastq(output.spike.records, file=output.spikes, compress=FALSE, mode = "w")
+}
+
