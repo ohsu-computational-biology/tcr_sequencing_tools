@@ -15,10 +15,7 @@
 							     the number of occurrences of each spike in the sample."/>
     
     <param name="scaling" type="data" label="Scaling Factor" help="Single column of integers to apply to clonotype counts.
-								   Produced by Calculate Scaling Factor."/>
-    
-    <param name="spike" type="data" format="csv" label="Spike Reference File" help="Reference file containing the sequence for each
-									  spike along with the corresponding V and J regions."/>
+								   Produced by Calculate Scaling Factor."/>    
   </inputs>
 
   <outputs>

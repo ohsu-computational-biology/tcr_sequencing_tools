@@ -1,0 +1,26 @@
+<tool id="decontaminate.clones" name="Deconatminate Clones">
+  <description>Search for sequences belonging to the 3 standard monoclonal contaminants and remove them from the files.</description>
+
+  <command>R --vanilla --file=$__tool_directory__/decontaminate.clones.R
+     --args $clone_inputs $clone_outputs $qc_output
+  </command>
+
+  <inputs>
+    <param name="clone_inputs" type="data"  label="MiXCR Clone Files" help="Tab-separated file produced by MiXCR.
+							      Contains counts, fractions, and identifying
+							      information about each clonotype."/>
+    
+
+  </inputs>
+
+  <outputs>
+    <data name="clone_outputs" format="tabular" label="Decontaminated clones"/>
+    <data name="qc_output" format="tabular" label="Decontamination QC"/>
+  </outputs>
+
+  <help>
+    This tool removes monoclonal contamination from the clone files produced by MiXCR, prior to normalization.
+  </help>
+
+</tool>
+
