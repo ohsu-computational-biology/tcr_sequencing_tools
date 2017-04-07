@@ -2,11 +2,12 @@
   <description>for normalization step</description>
 
   <command>R --vanilla --file=$__tool_directory__/calculate.scaling.factor.R
-  --args $inputs $output
+  --args $inputs $ref $output
   </command>
 
   <inputs>
     <param name="inputs" type="data" multiple="True" label="Clonotype Counts" help="25-bp spike count file."/>
+    <param name="ref" type="data" format="tsv" label="Spike Barcode Reference File" help="Barcode reference file with sequence, and V/J identities."/>
   </inputs>
 
   <outputs>

@@ -1,12 +1,13 @@
 #   This function calculates a "global" scaling factor
 #   The factor is calculated using counts of EACH spike for ALL samples
 #   The calculated scaling factor should be applied to each sample's spike count
-
+suppressMessagess(library(data.table))
 
 #   Get command line arguments
 
 inputs <- commandArgs(trailingOnly=TRUE)[1]
-output <- commandArgs(trailingOnly=TRUE)[2]
+ref <- commandArgs(trailingOnly=TRUE)[2]
+output <- commandArgs(trailingOnly=TRUE)[3]
 
 #   Separate multiple input files into a list of individual files
 
@@ -16,9 +17,9 @@ files <- strsplit(inputs, ',')
 #   There should be one row for each spike and one column for each sample in the batch.
 
 temp.file <- files[[1]][1]
-temp <- read.csv(temp.file);
+temp <- fread(temp.file);
 
-num.rows <- length(temp[[1]]);
+num.rows <- temp[,.N]
 num.cols <- length(files[[1]])
 
 counts.and.samples <- matrix(nrow = num.rows, ncol = num.cols);
@@ -30,7 +31,7 @@ for(i in 1:length(files[[1]]))   {
 
     #   Read in file
     curr.file <- files[[1]][i]
-    curr.spike.counts <- read.csv(curr.file)
+    curr.spike.counts <- fread(curr.file)
 
     #   Add counts to matrix
     counts.and.samples[,i] <- curr.spike.counts$spike.count
@@ -49,6 +50,24 @@ spike.count.mean <- sum(sum.across.samples) / num.rows;
 
 scaling.factor <- sum.across.samples / spike.count.mean;
 scaling.factor <- 1 / scaling.factor;
+
+####### Have to now add entry for V122 because we use the same spike/scaling factor for V121 and V122 #######
+
+###   Read in reference spike table
+ref_spikes <- fread(ref)
+
+###     Combine V and J columns with spike counts
+temp.vj <- as.data.frame(cbind(ref_spikes$V, ref_spikes$J, scaling.factor), stringsAsFactors = F)
+###   Extract the V121/V122 spike
+v.122 <- temp.vj[temp.vj$V1 == "V12-1-2-",]
+###   rename V12-1-2 to V121 and V122
+temp.vj$V1 <- gsub("V12-1-2-", "V12-1-", temp.vj$V1)
+v.122$V1 <- gsub("V12-1-2-", "V12-2-", v.122$V1)
+
+###   Add V122 to the other scaling factors
+final.vj <- as.data.frame(rbind(temp.vj, v.122), stringsAsFactors = F)
+###   Extract just scaling factor values
+scaling.factor <- final.vj$scaling.factor
 
 #   Write output.
 write.table(scaling.factor,

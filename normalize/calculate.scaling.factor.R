@@ -41,6 +41,9 @@ for(i in 1:length(spike.count.files))   {
     counts.and.samples[,i] <- curr.spike.counts$spike.count;
 }   #   for
 
+## Add one to all cells to make sure to avoid having zeroes
+counts.and.samples <- apply(counts.and.samples, c(1,2), function(x) x + 1)
+
 ###   Calculate mean number of spikes found, across all samples
 sum.across.samples <- apply(counts.and.samples, 1, sum);
 spike.count.mean <- sum(sum.across.samples) / num.rows;
