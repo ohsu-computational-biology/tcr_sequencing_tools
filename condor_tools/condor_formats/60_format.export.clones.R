@@ -3,6 +3,8 @@ arguments <- commandArgs(trailingOnly=TRUE);
 list.of.files <- arguments[1];      # /home/exacloud/lustre1/CompBio/data/tcrseq/dhaarini/DNAXXXXLC/mixcr/assemblies/
 out.dir <- arguments[2]
 
+if (is.na(out.dir)){out.dir <- "../submits/"}
+
 # List files from directory and sort them.
 list.of.files <- list.files(list.of.files);
 list.of.files <- list.of.files[order(as.numeric(gsub(".*_S|_alignment.*", '', list.of.files)))]

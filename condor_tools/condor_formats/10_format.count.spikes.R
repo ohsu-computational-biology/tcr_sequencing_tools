@@ -12,6 +12,8 @@ list.of.files <- arguments[1];      # directory of raw files in fastq format
 bp <- arguments[2];                 # length of spike - 25 or 9
 out.dir <- arguments[3]
 
+if (is.na(out.dir)){out.dir <- "../submits/"}
+
 ### Read in files and sort
 bp.dir <- paste(bp, "bp", sep="");
 files <- list.files(list.of.files)

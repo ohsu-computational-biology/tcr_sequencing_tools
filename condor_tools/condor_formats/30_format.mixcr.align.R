@@ -14,6 +14,8 @@ list.of.files <- arguments[1];      # /home/exacloud/lustre1/CompBio/data/tcrseq
                                         # despiked_fastqs
 out.dir <- arguments[2]
 
+if (is.na(out.dir)){out.dir <- "../submits/"}
+
 # Get files and sort them
 list.of.files <- list.files(list.of.files)
 list.of.files <- list.of.files[order(as.numeric(gsub(".*_S|\\..*", '', list.of.files)))]

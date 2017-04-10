@@ -39,6 +39,10 @@ max.clone.count <- numeric(length(clone.files.in.dir))
 top.10 <- data.frame(matrix(nrow = 10, ncol = length(clone.files.in.dir)))
 top.25 <- data.frame(matrix(nrow = 25, ncol = length(clone.files.in.dir)))
 top.50 <- data.frame(matrix(nrow = 50, ncol = length(clone.files.in.dir)))
+top.100 <- data.frame(matrix(nrow = 100, ncol = length(clone.files.in.dir)))
+top.200 <- data.frame(matrix(nrow = 200, ncol = length(clone.files.in.dir)))
+top.250 <- data.frame(matrix(nrow = 250, ncol = length(clone.files.in.dir)))
+top.500 <- data.frame(matrix(nrow = 500, ncol = length(clone.files.in.dir)))
 
 for(i in 1:length(clone.files.in.dir))	{
 
@@ -105,6 +109,11 @@ for(i in 1:length(clone.files.in.dir))	{
     top.10[,i] <- clone.curr.record[[column]][1:10]
     top.25[,i] <- clone.curr.record[[column]][1:25]
     top.50[,i] <- clone.curr.record[[column]][1:50]
+    top.100[,i] <- clone.curr.record[[column]][1:100]
+    top.200[,i] <- clone.curr.record[[column]][1:200]
+    top.250[,i] <- clone.curr.record[[column]][1:250]
+    top.500[,i] <- clone.curr.record[[column]][1:500]
+    
 
     #   update progress
     if((i %%10) == 0)   {
@@ -117,15 +126,22 @@ for(i in 1:length(clone.files.in.dir))	{
 top.10.summary <- round(t(apply(top.10, 2, function(x) c(mean(x), median(x), sum(x)))), digits = 4)
 top.25.summary <- round(t(apply(top.25, 2, function(x) c(mean(x), median(x), sum(x)))), digits = 4)
 top.50.summary <- round(t(apply(top.50, 2, function(x) c(mean(x), median(x), sum(x)))), digits = 4)
+top.100.summary <- round(t(apply(top.100, 2, function(x) c(mean(x), median(x), sum(x)))), digits = 4)
+top.200.summary <- round(t(apply(top.200, 2, function(x) c(mean(x), median(x), sum(x)))), digits = 4)
+top.250.summary <- round(t(apply(top.250, 2, function(x) c(mean(x), median(x), sum(x)))), digits = 4)
+top.500.summary <- round(t(apply(top.500, 2, function(x) c(mean(x), median(x), sum(x)))), digits = 4)
 
 #   create output data.frame
 output.df <- data.frame(clone.files.in.dir, calculated.entropies, norm.entropy, unique.clones, clonality,
 	     		adaptive.clonality, max.clonal.freq, max.clone.count,
-			top.10.summary, top.25.summary, top.50.summary);
+			top.10.summary, top.25.summary, top.50.summary, top.100.summary, top.200.summary,
+                        top.250.summary, top.500.summary);
 
 colnames(output.df) <- c("File", "Shannon Entropy", "Normalized Entropy", "Unique Clonotypes", "Clonality",
                          "Adaptive Clonality", "Max Clonal Freq", "Max Clone Count", "top10.mean", "top10.median",
-                         "top10.sum", "top25.mean", "top25.median", "top25.sum", "top50.mean", "top50.median", "top50.sum");
+                         "top10.sum", "top25.mean", "top25.median", "top25.sum", "top50.mean", "top50.median", "top50.sum",
+                         "top100.mean", "top100.median", "top100.sum", "top200.mean", "top200.median", "top200.sum",
+                         "top250.mean", "top250.median", "top250.sum","top500.mean", "top500.median", "top500.sum");
 
 #   write output
 file.name <- "uniques.shannon.clonality.txt"

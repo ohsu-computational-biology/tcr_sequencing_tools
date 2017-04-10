@@ -6,6 +6,8 @@ to.remove.forward <- arguments[2];  # /home/exacloud/lustre1/CompBio/data/tcrseq
                                         # spike_counts/9bp/reads_to_remove/
 out.dir <- arguments[3]
 
+if (is.na(out.dir)){out.dir <- "../submits/"}
+
 # List files and sort them.
 fastqs <- list.files(fastq.files)
 sorted <- fastqs[order(as.numeric(gsub(".*_S|\\..*", '', fastqs)))]

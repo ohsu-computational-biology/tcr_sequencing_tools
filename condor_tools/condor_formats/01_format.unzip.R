@@ -11,6 +11,8 @@ fastq.dir <- arguments[1];      # directory of raw files in fastq format (gzippe
                                         # fastqs_from_core/fastqs/
 out.dir <- arguments[2];
 
+if (is.na(out.dir)){out.dir <- "../submits/"}
+
 ## Initialize vector and fill with submission information
 formatted.vector <- paste('#!/bin/sh\n',
                           'getenv="True"',

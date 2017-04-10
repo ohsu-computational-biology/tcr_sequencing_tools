@@ -6,6 +6,8 @@ list.of.count.files <- arguments[2];		# /home/exacloud/lustre1/CompBio/data/tcrs
                                         # normalizaiton/counts/
 out.dir <- arguments[3]
 
+if (is.na(out.dir)){out.dir <- "../submits/"}
+
 # List files from directory and sort them.
 list.of.clone.files <- list.files(list.of.clone.files);
 list.of.clone.files <- list.of.clone.files[order(as.numeric(gsub(".*_S|_alignment_.*", '', list.of.clone.files)))]
