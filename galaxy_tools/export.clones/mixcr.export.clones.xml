@@ -2,11 +2,12 @@
   <description>Export tab-separated file of clonotype counts and identification.</description>
 
   <command>
-    java -Xmx10g -jar $__tool_directory__/mixcr.jar exportClones --filter-out-of-frames --filter-stops --preset full -vHit -jHit -f $input $output 
+    java -Xmx10g -jar $__tool_directory__/mixcr.jar exportClones --filter-out-of-frames --filter-stops --preset full -vHit -jHit -f -readIds $index -cloneId $index $input $output 2>%261
   </command>
 
   <inputs>
     <param name="input" type="data" label="Input Clone File" help="Clonotype file (.clns) exported by MiXCR assemble"/>
+    <param name="index" type="data" label="Read-to-clone index file" help="Index file created by MiXCR assemble"/>
   </inputs>
 
   <outputs>

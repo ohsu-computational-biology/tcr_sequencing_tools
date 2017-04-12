@@ -21,13 +21,11 @@
 suppressMessages(source("https://bioconductor.org/biocLite.R", echo = FALSE, verbose = FALSE))
 suppressMessages(library(ShortRead))
 suppressMessages(library(stringr))
+suppressMessages(library(data.table))
 
 #   TODO: handle warnings more better.  At least read.delim() is generating warnings
 # Setting warn to negative value ignores all warnings
 options(warn=-1);   
-
-#remove.fastqs <- function(input.fastq, forward.reads.to.remove, reverse.reads.to.remove) {
-   
 
 arguments <- commandArgs(trailingOnly=TRUE);
 input.fastq <- arguments[1];
@@ -35,9 +33,6 @@ reads.to.remove <- arguments[2];
 output.fastq <- arguments[3]
 output.spikes <- arguments[4]
 
-# Test run through
-#input.fastq <- "~/Desktop/OHSU/tcr_spike/data/DNA160107LC/pear/DNA160107LC_B10_S10.assembled.fastq"
-#reads.to.remove <- "~/Desktop/OHSU/tcr_spike/data/DNA160107LC/to_remove/DNA160107LC_B10_S10.assembled.reads.to.remove.txt"
 
 #   Read in fastq file
 fastq.records <- readFastq(input.fastq);
@@ -54,10 +49,8 @@ file.size.to.remove <- file.size(reads.to.remove);
 if(file.size.to.remove > 0)	{
 #   Read in lists of fastqs to be removed and consolidate into one variable
 #   TODO:  find a cleaner way to import
-ids.to.remove <- read.delim(reads.to.remove,
-							header=FALSE,
-							stringsAsFactors=FALSE);
-ids.to.remove <- ids.to.remove[,1];
+ids.to.remove <- fread(reads.to.remove, sep = '\t')$Reads
+
 alt.ids.to.remove <- str_replace(ids.to.remove, " 1", " 2");
 ids.to.remove <- c(ids.to.remove, alt.ids.to.remove);
 }	#	fi
@@ -73,37 +66,46 @@ ids.to.remove <- c(ids.to.remove, alt.ids.to.remove);
 	#		there are no reads to be removed (e.g. when both .reads.to.remove
 	#		files are empty)
 if(length(ids.to.remove) > 0)	{
-	id.filter <- srFilter(function(x)   {
-							!(x@id %in% ids.to.remove)
-						},   #   function(x),
-						name="id.filter");
-	id.filter.rem <- srFilter(function(x)   {
-	            (x@id %in% ids.to.remove)
-	          },   #   function(x),
-	          name="id.filter.rem");
+    
+    id.filter <- srFilter(function(x)   {
+        !(x@id %in% ids.to.remove)
+    },   #   function(x),
+    name="id.filter");
+    
+    id.keep <- srFilter(function(x)   {
+        (x@id %in% ids.to.remove)
+    },   #   function(x),
+    name="id.keep");
 
-	output.fastq.records <- fastq.records[id.filter(fastq.records)];
-	removed.fastq.records <- fastq.records[id.filter.rem(fastq.records)]
-}	else	{	#	none to remove, so the input fastq is the output fastq
-		output.fastq.records <- fastq.records;
+    output.fastq.records <- fastq.records[id.filter(fastq.records)];
+    output.spike.records <- fastq.records[id.keep(fastq.records)]
+    
+} else {	#	none to remove, so the input fastq is the output fastq
+    output.fastq.records <- fastq.records;
+    output.spike.records <- NULL
 }	#	else
     
 num.records.removed <- length(fastq.records) - length(output.fastq.records);
-  cat("Removing ", num.records.removed, " fastq records\n", sep="");
-     
-  #   write the fastq out
-#  output.file.name <- paste(input.fastq, ".removed.fastq", sep="");
-#  removed.file.name <- paste(input.fastq, ".spiked.reads.fastq", sep="")
-#cat("Writing despiked output to: ", output.file.name, "\n", sep="");
-if (file.exists(output.fastq)){
-   file.remove(output.fastq)
-   }
-  writeFastq(output.fastq.records, file=output.fastq, compress=FALSE, mode = "w");
-#cat("Writing removed spikes output to: ", removed.file.name, "\n", sep="")
-if (file.exists(output.spikes)){
-   file.remove(output.spikes)
-   }
-  writeFastq(removed.fastq.records, file=output.spikes, compress=FALSE, mode = "w")
+cat("Removing ", num.records.removed, " fastq records\n", sep="");
 
-#}   #   remove.fastqs()
+     
+###   write the fastq out
+### Have to check for pre-existing files first
+if (file.exists(output.fastq)){
+    file.remove(output.fastq)
+}
+
+if (file.exists(output.spikes)){
+    file.remove(output.spikes)
+}
+
+
+writeFastq(output.fastq.records, file=output.fastq, compress=FALSE, mode = "w");
+
+# Can't write NULL fastq file, so improvise
+if(is.null(output.spike.records)){
+    write.table(matrix(nrow=1,ncol=1,data="No.spikes"),sep = '\t', quote = F, row.names=F, col.names=F)
+} else {
+    writeFastq(output.spike.records, file=output.spikes, compress=FALSE, mode = "w")
+}
 

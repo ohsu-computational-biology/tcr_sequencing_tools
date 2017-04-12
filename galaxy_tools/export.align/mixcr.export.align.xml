@@ -3,11 +3,12 @@
 
   <command>
     java -Xmx10g -jar $__tool_directory__/mixcr.jar exportAlignments -f -vHit -jHit -dHit -vAlignment -jAlignment -sequence -readId
-    -descrR1 $input $output
+    -descrR1 -cloneId $index $input $output 2>%261
   </command>
 
   <inputs>
     <param name="input" type="data" label="Input alignment file (.vdjca)" help="File produced by MiXCR align command."/>
+    <param name="index" type="data" label="Read-to-clone index file" help="Index file produced by MiXCR assemble command."/>
 
   </inputs>
 

@@ -1,18 +1,19 @@
 <tool id="count.spikes" name="Count Spikes" version="0.1.0">
   <description>for spike removal or normalization.</description>
   <command> R --vanilla --file=$__tool_directory__/count.spikes.R
-      --args $input_fastq $spike_file $spike_length $output_count $output_remove
+      --args $input_fastq $spike_file $spike_length $output_count $output_remove $output_qc
    </command>
 
    <inputs>
     <param name="input_fastq" type="data" format="fastq" label="Input Fastq" help="PEARed fastq file"/>
-    <param name="spike_file" type="data"  format="csv" label="Spike reference file" help="list of spike barcodes"/>
+    <param name="spike_file" type="data"  format="tsv" label="Spike reference file" help="list of spike barcodes"/>
     <param  name="spike_length" type="text" format="integer" value="9" help="9 for spike removal and 25 for normalization"/>
   </inputs>
 
   <outputs>
-    <data name="output_count" format="csv" label="Spike Count (${spike_length}-bp)"/>
+    <data name="output_count" format="tabular" label="Spike Count (${spike_length}-bp)"/>
     <data name="output_remove" format="tabular" label="Reads to remove"/>
+    <data name="output_qc" format="tabular" label="Spike QC (${spike_length}-bp)"/>
   </outputs>
 
   <tests>

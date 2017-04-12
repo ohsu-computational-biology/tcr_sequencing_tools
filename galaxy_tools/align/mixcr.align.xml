@@ -2,7 +2,7 @@
   <description>Align sequencing reads to reference V, D, and J genes of T-cell receptors</description>
 
   <command>
-    java -Xmx10g -jar $__tool_directory__/mixcr.jar align -f -l $locus -s $species $save_des $save_reads
+    java -Xmx10g -jar $__tool_directory__/mixcr.jar align -f -c $chain -s $species $save_des $save_reads $all_reads
     -OminSumScore=$min_sum -OvParameters.parameters.absoluteMinScore=$v_abs_min -OjParameters.parameters.absoluteMinScore=$j_abs_min
     -r $report $input $output
   </command>
@@ -12,7 +12,7 @@
 									     removed.">
     </param>
     
-    <param name="locus" type="select" label="Locus" multiple="TRUE" help="Immunological loci to align with. Must select one -
+    <param name="chain" type="select" label="Chain" multiple="TRUE" help="Target immunological chain to  align to. Must select one -
 									  we align to TRB">
       <option value="TRB">TRB</option>
       <option value="TRA">TRA</option>
@@ -21,6 +21,7 @@
       <option value="IGH">IGH</option>
       <option value="IGL">IGL</option>
       <option value="IGK">IGK</option>
+      <option value="ALL">ALL</option>
     </param>
     
     <param name="species" type="select" label="Species" help="Species to align to.">
@@ -39,6 +40,12 @@
 										    exporting reads aggregated by clones).
 										    Must select yes or no.">
       <option value="-g">Yes</option>
+      <option value="">No</option>
+    </param>
+
+    <param name="all_reads" type="select" label="Output all reads" help="Write alignment results for all input reads - including empty
+									 results for non-aligned reads.">
+      <option value="-v">Yes</option>
       <option value="">No</option>
     </param>
 
