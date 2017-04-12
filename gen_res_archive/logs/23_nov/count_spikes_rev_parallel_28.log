@@ -1,0 +1,52 @@
+000 (119487.027.000) 11/23 16:28:01 Job submitted from host: <172.20.12.20:41606>
+...
+001 (119487.027.000) 11/23 16:28:10 Job executing on host: <172.20.15.202:45621?noUDP>
+...
+006 (119487.027.000) 11/23 16:28:18 Image size of job updated: 210628
+	206  -  MemoryUsage of job (MB)
+	210628  -  ResidentSetSize of job (KB)
+...
+006 (119487.027.000) 11/23 16:33:18 Image size of job updated: 1003092
+	980  -  MemoryUsage of job (MB)
+	1003092  -  ResidentSetSize of job (KB)
+...
+006 (119487.027.000) 11/23 16:38:18 Image size of job updated: 1606476
+	1569  -  MemoryUsage of job (MB)
+	1606476  -  ResidentSetSize of job (KB)
+...
+006 (119487.027.000) 11/23 16:43:19 Image size of job updated: 1641824
+	1604  -  MemoryUsage of job (MB)
+	1641824  -  ResidentSetSize of job (KB)
+...
+006 (119487.027.000) 11/23 16:48:19 Image size of job updated: 1770404
+	1729  -  MemoryUsage of job (MB)
+	1770404  -  ResidentSetSize of job (KB)
+...
+006 (119487.027.000) 11/23 16:53:19 Image size of job updated: 2060080
+	2012  -  MemoryUsage of job (MB)
+	2060080  -  ResidentSetSize of job (KB)
+...
+006 (119487.027.000) 11/23 17:08:20 Image size of job updated: 2071596
+	2024  -  MemoryUsage of job (MB)
+	2071596  -  ResidentSetSize of job (KB)
+...
+006 (119487.027.000) 11/23 17:18:21 Image size of job updated: 2579040
+	2519  -  MemoryUsage of job (MB)
+	2579040  -  ResidentSetSize of job (KB)
+...
+005 (119487.027.000) 11/23 17:19:45 Job terminated.
+	(1) Normal termination (return value 0)
+		Usr 0 00:14:39, Sys 0 00:36:47  -  Run Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Run Local Usage
+		Usr 0 00:14:39, Sys 0 00:36:47  -  Total Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Total Local Usage
+	0  -  Run Bytes Sent By Job
+	0  -  Run Bytes Received By Job
+	0  -  Total Bytes Sent By Job
+	0  -  Total Bytes Received By Job
+	Partitionable Resources :    Usage  Request Allocated
+	   Cpus                 :                 1         1
+	   Disk (KB)            :       15       15   2137751
+	   Memory (MB)          :     2519     8192      8192
+	   Multinode            :                           1
+...

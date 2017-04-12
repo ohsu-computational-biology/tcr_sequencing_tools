@@ -1,0 +1,104 @@
+000 (119485.041.000) 11/23 16:27:45 Job submitted from host: <172.20.12.20:41606>
+...
+001 (119485.041.000) 11/23 16:27:48 Job executing on host: <172.20.15.180:49198?noUDP>
+...
+006 (119485.041.000) 11/23 16:27:56 Image size of job updated: 211012
+	206  -  MemoryUsage of job (MB)
+	210944  -  ResidentSetSize of job (KB)
+...
+006 (119485.041.000) 11/23 16:32:56 Image size of job updated: 1486576
+	1452  -  MemoryUsage of job (MB)
+	1486508  -  ResidentSetSize of job (KB)
+...
+006 (119485.041.000) 11/23 16:37:57 Image size of job updated: 1737760
+	1697  -  MemoryUsage of job (MB)
+	1737692  -  ResidentSetSize of job (KB)
+...
+006 (119485.041.000) 11/23 16:42:58 Image size of job updated: 2022204
+	1975  -  MemoryUsage of job (MB)
+	2022136  -  ResidentSetSize of job (KB)
+...
+006 (119485.041.000) 11/23 16:47:58 Image size of job updated: 2255020
+	2203  -  MemoryUsage of job (MB)
+	2254952  -  ResidentSetSize of job (KB)
+...
+006 (119485.041.000) 11/23 16:52:58 Image size of job updated: 2481348
+	2424  -  MemoryUsage of job (MB)
+	2481280  -  ResidentSetSize of job (KB)
+...
+006 (119485.041.000) 11/23 17:02:59 Image size of job updated: 2726920
+	2663  -  MemoryUsage of job (MB)
+	2726852  -  ResidentSetSize of job (KB)
+...
+006 (119485.041.000) 11/23 17:07:59 Image size of job updated: 2907716
+	2840  -  MemoryUsage of job (MB)
+	2907648  -  ResidentSetSize of job (KB)
+...
+006 (119485.041.000) 11/23 17:13:01 Image size of job updated: 2923188
+	2855  -  MemoryUsage of job (MB)
+	2923120  -  ResidentSetSize of job (KB)
+...
+006 (119485.041.000) 11/23 17:23:01 Image size of job updated: 3122376
+	3050  -  MemoryUsage of job (MB)
+	3122308  -  ResidentSetSize of job (KB)
+...
+006 (119485.041.000) 11/23 17:33:03 Image size of job updated: 3562920
+	3480  -  MemoryUsage of job (MB)
+	3562852  -  ResidentSetSize of job (KB)
+...
+006 (119485.041.000) 11/23 17:38:03 Image size of job updated: 3792852
+	3704  -  MemoryUsage of job (MB)
+	3792784  -  ResidentSetSize of job (KB)
+...
+006 (119485.041.000) 11/23 18:08:06 Image size of job updated: 4028492
+	3935  -  MemoryUsage of job (MB)
+	4028424  -  ResidentSetSize of job (KB)
+...
+006 (119485.041.000) 11/23 18:23:08 Image size of job updated: 4344736
+	4243  -  MemoryUsage of job (MB)
+	4344668  -  ResidentSetSize of job (KB)
+...
+006 (119485.041.000) 11/23 18:38:10 Image size of job updated: 4485564
+	4381  -  MemoryUsage of job (MB)
+	4485496  -  ResidentSetSize of job (KB)
+...
+006 (119485.041.000) 11/23 18:43:10 Image size of job updated: 4869664
+	4756  -  MemoryUsage of job (MB)
+	4869596  -  ResidentSetSize of job (KB)
+...
+006 (119485.041.000) 11/23 18:48:10 Image size of job updated: 4905804
+	4791  -  MemoryUsage of job (MB)
+	4905736  -  ResidentSetSize of job (KB)
+...
+006 (119485.041.000) 11/23 18:58:11 Image size of job updated: 4976464
+	4860  -  MemoryUsage of job (MB)
+	4976396  -  ResidentSetSize of job (KB)
+...
+006 (119485.041.000) 11/23 19:13:13 Image size of job updated: 5181300
+	5060  -  MemoryUsage of job (MB)
+	5181232  -  ResidentSetSize of job (KB)
+...
+006 (119485.041.000) 11/23 19:33:15 Image size of job updated: 5499648
+	5371  -  MemoryUsage of job (MB)
+	5499580  -  ResidentSetSize of job (KB)
+...
+006 (119485.041.000) 11/23 19:48:32 Image size of job updated: 5686412
+	5371  -  MemoryUsage of job (MB)
+	5499580  -  ResidentSetSize of job (KB)
+...
+005 (119485.041.000) 11/23 19:48:32 Job terminated.
+	(1) Normal termination (return value 0)
+		Usr 0 00:37:06, Sys 0 02:42:46  -  Run Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Run Local Usage
+		Usr 0 00:37:06, Sys 0 02:42:46  -  Total Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Total Local Usage
+	0  -  Run Bytes Sent By Job
+	0  -  Run Bytes Received By Job
+	0  -  Total Bytes Sent By Job
+	0  -  Total Bytes Received By Job
+	Partitionable Resources :    Usage  Request Allocated
+	   Cpus                 :                 1         1
+	   Disk (KB)            :       15       15   2225485
+	   Memory (MB)          :     5371     8192      8192
+	   Multinode            :                           1
+...

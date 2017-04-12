@@ -1,0 +1,52 @@
+000 (119485.142.000) 11/23 16:27:46 Job submitted from host: <172.20.12.20:41606>
+...
+001 (119485.142.000) 11/23 16:28:10 Job executing on host: <172.20.15.63:46351?noUDP>
+...
+006 (119485.142.000) 11/23 16:28:18 Image size of job updated: 99588
+	98  -  MemoryUsage of job (MB)
+	99588  -  ResidentSetSize of job (KB)
+...
+006 (119485.142.000) 11/23 16:33:18 Image size of job updated: 1108104
+	1083  -  MemoryUsage of job (MB)
+	1108104  -  ResidentSetSize of job (KB)
+...
+006 (119485.142.000) 11/23 16:38:19 Image size of job updated: 1463988
+	1430  -  MemoryUsage of job (MB)
+	1463988  -  ResidentSetSize of job (KB)
+...
+006 (119485.142.000) 11/23 16:58:21 Image size of job updated: 1589596
+	1553  -  MemoryUsage of job (MB)
+	1589596  -  ResidentSetSize of job (KB)
+...
+006 (119485.142.000) 11/23 17:03:21 Image size of job updated: 1654904
+	1617  -  MemoryUsage of job (MB)
+	1654904  -  ResidentSetSize of job (KB)
+...
+006 (119485.142.000) 11/23 17:18:23 Image size of job updated: 1882288
+	1839  -  MemoryUsage of job (MB)
+	1882288  -  ResidentSetSize of job (KB)
+...
+006 (119485.142.000) 11/23 17:23:23 Image size of job updated: 2151856
+	2102  -  MemoryUsage of job (MB)
+	2151856  -  ResidentSetSize of job (KB)
+...
+006 (119485.142.000) 11/23 17:43:25 Image size of job updated: 2771080
+	2707  -  MemoryUsage of job (MB)
+	2771080  -  ResidentSetSize of job (KB)
+...
+005 (119485.142.000) 11/23 17:44:28 Job terminated.
+	(1) Normal termination (return value 0)
+		Usr 0 00:16:10, Sys 0 01:00:05  -  Run Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Run Local Usage
+		Usr 0 00:16:10, Sys 0 01:00:05  -  Total Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Total Local Usage
+	0  -  Run Bytes Sent By Job
+	0  -  Run Bytes Received By Job
+	0  -  Total Bytes Sent By Job
+	0  -  Total Bytes Received By Job
+	Partitionable Resources :    Usage  Request Allocated
+	   Cpus                 :                 1         1
+	   Disk (KB)            :       15       15   2052571
+	   Memory (MB)          :     2707     8192      8192
+	   Multinode            :                           1
+...

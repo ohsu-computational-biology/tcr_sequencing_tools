@@ -1,0 +1,52 @@
+000 (119648.114.000) 11/24 08:43:38 Job submitted from host: <172.20.12.20:41606>
+...
+001 (119648.114.000) 11/24 08:43:50 Job executing on host: <172.20.15.190:41168?noUDP>
+...
+006 (119648.114.000) 11/24 08:43:59 Image size of job updated: 198980
+	195  -  MemoryUsage of job (MB)
+	198980  -  ResidentSetSize of job (KB)
+...
+006 (119648.114.000) 11/24 08:49:00 Image size of job updated: 1453576
+	1419  -  MemoryUsage of job (MB)
+	1452144  -  ResidentSetSize of job (KB)
+...
+006 (119648.114.000) 11/24 08:54:00 Image size of job updated: 2221576
+	2169  -  MemoryUsage of job (MB)
+	2220144  -  ResidentSetSize of job (KB)
+...
+006 (119648.114.000) 11/24 08:59:01 Image size of job updated: 3757576
+	3669  -  MemoryUsage of job (MB)
+	3756144  -  ResidentSetSize of job (KB)
+...
+006 (119648.114.000) 11/24 09:04:02 Image size of job updated: 6510240
+	6356  -  MemoryUsage of job (MB)
+	6508364  -  ResidentSetSize of job (KB)
+...
+006 (119648.114.000) 11/24 09:09:02 Image size of job updated: 48273228
+	46954  -  MemoryUsage of job (MB)
+	48079904  -  ResidentSetSize of job (KB)
+...
+006 (119648.114.000) 11/24 09:14:03 Image size of job updated: 52135828
+	48093  -  MemoryUsage of job (MB)
+	49246936  -  ResidentSetSize of job (KB)
+...
+006 (119648.114.000) 11/24 09:29:06 Image size of job updated: 65716692
+	63998  -  MemoryUsage of job (MB)
+	65533596  -  ResidentSetSize of job (KB)
+...
+005 (119648.114.000) 11/24 09:39:46 Job terminated.
+	(1) Normal termination (return value 0)
+		Usr 0 00:35:00, Sys 0 00:19:14  -  Run Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Run Local Usage
+		Usr 0 00:35:00, Sys 0 00:19:14  -  Total Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Total Local Usage
+	0  -  Run Bytes Sent By Job
+	0  -  Run Bytes Received By Job
+	0  -  Total Bytes Sent By Job
+	0  -  Total Bytes Received By Job
+	Partitionable Resources :    Usage  Request Allocated
+	   Cpus                 :                 1         1
+	   Disk (KB)            :       15       15   2183438
+	   Memory (MB)          :    63998     4096      4096
+	   Multinode            :                           1
+...

@@ -1,0 +1,6 @@
+Processing fastq: /mnt/lustre1/CompBio/data/tcrseq/dhaarini/DNA150826LC/150924_NS500681_0014_AH3NTVAFXX/reads_to_remove/9bp_reads_to_remove/DNA150826LC_37_S37.assembled.fastq
+Forward reads.to.remove: /mnt/lustre1/CompBio/data/tcrseq/dhaarini/DNA150826LC/150924_NS500681_0014_AH3NTVAFXX/reads_to_remove/9bp_reads_to_remove/DNA150826LC_37_S37.assembled.reads.to.remove.9bp.FWD.txt
+Reverse reads.to.remove: /mnt/lustre1/CompBio/data/tcrseq/dhaarini/DNA150826LC/150924_NS500681_0014_AH3NTVAFXX/reads_to_remove/9bp_reads_to_remove/DNA150826LC_37_S37.assembled.reads.to.remove.9bp.REV.txt
+
+495950 fastq reads to process
+Removed 54429 fastq records, writing to /mnt/lustre1/CompBio/data/tcrseq/dhaarini/DNA150826LC/150924_NS500681_0014_AH3NTVAFXX/reads_to_remove/9bp_reads_to_remove/DNA150826LC_37_S37.assembled.fastq.removed.fastq

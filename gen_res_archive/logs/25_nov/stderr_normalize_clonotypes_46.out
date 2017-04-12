@@ -1,0 +1,3 @@
+Warning message:
+In read.table(file = file, header = header, sep = sep, quote = quote,  :
+  incomplete final line found by readTableHeader on '/mnt/lustre1/CompBio/data/tcrseq/dhaarini/DNA150826LC/150924_NS500681_0014_AH3NTVAFXX/mixcr/exported/DNA150826LC_142_S141_alignment_clones_exported.txt'

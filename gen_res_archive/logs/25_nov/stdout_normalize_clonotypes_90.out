@@ -1,0 +1,7 @@
+Running normalize.clonotype.counts.condor.R
+	Clone file:		/mnt/lustre1/CompBio/data/tcrseq/dhaarini/DNA150826LC/150924_NS500681_0014_AH3NTVAFXX/mixcr/exported/DNA150826LC_30_S30_alignment_clones_exported.txt
+	Spike count file:		/mnt/lustre1/CompBio/data/tcrseq/dhaarini/DNA150826LC/150924_NS500681_0014_AH3NTVAFXX/spike_counts/25bp_counts/DNA150826LC_30_S30.assembled.spike.counts.25bp.FWD.txt
+	Scaling factor file:		/mnt/lustre1/CompBio/data/tcrseq/dhaarini/DNA150826LC/150924_NS500681_0014_AH3NTVAFXX/mixcr/reference/scaling_factor.txt
+Writing unconverted output to: /mnt/lustre1/CompBio/data/tcrseq/dhaarini/DNA150826LC/150924_NS500681_0014_AH3NTVAFXX/mixcr/normalized_clones/DNA150826LC_30_S30_alignment_clones_exported.txt_normalized_unconverted.txt
+Writing VDJTools-formatted output to: /mnt/lustre1/CompBio/data/tcrseq/dhaarini/DNA150826LC/150924_NS500681_0014_AH3NTVAFXX/mixcr/normalized_clones/DNA150826LC_30_S30_alignment_clones_exported.txt_normalized.txt
+

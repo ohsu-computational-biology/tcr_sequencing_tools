@@ -1,0 +1,224 @@
+Loading required package: BiocGenerics
+Loading required package: methods
+Loading required package: parallel
+
+Attaching package: 'BiocGenerics'
+
+The following objects are masked from 'package:parallel':
+
+    clusterApply, clusterApplyLB, clusterCall, clusterEvalQ,
+    clusterExport, clusterMap, parApply, parCapply, parLapply,
+    parLapplyLB, parRapply, parSapply, parSapplyLB
+
+The following objects are masked from 'package:stats':
+
+    IQR, mad, xtabs
+
+The following objects are masked from 'package:base':
+
+    anyDuplicated, append, as.data.frame, as.vector, cbind, colnames,
+    do.call, duplicated, eval, evalq, Filter, Find, get, grep, grepl,
+    intersect, is.unsorted, lapply, lengths, Map, mapply, match, mget,
+    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+    rbind, Reduce, rownames, sapply, setdiff, sort, table, tapply,
+    union, unique, unlist, unsplit
+
+Loading required package: BiocParallel
+Loading required package: Biostrings
+Loading required package: S4Vectors
+Loading required package: stats4
+Loading required package: IRanges
+Loading required package: XVector
+Loading required package: Rsamtools
+Loading required package: GenomeInfoDb
+Loading required package: GenomicRanges
+Loading required package: GenomicAlignments
+Loading required package: SummarizedExperiment
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+626001 fastq reads to process
+Processing spike 10 out of 260
+Processing spike 20 out of 260
+Processing spike 30 out of 260
+Processing spike 40 out of 260
+Processing spike 50 out of 260
+Processing spike 60 out of 260
+Processing spike 70 out of 260
+Processing spike 80 out of 260
+Processing spike 90 out of 260
+Processing spike 100 out of 260
+Processing spike 110 out of 260
+Processing spike 120 out of 260
+Processing spike 130 out of 260
+Processing spike 140 out of 260
+Processing spike 150 out of 260
+Processing spike 160 out of 260
+Processing spike 170 out of 260
+Processing spike 180 out of 260
+Processing spike 190 out of 260
+Processing spike 200 out of 260
+Processing spike 210 out of 260
+Processing spike 220 out of 260
+Processing spike 230 out of 260
+Processing spike 240 out of 260
+Processing spike 250 out of 260
+Processing spike 260 out of 260
+Writing spike count file to: /home/exacloud/lustre1/CompBio/data/tcrseq/dhaarini/DNA150826LC/150924_NS500681_0014_AH3NTVAFXX/rev_2/DNA150826LC_12_S12_R2_001.fastq.counts.25bp.txt
+Writing list of reads to remove to: /home/exacloud/lustre1/CompBio/data/tcrseq/dhaarini/DNA150826LC/150924_NS500681_0014_AH3NTVAFXX/rev_2/DNA150826LC_12_S12_R2_001.fastq.reads.to.remove.txt
+Processed: DNA150826LC_12_S12_R2_001.fastq (1 of 57)
+595440 fastq reads to process
+Processing spike 10 out of 260
+Processing spike 20 out of 260
+Processing spike 30 out of 260
+Processing spike 40 out of 260
+Processing spike 50 out of 260
+Processing spike 60 out of 260
+Processing spike 70 out of 260
+Processing spike 80 out of 260
+Processing spike 90 out of 260
+Processing spike 100 out of 260
+Processing spike 110 out of 260
+Processing spike 120 out of 260
+Processing spike 130 out of 260
+Processing spike 140 out of 260
+Processing spike 150 out of 260
+Processing spike 160 out of 260
+Processing spike 170 out of 260
+Processing spike 180 out of 260
+Processing spike 190 out of 260
+Processing spike 200 out of 260
+Processing spike 210 out of 260
+Processing spike 220 out of 260
+Processing spike 230 out of 260
+Processing spike 240 out of 260
+Processing spike 250 out of 260
+Processing spike 260 out of 260
+Writing spike count file to: /home/exacloud/lustre1/CompBio/data/tcrseq/dhaarini/DNA150826LC/150924_NS500681_0014_AH3NTVAFXX/rev_2/DNA150826LC_120_S119_R2_001.fastq.counts.25bp.txt
+Writing list of reads to remove to: /home/exacloud/lustre1/CompBio/data/tcrseq/dhaarini/DNA150826LC/150924_NS500681_0014_AH3NTVAFXX/rev_2/DNA150826LC_120_S119_R2_001.fastq.reads.to.remove.txt
+Processed: DNA150826LC_120_S119_R2_001.fastq (2 of 57)
+654234 fastq reads to process
+Processing spike 10 out of 260
+Processing spike 20 out of 260
+Processing spike 30 out of 260
+Processing spike 40 out of 260
+Processing spike 50 out of 260
+Processing spike 60 out of 260
+Processing spike 70 out of 260
+Processing spike 80 out of 260
+Processing spike 90 out of 260
+Processing spike 100 out of 260
+Processing spike 110 out of 260
+Processing spike 120 out of 260
+Processing spike 130 out of 260
+Processing spike 140 out of 260
+Processing spike 150 out of 260
+Processing spike 160 out of 260
+Processing spike 170 out of 260
+Processing spike 180 out of 260
+Processing spike 190 out of 260
+Processing spike 200 out of 260
+Processing spike 210 out of 260
+Processing spike 220 out of 260
+Processing spike 230 out of 260
+Processing spike 240 out of 260
+Processing spike 250 out of 260
+Processing spike 260 out of 260
+Writing spike count file to: /home/exacloud/lustre1/CompBio/data/tcrseq/dhaarini/DNA150826LC/150924_NS500681_0014_AH3NTVAFXX/rev_2/DNA150826LC_121_S120_R2_001.fastq.counts.25bp.txt
+Writing list of reads to remove to: /home/exacloud/lustre1/CompBio/data/tcrseq/dhaarini/DNA150826LC/150924_NS500681_0014_AH3NTVAFXX/rev_2/DNA150826LC_121_S120_R2_001.fastq.reads.to.remove.txt
+Processed: DNA150826LC_121_S120_R2_001.fastq (3 of 57)
+835813 fastq reads to process
+Processing spike 10 out of 260
+Processing spike 20 out of 260
+Processing spike 30 out of 260
+Processing spike 40 out of 260
+Processing spike 50 out of 260
+Processing spike 60 out of 260
+Processing spike 70 out of 260
+Processing spike 80 out of 260
+Processing spike 90 out of 260
+Processing spike 100 out of 260
+Processing spike 110 out of 260
+Processing spike 120 out of 260
+Processing spike 130 out of 260
+Processing spike 140 out of 260
+Processing spike 150 out of 260
+Processing spike 160 out of 260
+Processing spike 170 out of 260
+Processing spike 180 out of 260
+Processing spike 190 out of 260
+Processing spike 200 out of 260
+Processing spike 210 out of 260
+Processing spike 220 out of 260
+Processing spike 230 out of 260
+Processing spike 240 out of 260
+Processing spike 250 out of 260
+Processing spike 260 out of 260
+Writing spike count file to: /home/exacloud/lustre1/CompBio/data/tcrseq/dhaarini/DNA150826LC/150924_NS500681_0014_AH3NTVAFXX/rev_2/DNA150826LC_122_S121_R2_001.fastq.counts.25bp.txt
+Writing list of reads to remove to: /home/exacloud/lustre1/CompBio/data/tcrseq/dhaarini/DNA150826LC/150924_NS500681_0014_AH3NTVAFXX/rev_2/DNA150826LC_122_S121_R2_001.fastq.reads.to.remove.txt
+Processed: DNA150826LC_122_S121_R2_001.fastq (4 of 57)
+721740 fastq reads to process
+Processing spike 10 out of 260
+Processing spike 20 out of 260
+Processing spike 30 out of 260
+Processing spike 40 out of 260
+Processing spike 50 out of 260
+Processing spike 60 out of 260
+Processing spike 70 out of 260
+Processing spike 80 out of 260
+Processing spike 90 out of 260
+Processing spike 100 out of 260
+Processing spike 110 out of 260
+Processing spike 120 out of 260
+Processing spike 130 out of 260
+Processing spike 140 out of 260
+Processing spike 150 out of 260
+Processing spike 160 out of 260
+Processing spike 170 out of 260
+Processing spike 180 out of 260
+Processing spike 190 out of 260
+Processing spike 200 out of 260
+Processing spike 210 out of 260
+Processing spike 220 out of 260
+Processing spike 230 out of 260
+Processing spike 240 out of 260
+Processing spike 250 out of 260
+Processing spike 260 out of 260
+Writing spike count file to: /home/exacloud/lustre1/CompBio/data/tcrseq/dhaarini/DNA150826LC/150924_NS500681_0014_AH3NTVAFXX/rev_2/DNA150826LC_123_S122_R2_001.fastq.counts.25bp.txt
+Writing list of reads to remove to: /home/exacloud/lustre1/CompBio/data/tcrseq/dhaarini/DNA150826LC/150924_NS500681_0014_AH3NTVAFXX/rev_2/DNA150826LC_123_S122_R2_001.fastq.reads.to.remove.txt
+Processed: DNA150826LC_123_S122_R2_001.fastq (5 of 57)
+646850 fastq reads to process
+Processing spike 10 out of 260
+Processing spike 20 out of 260
+Processing spike 30 out of 260
+Processing spike 40 out of 260
+Processing spike 50 out of 260
+Processing spike 60 out of 260
+Processing spike 70 out of 260
+Processing spike 80 out of 260
+Processing spike 90 out of 260
+Processing spike 100 out of 260
+Processing spike 110 out of 260
+Processing spike 120 out of 260
+Processing spike 130 out of 260
+Processing spike 140 out of 260
+Processing spike 150 out of 260
+Processing spike 160 out of 260
+Processing spike 170 out of 260
+Processing spike 180 out of 260
+Processing spike 190 out of 260
+Processing spike 200 out of 260
+Processing spike 210 out of 260
+Processing spike 220 out of 260
+Processing spike 230 out of 260
+Processing spike 240 out of 260
+Processing spike 250 out of 260
+Processing spike 260 out of 260
+Writing spike count file to: /home/exacloud/lustre1/CompBio/data/tcrseq/dhaarini/DNA150826LC/150924_NS500681_0014_AH3NTVAFXX/rev_2/DNA150826LC_124_S123_R2_001.fastq.counts.25bp.txt
+Writing list of reads to remove to: /home/exacloud/lustre1/CompBio/data/tcrseq/dhaarini/DNA150826LC/150924_NS500681_0014_AH3NTVAFXX/rev_2/DNA150826LC_124_S123_R2_001.fastq.reads.to.remove.txt
+Processed: DNA150826LC_124_S123_R2_001.fastq (6 of 57)
+778954 fastq reads to process

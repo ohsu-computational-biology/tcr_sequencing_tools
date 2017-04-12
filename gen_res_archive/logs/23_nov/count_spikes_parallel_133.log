@@ -1,0 +1,52 @@
+000 (119485.132.000) 11/23 16:27:46 Job submitted from host: <172.20.12.20:41606>
+...
+001 (119485.132.000) 11/23 16:28:09 Job executing on host: <172.20.15.168:48468?noUDP>
+...
+006 (119485.132.000) 11/23 16:28:18 Image size of job updated: 211964
+	207  -  MemoryUsage of job (MB)
+	211964  -  ResidentSetSize of job (KB)
+...
+006 (119485.132.000) 11/23 16:33:19 Image size of job updated: 621716
+	608  -  MemoryUsage of job (MB)
+	621716  -  ResidentSetSize of job (KB)
+...
+006 (119485.132.000) 11/23 16:38:19 Image size of job updated: 628420
+	614  -  MemoryUsage of job (MB)
+	628420  -  ResidentSetSize of job (KB)
+...
+006 (119485.132.000) 11/23 16:43:19 Image size of job updated: 701364
+	685  -  MemoryUsage of job (MB)
+	701364  -  ResidentSetSize of job (KB)
+...
+006 (119485.132.000) 11/23 16:48:20 Image size of job updated: 708256
+	692  -  MemoryUsage of job (MB)
+	708256  -  ResidentSetSize of job (KB)
+...
+006 (119485.132.000) 11/23 16:58:20 Image size of job updated: 762996
+	746  -  MemoryUsage of job (MB)
+	762996  -  ResidentSetSize of job (KB)
+...
+006 (119485.132.000) 11/23 17:03:21 Image size of job updated: 765920
+	748  -  MemoryUsage of job (MB)
+	765920  -  ResidentSetSize of job (KB)
+...
+006 (119485.132.000) 11/23 17:08:50 Image size of job updated: 784228
+	748  -  MemoryUsage of job (MB)
+	765920  -  ResidentSetSize of job (KB)
+...
+005 (119485.132.000) 11/23 17:08:50 Job terminated.
+	(1) Normal termination (return value 0)
+		Usr 0 00:06:47, Sys 0 00:33:25  -  Run Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Run Local Usage
+		Usr 0 00:06:47, Sys 0 00:33:25  -  Total Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Total Local Usage
+	0  -  Run Bytes Sent By Job
+	0  -  Run Bytes Received By Job
+	0  -  Total Bytes Sent By Job
+	0  -  Total Bytes Received By Job
+	Partitionable Resources :    Usage  Request Allocated
+	   Cpus                 :                 1         1
+	   Disk (KB)            :       15       15   1871554
+	   Memory (MB)          :      748     8192      8192
+	   Multinode            :                           1
+...

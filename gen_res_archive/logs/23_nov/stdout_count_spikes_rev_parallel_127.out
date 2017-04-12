@@ -1,0 +1,30 @@
+856466 fastq reads to process
+Processing spike 10 out of 260
+Processing spike 20 out of 260
+Processing spike 30 out of 260
+Processing spike 40 out of 260
+Processing spike 50 out of 260
+Processing spike 60 out of 260
+Processing spike 70 out of 260
+Processing spike 80 out of 260
+Processing spike 90 out of 260
+Processing spike 100 out of 260
+Processing spike 110 out of 260
+Processing spike 120 out of 260
+Processing spike 130 out of 260
+Processing spike 140 out of 260
+Processing spike 150 out of 260
+Processing spike 160 out of 260
+Processing spike 170 out of 260
+Processing spike 180 out of 260
+Processing spike 190 out of 260
+Processing spike 200 out of 260
+Processing spike 210 out of 260
+Processing spike 220 out of 260
+Processing spike 230 out of 260
+Processing spike 240 out of 260
+Processing spike 250 out of 260
+Processing spike 260 out of 260
+Writing spike count file to: /mnt/lustre1/CompBio/data/tcrseq/dhaarini/DNA150826LC/150924_NS500681_0014_AH3NTVAFXX/peared_fastqs/assembled/DNA150826LC_63_S62.assembled.fastqDNA150826LC_63_S62.assembled.spike.counts.9bp.REV.txt
+Writing list of reads to remove to: /mnt/lustre1/CompBio/data/tcrseq/dhaarini/DNA150826LC/150924_NS500681_0014_AH3NTVAFXX/peared_fastqs/assembled/DNA150826LC_63_S62.assembled.fastqDNA150826LC_63_S62.assembled.9bp.REV.reads.to.remove.txt
+9bp.rev, processed: /mnt/lustre1/CompBio/data/tcrseq/dhaarini/DNA150826LC/150924_NS500681_0014_AH3NTVAFXX/peared_fastqs/assembled/DNA150826LC_63_S62.assembled.fastq

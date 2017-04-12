@@ -1,0 +1,56 @@
+000 (119485.145.000) 11/23 16:27:46 Job submitted from host: <172.20.12.20:41606>
+...
+001 (119485.145.000) 11/23 16:28:09 Job executing on host: <172.20.15.131:40876?noUDP>
+...
+006 (119485.145.000) 11/23 16:28:18 Image size of job updated: 211968
+	207  -  MemoryUsage of job (MB)
+	211968  -  ResidentSetSize of job (KB)
+...
+006 (119485.145.000) 11/23 16:33:19 Image size of job updated: 1496608
+	1462  -  MemoryUsage of job (MB)
+	1496608  -  ResidentSetSize of job (KB)
+...
+006 (119485.145.000) 11/23 16:38:19 Image size of job updated: 1761108
+	1720  -  MemoryUsage of job (MB)
+	1761108  -  ResidentSetSize of job (KB)
+...
+006 (119485.145.000) 11/23 16:43:19 Image size of job updated: 1842840
+	1800  -  MemoryUsage of job (MB)
+	1842840  -  ResidentSetSize of job (KB)
+...
+006 (119485.145.000) 11/23 16:48:20 Image size of job updated: 1850560
+	1808  -  MemoryUsage of job (MB)
+	1850560  -  ResidentSetSize of job (KB)
+...
+006 (119485.145.000) 11/23 16:53:20 Image size of job updated: 1973448
+	1928  -  MemoryUsage of job (MB)
+	1973448  -  ResidentSetSize of job (KB)
+...
+006 (119485.145.000) 11/23 17:08:21 Image size of job updated: 2051848
+	2004  -  MemoryUsage of job (MB)
+	2051848  -  ResidentSetSize of job (KB)
+...
+006 (119485.145.000) 11/23 17:18:22 Image size of job updated: 2078068
+	2030  -  MemoryUsage of job (MB)
+	2078068  -  ResidentSetSize of job (KB)
+...
+006 (119485.145.000) 11/23 17:19:17 Image size of job updated: 2485776
+	2030  -  MemoryUsage of job (MB)
+	2078068  -  ResidentSetSize of job (KB)
+...
+005 (119485.145.000) 11/23 17:19:17 Job terminated.
+	(1) Normal termination (return value 0)
+		Usr 0 00:27:22, Sys 0 00:22:58  -  Run Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Run Local Usage
+		Usr 0 00:27:22, Sys 0 00:22:58  -  Total Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Total Local Usage
+	0  -  Run Bytes Sent By Job
+	0  -  Run Bytes Received By Job
+	0  -  Total Bytes Sent By Job
+	0  -  Total Bytes Received By Job
+	Partitionable Resources :    Usage  Request Allocated
+	   Cpus                 :                 1         1
+	   Disk (KB)            :       15       15   2055929
+	   Memory (MB)          :     2030     8192      8192
+	   Multinode            :                           1
+...

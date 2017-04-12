@@ -1,0 +1,52 @@
+000 (119485.124.000) 11/23 16:27:46 Job submitted from host: <172.20.12.20:41606>
+...
+001 (119485.124.000) 11/23 16:27:50 Job executing on host: <172.20.15.214:40511?noUDP>
+...
+006 (119485.124.000) 11/23 16:27:58 Image size of job updated: 210632
+	206  -  MemoryUsage of job (MB)
+	210632  -  ResidentSetSize of job (KB)
+...
+006 (119485.124.000) 11/23 16:32:58 Image size of job updated: 961796
+	940  -  MemoryUsage of job (MB)
+	961796  -  ResidentSetSize of job (KB)
+...
+006 (119485.124.000) 11/23 16:37:59 Image size of job updated: 1048500
+	1024  -  MemoryUsage of job (MB)
+	1048500  -  ResidentSetSize of job (KB)
+...
+006 (119485.124.000) 11/23 16:43:00 Image size of job updated: 1135920
+	1110  -  MemoryUsage of job (MB)
+	1135920  -  ResidentSetSize of job (KB)
+...
+006 (119485.124.000) 11/23 16:48:00 Image size of job updated: 1281028
+	1252  -  MemoryUsage of job (MB)
+	1281028  -  ResidentSetSize of job (KB)
+...
+006 (119485.124.000) 11/23 16:53:01 Image size of job updated: 1356280
+	1325  -  MemoryUsage of job (MB)
+	1356280  -  ResidentSetSize of job (KB)
+...
+006 (119485.124.000) 11/23 16:58:02 Image size of job updated: 1526208
+	1491  -  MemoryUsage of job (MB)
+	1526208  -  ResidentSetSize of job (KB)
+...
+006 (119485.124.000) 11/23 17:15:38 Image size of job updated: 1659600
+	1491  -  MemoryUsage of job (MB)
+	1526208  -  ResidentSetSize of job (KB)
+...
+005 (119485.124.000) 11/23 17:15:38 Job terminated.
+	(1) Normal termination (return value 0)
+		Usr 0 00:13:22, Sys 0 00:33:38  -  Run Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Run Local Usage
+		Usr 0 00:13:22, Sys 0 00:33:38  -  Total Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Total Local Usage
+	0  -  Run Bytes Sent By Job
+	0  -  Run Bytes Received By Job
+	0  -  Total Bytes Sent By Job
+	0  -  Total Bytes Received By Job
+	Partitionable Resources :    Usage  Request Allocated
+	   Cpus                 :                 1         8
+	   Disk (KB)            :       15       15    909823
+	   Memory (MB)          :     1491     8192     40960
+	   Multinode            :                           0
+...
