@@ -82,6 +82,9 @@ for(i in 1:length(clone.files.in.dir))	{
     ##	Calculate Max. clonotype frequency
     max.clonal.freq[i] <- round(max(clone.curr.record[[column]]), digits = 4)
 
+    ## Mac lone count
+    max.clone.count[i] <- max(clone.curr.record$`Normalized clone count`)
+
     ##  Record frequencies for top 10 and top 25 clones
     clone.curr.record <- clone.curr.record[order(clone.curr.record[[column]], decreasing = T),]
     top.10[,i] <- clone.curr.record[[column]][1:10]
@@ -94,6 +97,22 @@ for(i in 1:length(clone.files.in.dir))	{
 top.10.summary <- round(t(apply(top.10, 2, function(x) c(mean(x), median(x), sum(x)))), digits = 4)
 top.25.summary <- round(t(apply(top.25, 2, function(x) c(mean(x), median(x), sum(x)))), digits = 4)
 top.50.summary <- round(t(apply(top.50, 2, function(x) c(mean(x), median(x), sum(x)))), digits = 4)
+
+## For debug
+## cat("Clone Files\n", length(clone.files.in.dir)); cat("\n")
+## cat("Entropies\n", length(calculated.entropies)); cat("\n")
+## cat("Norm.Entropy\n", length(norm.entropy)); cat("\n")
+## cat("unique.clones\n", length(unique.clones)); cat("\n")
+## cat("Clonality\n", length(clonality)); cat("\n")
+## cat("Adpative.clonality\n", length(adaptive.clonality)); cat("\n")
+## cat("max.clonal.freq\n", length(max.clonal.freq)); cat("\n")
+## cat("max.clone.count\n", length(max.clone.count)); cat("\n")
+## cat("top.10.summary\n"); cat("\n")
+## cat(length(top.10.summary)); cat("\n")
+## cat("top.25.summary"); cat("\n")
+## cat(length(top.25.summary)); cat("\n")
+## cat("top.50.summary\n")
+## cat(length(top.50.summary)); cat("\n")
 
 ###   create output data.frame
 output.df <- data.frame(clone.files.in.dir, calculated.entropies, norm.entropy, unique.clones, clonality,

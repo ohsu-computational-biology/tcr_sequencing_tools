@@ -14,7 +14,7 @@
 
 #	Ensure that numeric outputs are not expressed in scientific notation
 options(scipen=999);
-require(data.table)
+suppressMessages(require(data.table))
 
 
 # Galaxy Argument Test

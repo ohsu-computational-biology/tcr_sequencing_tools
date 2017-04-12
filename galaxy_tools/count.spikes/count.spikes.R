@@ -123,7 +123,8 @@ colnames(records.to.remove.ids.dt) <- "Reads"
 write.table(output.table,
             file=output.count,
             quote=FALSE,
-            sep="\t");
+            sep="\t",
+            row.names=F);
   
 write.table(records.to.remove.ids,
             file=output.remove,

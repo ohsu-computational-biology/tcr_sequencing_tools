@@ -2,7 +2,7 @@
   <description>Use scaling factor to create normalized counts for clonotypes.</description>
 
   <command>R --vanilla --file=$__tool_directory__/normalize.clonotype.counts.R
-     --args $clone $count $scaling $spike $out
+     --args $clone $count $scaling $out
   </command>
 
   <inputs>

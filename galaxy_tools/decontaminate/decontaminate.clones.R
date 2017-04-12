@@ -2,7 +2,7 @@
 ### Remove monoclonal contamination from samples ###
 ####################################################
 
-library(data.table)
+suppressMessages(library(data.table))
 
 # We have three monoclonal sequences that have been used at various points throughout the project. After their introduction, 
 # we have noticed an overabundance of their presence in later samples. This script searches through clone files exported by

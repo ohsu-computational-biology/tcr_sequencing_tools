@@ -1,7 +1,7 @@
 #   This function calculates a "global" scaling factor
 #   The factor is calculated using counts of EACH spike for ALL samples
 #   The calculated scaling factor should be applied to each sample's spike count
-suppressMessagess(library(data.table))
+suppressMessages(library(data.table))
 
 #   Get command line arguments
 
@@ -11,26 +11,26 @@ output <- commandArgs(trailingOnly=TRUE)[3]
 
 #   Separate multiple input files into a list of individual files
 
-files <- strsplit(inputs, ',')
+files <- unlist(strsplit(inputs, ','))
 
 #   Read in first file to construct matrix that will be populated with count data.
 #   There should be one row for each spike and one column for each sample in the batch.
 
-temp.file <- files[[1]][1]
+temp.file <- files[1]
 temp <- fread(temp.file);
 
 num.rows <- temp[,.N]
-num.cols <- length(files[[1]])
+num.cols <- length(files)
 
 counts.and.samples <- matrix(nrow = num.rows, ncol = num.cols);
 
 
 #   Read in each of the spike count files and append count data to counts.and.samples matrix.
 
-for(i in 1:length(files[[1]]))   {
+for(i in 1:length(files))   {
 
     #   Read in file
-    curr.file <- files[[1]][i]
+    curr.file <- files[i]
     curr.spike.counts <- fread(curr.file)
 
     #   Add counts to matrix

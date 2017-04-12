@@ -1,0 +1,29 @@
+<tool id="aggregate.qc" name="Output QC/Analysis in Excel" version="0.1.0">
+  <description>Aggregate QC and Analysis files into excel sheet.</description>
+  <command>R --vanilla --file=$__tool_directory__/aggregate.qc.R
+  --args $count_spikes $align $assemble $decontam $norm $analysis ;
+  mv temp.xlsx $output
+  </command>
+
+  <inputs>
+
+    <param name="count_spikes" type="data" format="tsv" label="Count and Remove Spikes QC" help="QC output of count spikes and remove spikes steps."/>
+    <param name="align" type="data" format="tsv" label="MiXCR Align QC" help="QC output of mixcr alignment step."/>
+    <param name="assemble" type="data" format="tsv" label="MiXCR Assemble QC" help="QC output of mixcr assembly step."/>
+    <param name="decontam" type="data" format="tsv" label="Combined Decontamination QC" help="Aggregated QC files of decontamination step."/>
+    <param name="norm" type="data" format="tsv" label="Normalization QC" help="QC output of normalization step."/>
+    <param name="analysis" type="data" format="tsv" label="Analysis Metrics" help="Output of diversity analysis metrics from analysis step."/>
+
+  </inputs>
+
+  <outputs>
+
+    <data name="output" type="data"  format="xlsx" label="QC_and_Analysis"/>
+
+  </outputs>
+
+  <help>
+    This tool aggregates all of the previously-generated QC and analysis text files into a single excel workbook with named sheets.
+  </help>
+
+</tool>
