@@ -4,7 +4,7 @@
 #       some visualization, analysis, etc. once the data is aggregated
 
 #   Load required libraries
-library(stringr);
+#library(stringr);
 
 #	Get command-line arguments
 arguments <- commandArgs(trailingOnly=TRUE);
@@ -45,48 +45,48 @@ for(i in 1:length(files.in.dir))	{
         stop("Unexpected length of report for file: ", curr.file, "\n", sep="");
     }   #   fi
 
-    curr.date <- str_split(curr.record[1], ":")[[1]];
+    curr.date <- strsplit(curr.record[1], ":")[[1]];
     curr.date <- curr.date[-1];
     curr.date <- paste(curr.date, collapse="");
     output.df[i,]$analysis.date <- curr.date;
     
-    curr.input <- str_split(curr.record[2], ":")[[1]][2];
-    curr.input <- str_trim(curr.input);
+    curr.input <- strsplit(curr.record[2], ":")[[1]][2];
+    curr.input <- trimws(curr.input);
     curr.input <- basename(curr.input);
     output.df[i,]$inputs <- curr.input;
 
-    curr.output <- str_split(curr.record[3], ":")[[1]][2];
-    curr.output <- str_trim(curr.output);
+    curr.output <- strsplit(curr.record[3], ":")[[1]][2];
+    curr.output <- trimws(curr.output);
     curr.output <- basename(curr.output);
     output.df[i,]$output <- curr.output;
 
-    curr.version <- str_split(curr.record[4], ":|;")[[1]][2];
-    curr.version <- str_trim(curr.version);
+    curr.version <- strsplit(curr.record[4], ":|;")[[1]][2];
+    curr.version <- trimws(curr.version);
     output.df[i,]$version <- curr.version;
 
-    curr.time <- str_split(curr.record[5], ":")[[1]][2]
-    curr.time <- str_trim(curr.time)
+    curr.time <- strsplit(curr.record[5], ":")[[1]][2]
+    curr.time <- trimws(curr.time)
     output.df[i,]$time <- curr.time
 
-    curr.command <- str_split(curr.record[6], ":")[[1]][2];
-    curr.command <- str_trim(curr.command);
+    curr.command <- strsplit(curr.record[6], ":")[[1]][2];
+    curr.command <- trimws(curr.command);
     ##    curr.command <- basename(curr.command);
     curr.command <- gsub(" --report.*", "", curr.command)
     output.df[i,]$command <- curr.command;
     
-    curr.total <- str_split(curr.record[7], ":")[[1]][2];
+    curr.total <- strsplit(curr.record[7], ":")[[1]][2];
     output.df[i,]$total.reads <- curr.total;
     
-#    curr.aligned <- str_split(curr.record[6], ":")[[1]][2];
+#    curr.aligned <- strsplit(curr.record[6], ":")[[1]][2];
 #    output.df[i,]$aligned.reads <- curr.aligned;
 
     counter <- 0
     for(j in 8:14)  {
-        curr.temp <- str_trim(str_split(curr.record[j], ":")[[1]][2]);
-	curr.temp <- unlist(str_split(curr.temp, " "));
+        curr.temp <- trimws(strsplit(curr.record[j], ":")[[1]][2]);
+	curr.temp <- unlist(strsplit(curr.temp, " "));
 	curr.num <- as.numeric(curr.temp[1])
 	curr.pct <- curr.temp[2]
-	curr.pct <- as.numeric(str_replace_all(curr.pct, "\\(|%|\\)", ""))
+	curr.pct <- as.numeric(gsub("\\(|%|\\)", "", curr.pct))
         output.df[i,(j+counter)]<- curr.num;
 	output.df[i,(j+counter+1)] <- curr.pct
 	counter <- counter + 1
