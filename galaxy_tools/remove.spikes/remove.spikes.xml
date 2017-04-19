@@ -1,7 +1,12 @@
 <tool id="remove.spikes" name="Remove Spikes" version="0.1.0">
   <description>Remove synthetic template reads from fastqs</description>
-  <command> R --vanilla --file=$__tool_directory__/remove.spikes.R
-      --args $input_fastq $reads_to_remove $output_fastq $output_removed
+  <!--
+  <command> R -\-vanilla -\-file=$__tool_directory__/remove.spikes.R
+     -\-args $input_fastq $reads_to_remove $output_fastq $output_removed
+  </command>
+  -->
+  <command>/usr/bin/Rscript /home/exacloud/lustre1/GalaxyinstalledTest/galaxy-dist/tools/tcr_seq/remove.spikes/remove.spikes.R
+  $input_fastq $reads_to_remove $output_fastq $output_removed
   </command>
 
   <inputs>
