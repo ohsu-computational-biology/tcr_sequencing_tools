@@ -6,7 +6,8 @@
      -\-args $clone_inputs $clone_outputs $qc_output
      </command>
   -->
-  <command>/usr/bin/Rscript /home/exacloud/lustre1/GalaxyinstalledTest/galaxy-dist/tools/tcr_seq/decontaminate/decontaminate.clones.R
+  <!--  <command>/usr/bin/Rscript /home/exacloud/lustre1/GalaxyinstalledTest/galaxy-dist/tools/tcr_seq/decontaminate/decontaminate.clones.R -->
+  <command>/usr/bin/Rscript /home/exacloud/lustre1/users/letaw/galaxy-dist/tools/tcrseq/decontaminate/decontaminate.clones.R
   $clone_inputs $clone_outputs $qc_output
   </command>
 

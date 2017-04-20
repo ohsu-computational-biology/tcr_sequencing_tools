@@ -6,7 +6,8 @@
   -args $inputs $ref $output
   </command>
   -->
-  <command>/usr/bin/Rscript /home/exacloud/lustre1/GalaxyinstalledTest/galaxy-dist/tools/tcr_seq/calc.scaling.factor/calculate.scaling.factor.R
+  <!--  <command>/usr/bin/Rscript /home/exacloud/lustre1/GalaxyinstalledTest/galaxy-dist/tools/tcr_seq/calc.scaling.factor/calculate.scaling.factor.R -->
+  <command>/usr/bin/Rscript /home/exacloud/lustre1/users/letaw/galaxy-dist/tools/tcrseq/calc.scaling.factor/calculate.scaling.factor.R
   $inputs $ref $output
   </command>
   <inputs>

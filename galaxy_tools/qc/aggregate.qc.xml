@@ -15,7 +15,8 @@
     mv temp.xlsx $output
   </command>
   -->
-  <command>/usr/bin/Rscript /home/exacloud/lustre1/GalaxyinstalledTest/galaxy-dist/tools/tcr_seq/qc/aggregate.qc.R
+  <!--  <command>/usr/bin/Rscript /home/exacloud/lustre1/GalaxyinstalledTest/galaxy-dist/tools/tcr_seq/qc/aggregate.qc.R -->
+  <command>/usr/bin/Rscript /home/exacloud/lustre1/users/letaw/galaxy-dist/tools/tcrseq/qc/aggregate.qc.R
   $count_spikes $align $assemble $decontam $norm $analysis; mv temp.xlsx $output
   </command>
   <inputs>

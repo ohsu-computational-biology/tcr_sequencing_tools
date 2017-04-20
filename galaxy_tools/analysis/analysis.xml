@@ -6,8 +6,11 @@
       -args $clone_input $count_input $output
   </command>
   -->
-  <command>/usr/bin/Rscript /home/exacloud/lustre1/GalaxyinstalledTest/galaxy-dist/tools/tcr_seq/analysis/analysis.R
-    $clone_input $count_input $output
+<!-- <command>/usr/bin/Rscript /home/exacloud/lustre1/GalaxyinstalledTest/galaxy-dist/tools/tcr_seq/analysis/analysis.R-->
+<command interpreter="Rscript">
+  analysis.R $clone_input $count_input $output
+<!-- <command>/usr/bin/Rscript /home/exacloud/lustre1/users/letaw/galaxy-dist/tools/tcrseq/analysis/analysis.R -->
+<!--    $clone_input $count_input $output -->
   </command>
   
   <inputs>

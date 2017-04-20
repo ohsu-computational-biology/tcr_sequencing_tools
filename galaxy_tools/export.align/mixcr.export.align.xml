@@ -2,7 +2,7 @@
   <description>Export alignments produced by MiXCR into human-readable tsv files</description>
 
   <command>
-    java -Xmx10g -jar $__tool_directory__/mixcr.jar exportAlignments -f -vHit -jHit -dHit -vAlignment -jAlignment -sequence -readId
+    java -Xmx10g -jar /home/exacloud/lustre1/users/letaw/galaxy-dist/tools/tcrseq/export.align/mixcr.jar exportAlignments -f -vHit -jHit -dHit -vAlignment -jAlignment -sequence -readId
     -descrR1 -cloneId $index $input $output 2>%261
   </command>
 

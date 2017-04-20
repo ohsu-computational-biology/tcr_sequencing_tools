@@ -2,7 +2,8 @@
   <description>Align sequencing reads to reference V, D, and J genes of T-cell receptors</description>
 
   <command>
-    java -Xmx10g -jar $__tool_directory__/mixcr.jar align -f -c $chain -s $species $save_des $save_reads $all_reads
+    java -Xmx10g -jar /home/exacloud/lustre1/users/letaw/galaxy-dist/tools/tcrseq/align/mixcr.jar
+    align -f -c $chain -s $species $save_des $save_reads $all_reads
     -OminSumScore=$min_sum -OvParameters.parameters.absoluteMinScore=$v_abs_min -OjParameters.parameters.absoluteMinScore=$j_abs_min
     -r $report $input $output
   </command>

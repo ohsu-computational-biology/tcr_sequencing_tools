@@ -2,7 +2,7 @@
   <description>Export tab-separated file of clonotype counts and identification.</description>
 
   <command>
-    java -Xmx10g -jar $__tool_directory__/mixcr.jar exportClones --filter-out-of-frames --filter-stops --preset full -vHit -jHit -f -readIds $index -cloneId $index $input $output 2>%261
+    java -Xmx10g -jar /home/exacloud/lustre1/users/letaw/galaxy-dist/tools/tcrseq/export.clones/mixcr.jar exportClones --filter-out-of-frames --filter-stops --preset full -vHit -jHit -f -readIds $index -cloneId $index $input $output 2>%261
   </command>
 
   <inputs>
