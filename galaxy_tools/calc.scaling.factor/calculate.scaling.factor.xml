@@ -6,7 +6,7 @@
   </command>
 
   <inputs>
-    <param name="inputs" type="data" multiple="True" label="Clonotype Counts" help="25-bp spike count file."/>
+    <param name="inputs" type="data" multiple="True" label="Spike Counts" help="25-bp spike count file."/>
     <param name="ref" type="data" format="tsv" label="Spike Barcode Reference File" help="Barcode reference file with sequence, and V/J identities."/>
   </inputs>
 
