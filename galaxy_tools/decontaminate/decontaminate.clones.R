@@ -45,7 +45,7 @@ qc_output <- arguments[3]
 #batch_v <- unlist(strsplit(clone.files[1], split = "_"))[1]
 
 ### Empty QC Matrix
-contamination.qc <- matrix(nrow = 1, ncol = 10)
+contamination.qc <- matrix(nrow = 1, ncol = 11)
 
 ###################
 ### Calculation ###
@@ -147,9 +147,9 @@ curr.clone <- fread(clone_inputs)
 
     ## QC Data
 remaining.count <- orig.total.count - p14.count - ot1.count - el4.count
-qc.columns <- c("Orig.Unique.Clones", "Orig.Total.Clones", "Remaining.Clones", "Contam.clones", "p14.rank", "p14.count", "ot1.rank",
+qc.columns <- c("Sample", "Orig.Unique.Clones", "Orig.Total.Clones", "Remaining.Clones", "Contam.clones", "p14.rank", "p14.count", "ot1.rank",
                 "ot1.count", "el4.rank", "el4.count")
-qc.row <- c(orig.unique.count, orig.total.count, remaining.count, curr_contam_count_v, p14.rank,
+qc.row <- c(clone_inputs, orig.unique.count, orig.total.count, remaining.count, curr_contam_count_v, p14.rank,
             p14.count, ot1.rank, ot1.count, el4.rank, el4.count)
 contamination.qc[1,] <- qc.row
 colnames(contamination.qc) <- qc.columns
