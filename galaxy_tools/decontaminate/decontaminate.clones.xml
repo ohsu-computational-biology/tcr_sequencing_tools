@@ -1,14 +1,10 @@
 <tool id="decontaminate.clones" name="Deconatminate Clones">
   <description>Search for sequences belonging to the 3 standard monoclonal contaminants and remove them from the files.</description>
 
-  <!--
-  <command>R -\-vanilla -\-file=$__tool_directory__/decontaminate.clones.R
-     -\-args $clone_inputs $clone_outputs $qc_output
-     </command>
-  -->
-  <!--  <command>/usr/bin/Rscript /home/exacloud/lustre1/GalaxyinstalledTest/galaxy-dist/tools/tcr_seq/decontaminate/decontaminate.clones.R -->
-  <command>/usr/bin/Rscript /home/exacloud/lustre1/users/letaw/galaxy-dist/tools/tcrseq/decontaminate/decontaminate.clones.R
-  $clone_inputs $clone_outputs $qc_output
+  <command>
+    <!-- /usr/bin/Rscript /home/exacloud/lustre1/users/letaw/galaxy-dist/tools/tcrseq/decontaminate/decontaminate.clones.R -->
+    /usr/bin/Rscript /home/exacloud/lustre1/GalaxyinstalledTest/galaxy-dist/tools/tcr_seq/galaxy_tools/decontaminate/decontaminate.clones.R
+    $clone_inputs $clone_outputs $qc_output
   </command>
 
   <inputs>
