@@ -37,7 +37,6 @@ output.spikes <- arguments[4]
 #   Read in fastq file
 fastq.records <- readFastq(input.fastq);
 num.fastqs <- length(fastq.records);
-cat(num.fastqs, " fastq reads to process\n", sep="");
 
 #	create variables to store read ids to remove
 ids.to.remove <- character();
@@ -49,7 +48,7 @@ file.size.to.remove <- file.size(reads.to.remove);
 if(file.size.to.remove > 0)	{
 #   Read in lists of fastqs to be removed and consolidate into one variable
 #   TODO:  find a cleaner way to import
-ids.to.remove <- fread(reads.to.remove, sep = '\t')$Reads
+ids.to.remove <- unlist(fread(reads.to.remove, sep = '\t'), use.names = F)
 
 alt.ids.to.remove <- str_replace(ids.to.remove, " 1", " 2");
 ids.to.remove <- c(ids.to.remove, alt.ids.to.remove);
@@ -64,7 +63,7 @@ ids.to.remove <- c(ids.to.remove, alt.ids.to.remove);
 
 	#	This conditional is another part of error-checking, for the case when
 	#		there are no reads to be removed (e.g. when both .reads.to.remove
-	#		files are empty)
+        #		files are empty)
 if(length(ids.to.remove) > 0)	{
     
     id.filter <- srFilter(function(x)   {
@@ -84,28 +83,29 @@ if(length(ids.to.remove) > 0)	{
     output.fastq.records <- fastq.records;
     output.spike.records <- NULL
 }	#	else
-    
+
 num.records.removed <- length(fastq.records) - length(output.fastq.records);
 cat("Removing ", num.records.removed, " fastq records\n", sep="");
 
      
 ###   write the fastq out
 ### Have to check for pre-existing files first
-if (file.exists(output.fastq)){
-    file.remove(output.fastq)
-}
+## if (file.exists(output.fastq)){
+##     file.remove(output.fastq)
+## }
 
-if (file.exists(output.spikes)){
-    file.remove(output.spikes)
-}
+## if (file.exists(output.spikes)){
+##     file.remove(output.spikes)
+## }
 
 
-writeFastq(output.fastq.records, file=output.fastq, compress=FALSE, mode = "w");
+writeFastq(output.fastq.records, file=output.fastq, compress=FALSE, mode = "a");
 
 # Can't write NULL fastq file, so improvise
 if(is.null(output.spike.records)){
-    write.table(matrix(nrow=1,ncol=1,data="No.spikes"),sep = '\t', quote = F, row.names=F, col.names=F)
+                                        #    write.table(matrix(nrow=1,ncol=1,data="No.spikes"),sep = '\t', quote = F, row.names=F, col.names=F)
+    writeFastq(output.spike.records[1], file=output.spikes, compress=F, mode = "a")
 } else {
-    writeFastq(output.spike.records, file=output.spikes, compress=FALSE, mode = "w")
+    writeFastq(output.spike.records, file=output.spikes, compress=FALSE, mode = "a")
 }
 
