@@ -9,12 +9,12 @@
   
   <inputs>
 
-    <param name="count_spikes" type="data" format="tsv" label="Count and Remove Spikes QC" help="QC output of count spikes and remove spikes steps."/>
-    <param name="align" type="data" format="tsv" label="MiXCR Align QC" help="QC output of mixcr alignment step."/>
-    <param name="assemble" type="data" format="tsv" label="MiXCR Assemble QC" help="QC output of mixcr assembly step."/>
-    <param name="decontam" type="data" format="tsv" label="Combined Decontamination QC" help="Aggregated QC files of decontamination step."/>
-    <param name="norm" type="data" format="tsv" label="Normalization QC" help="QC output of normalization step."/>
-    <param name="analysis" type="data" format="tsv" label="Analysis Metrics" help="Output of diversity analysis metrics from analysis step."/>
+    <param name="count_spikes" type="data"  label="Count and Remove Spikes QC" help="QC output of count spikes and remove spikes steps."/>
+    <param name="align" type="data"  label="MiXCR Align QC" help="QC output of mixcr alignment step."/>
+    <param name="assemble" type="data"  label="MiXCR Assemble QC" help="QC output of mixcr assembly step."/>
+    <param name="decontam" type="data"  label="Combined Decontamination QC" help="Aggregated QC files of decontamination step."/>
+    <param name="norm" type="data"  label="Normalization QC" help="QC output of normalization step."/>
+    <param name="analysis" type="data" label="Analysis Metrics" help="Output of diversity analysis metrics from analysis step."/>
 
   </inputs>
 
