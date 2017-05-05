@@ -37,6 +37,7 @@ output.spikes <- arguments[4]
 #   Read in fastq file
 fastq.records <- readFastq(input.fastq);
 num.fastqs <- length(fastq.records);
+cat(num.fastqs, " fastq reads to process\n", sep = "")
 
 #	create variables to store read ids to remove
 ids.to.remove <- character();
