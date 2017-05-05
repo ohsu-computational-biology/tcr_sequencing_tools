@@ -1,13 +1,9 @@
 <tool id="normalize.clonotype.counts" name="Normalize Clonotype Counts">
   <description>Use scaling factor to create normalized counts for clonotypes.</description>
 
-  <!--
-  <command>R -\-vanilla -\-file=$__tool_directory__/normalize.clonotype.counts.R
-     -\-args $clone $count $scaling $out
-     </command>
-  -->
-  <!--  <command>/usr/bin/Rscript /home/exacloud/lustre1/GalaxyinstalledTest/galaxy-dist/tools/tcr_seq/normalize/normalize.clonotype.counts.R -->
-  <command>/usr/bin/Rscript /home/exacloud/lustre1/users/letaw/galaxy-dist/tools/tcrseq/normalize/normalize.clonotype.counts.R
+  <command>
+    <!-- /usr/bin/Rscript /home/exacloud/lustre1/users/letaw/galaxy-dist/tools/tcrseq/normalize/normalize.clonotype.counts.R -->
+    /usr/bin/Rscript /home/exacloud/lustre1/GalaxyinstalledTest/galaxy-dist/tools/tcr_seq/galaxy_tools/normalize/normalize.clonotype.counts.R
   $clone $count $scaling $out
   </command>
 

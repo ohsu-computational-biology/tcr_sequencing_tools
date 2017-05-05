@@ -1,7 +1,8 @@
 <tool id="calculate.scaling.factor" name="Calculate Scaling Factor" version="0.1">
   <description>for normalization step</description>
 
- <command>/usr/bin/Rscript /home/exacloud/lustre1/GalaxyinstalledTest/galaxy-dist/tools/tcr_seq/galaxy_tools/calc.scaling.factor/calculate.scaling.factor.R
+  <command>
+    /usr/bin/Rscript /home/exacloud/lustre1/GalaxyinstalledTest/galaxy-dist/tools/tcr_seq/galaxy_tools/calc.scaling.factor/calculate.scaling.factor.R
 <!-- <command>/usr/bin/Rscript /home/exacloud/lustre1/users/letaw/galaxy_intel/galaxy/tools/tcrseq/galaxy_tools/calc.scaling.factor/calculate.scaling.factor.R -->
   $inputs $ref $output
   </command>

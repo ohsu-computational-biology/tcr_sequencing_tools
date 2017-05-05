@@ -1,17 +1,10 @@
 <tool id="galaxy.qc" name="Quality Checks" version="0.1.0">
   <description>Extract run information from tools used in pipeline.</description>
-  <!--
-  <command>R -\-vanilla -\-file=$__tool_directory__/galaxy.qc.R
-      -\-args $input_fastq $spike_counts $despiked $count_output     <!-\-Count and Remove Spikes-\->
-             $align_reports $align_output                            <!-\-MiXCR Align-\->
-             $assemble_reports $assemble_output                      <!-\-MiXCR Assemble-\->
-	     $decontam_qc $decontam_qc_output                        <!-\-Decontamination-\->
-             $decontam_clones $norm_clones $norm_output              <!-\-Normalization-\->
-	     </command>
-  -->
-  <!--  <command>/usr/bin/Rscript /home/exacloud/lustre1/GalaxyinstalledTest/galaxy-dist/tools/tcr_seq/qc/galaxy.qc.R -->
-  <command>/usr/bin/Rscript /home/exacloud/lustre1/users/letaw/galaxy-dist/tools/tcrseq/qc/galaxy.qc.R
-    $input_fastq $spike_counts $despiked $count_output      <!--Count and Remove Spikes-->
+
+  <command>
+    <!-- /usr/bin/Rscript /home/exacloud/lustre1/users/letaw/galaxy-dist/tools/tcrseq/qc/galaxy.qc.R -->
+    /usr/bin/Rscript /home/exacloud/lustre1/GalaxyinstalledTest/galaxy-dist/tools/tcr_seq/galaxy_tools/qc/galaxy.qc.R
+    $input_fastq $spike_counts $despiked $count_output                  <!--Count and Remove Spikes-->
     $align_reports $align_output                                        <!--MiXCR Align-->
     $assemble_reports $assemble_output                                  <!--MiXCR Assemble-->
     $decontam_qc $decontam_qc_output                                    <!--Decontamination-->
