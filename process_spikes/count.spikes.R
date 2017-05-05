@@ -12,8 +12,8 @@
 #   load depdencies
 
 library(ShortRead);
-library(stringr);
-library(Biostrings);
+#library(stringr);
+#library(Biostrings);
 library(data.table);
 
 arguments <- commandArgs(trailingOnly=TRUE);

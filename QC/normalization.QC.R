@@ -10,7 +10,7 @@ options(scipen=999);
 
 ###   load required libraries
 library(data.table)
-library(stringr);
+#library(stringr);
 
 arguments <- commandArgs(trailingOnly=TRUE);
 path.to.raw.clone.counts <- arguments[1];
@@ -26,8 +26,8 @@ sample.id.raw.clone.counts <- character(length(raw.clone.counts));
 sample.id.processed.clone.counts <- character(length(processed.clone.counts));
 
 ###	TODO:  fix this, it relies on file naming convention
-sample.id.raw.clone.counts <- sapply(raw.clone.counts, function(x) str_split(x, "_")[[1]][2], USE.NAMES = F)
-sample.id.processed.clone.counts <- sapply(processed.clone.counts, function(x) str_split(x, "_")[[1]][2], USE.NAMES = F)
+sample.id.raw.clone.counts <- sapply(raw.clone.counts, function(x) strsplit(x, "_")[[1]][2], USE.NAMES = F)
+sample.id.processed.clone.counts <- sapply(processed.clone.counts, function(x) strsplit(x, "_")[[1]][2], USE.NAMES = F)
 
 ###   Check for parallelism of files
 sample.comparison <- sample.id.raw.clone.counts == sample.id.processed.clone.counts;

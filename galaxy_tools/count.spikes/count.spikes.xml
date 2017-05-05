@@ -1,12 +1,15 @@
 <tool id="count.spikes" name="Count Spikes" version="0.1.0">
   <description>for spike removal or normalization.</description>
-  <command> R --vanilla --file=$__tool_directory__/count.spikes.R
-      --args $input_fastq $spike_file $spike_length $output_count $output_remove $output_qc
-   </command>
+
+  <command>
+    /usr/bin/Rscript /home/exacloud/lustre1/GalaxyinstalledTest/galaxy-dist/tools/tcr_seq/galaxy_tools/count.spikes/count.spikes.R 
+<!--  <command>/usr/bin/Rscript /home/exacloud/lustre1/users/letaw/galaxy_intel/galaxy/tools/tcrseq/galaxy_tools/count.spikes/count.spikes.R -->
+  $input_fastq $spike_file $spike_length $output_count $output_remove $output_qc
+  </command>
 
    <inputs>
     <param name="input_fastq" type="data" format="fastq" label="Input Fastq" help="PEARed fastq file"/>
-    <param name="spike_file" type="data"  format="tsv" label="Spike reference file" help="list of spike barcodes"/>
+    <param name="spike_file" type="data"  format="tsv" label="Spike reference file" help="Reference list of spike barcodes"/>
     <param  name="spike_length" type="text" format="integer" value="9" help="9 for spike removal and 25 for normalization"/>
   </inputs>
 

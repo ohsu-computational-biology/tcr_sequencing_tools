@@ -12,7 +12,7 @@ options(scipen=999);
 
 ###   load required libraries
 library(data.table)
-library(stringr);
+#library(stringr);
 
 
 arguments <- commandArgs(trailingOnly=TRUE);
@@ -25,7 +25,8 @@ all.files <- list.files(path.to.QC.files);
 sample.ids <- character(length(all.files));
 
 for(i in 1:length(sample.ids))  {
-    sample.ids[i] <- str_split(all.files[i], "_")[[1]][1];
+                                        #    sample.ids[i] <- str_split(all.files[i], "_")[[1]][1];
+    sample.ids[i] <- strsplit(all.files[i], "_")[[1]][1]
 }   #   for i
 
 output.data <- NULL;
