@@ -11,7 +11,7 @@ echoerr() { printf "%s\n" "$*" >&2; }
 
 # REMOVE SPIKES
 echoerr Remove spikes
-Rscript $SCRIPTS/remove.spikes.QC.R $DATA/peared_fastqs/assembled/ $DATA/mixcr/despiked_fastqs/ $OUT/
+/usr/bin/Rscript $SCRIPTS/remove.spikes.QC.R $DATA/peared_fastqs/assembled/ $DATA/mixcr/despiked_fastqs/ $OUT/
 
 # COUNT SPIKES
 echoerr Count spikes 9

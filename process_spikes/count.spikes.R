@@ -58,12 +58,28 @@ for(i in 1:length(spikes))  {
     ##   get a single spike
     current.spike <- spikes[i];
 
+    if (spike.length == 9) {
+        ## Search reverse barcode as well
+        reverse.spike <- "GTCGACTTA"
+    } # fi
+    
+
     ##   count spike occurences
     ##   searches each fastq read for current spike, returns TRUE (found) or FALSE (not found)
     current.spike.counts <- vcountPattern(current.spike,
                                           sread(fastq.reads),
                                           max.mismatch = 1,
                                           with.indels = TRUE);
+
+    ## count revere spike occurrences
+    if (spike.length == 9){
+        reverse.spike.counts <- vcountPattern(reverse.spike,
+                                              sread(fastq.reads),
+                                              max.mismatch = 1,
+                                              with.indels = TRUE)
+        current.spike.counts <- current.spike.counts + reverse.spike.counts
+    } # fi
+    
 
     ## Count TRUE occurrences, add to output table, and update log
     output.table[i,]$spike.count <- sum(as.logical(current.spike.counts)); 
