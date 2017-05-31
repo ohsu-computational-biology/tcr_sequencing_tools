@@ -77,6 +77,7 @@ mkdir condor_logs/QC
 mkdir condor_logs/setup
 mkdir condor_logs/setup/unzip
 mkdir condor_logs/setup/md5
+mkdir condor_logs/aggregate
 
 # Directory for tools
 mkdir tools

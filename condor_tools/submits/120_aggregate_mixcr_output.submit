@@ -1,0 +1,26 @@
+#!/bin/sh
+
+getenv=True
+script_dir=$ENV(tool)/postprocess/
+data_dir=$ENV(data)/normalized_clones/
+metadata_dir=$(data_dir)/QC/
+out_dir=$ENV(data)/
+log_dir=$ENV(data)/condor_logs/aggregate/
+
+
+# Program
+executable=/usr/bin/Rscript
+
+# Cores
+request_cpus = 4
+
+# Memory
+request_memory = 16 GB
+
+# Arguments
+
+output=$(log_dir)/stdout_aggregate.out
+error=$(log_dir)/stderr_aggregate.err
+log=$(log_dir)/aggregate.log
+arguments=$(script_dir)/aggregate_clone_files.R $(data_dir)/ $(out_dir)/ $(metadata_dir)/metadata.txt
+queue 1
