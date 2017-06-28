@@ -112,7 +112,8 @@ for(index in 1:nrow(spiked_reads)) {
         ## Create naive norm count
         count_data[indices.to.modify, `Normalized clone count` := current.spike.info$naive * count_data[indices.to.modify,`Clone count`]]
         ## Create nb norm count
-        count_data[indices.to.modify, `nb.clone.count` := count_data[indices.to.modify, `Clone count`] / current.spike.info$nb]
+        #count_data[indices.to.modify, `nb.clone.count` := count_data[indices.to.modify, `Clone count`] / current.spike.info$nb]
+        count_data[indices.to.modify, `nb.clone.count` := current.spike.info$nb * count_data[indices.to.modify, `Clone count`]]
     }   #   fi
 }   #   for index
 

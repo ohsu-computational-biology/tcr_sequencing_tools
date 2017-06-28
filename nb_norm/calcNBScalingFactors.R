@@ -19,7 +19,11 @@
 ### Note:
   ### The scaling factor calculated here is mu(i) / mean_mu for each mu. As shown above, the actual formula is mean_mu / mu(i) for
   ### each mu. What this means is that in order to adjust a raw count to a normalized count using the values output by this script,
-  ### one must use the formula: normCount(i) = rawCount(i) / scalingFactor(i); where scalingFactor(i) = mu(i) / mean_mu
+### one must use the formula: normCount(i) = rawCount(i) / scalingFactor(i); where scalingFactor(i) = mu(i) / mean_mu
+
+### Final note:
+### Changed the scaling factor calculation to mean_mu / mu(i) for each mu, so these scaling factors act the same as the
+### naive normalization method!
 
 ####################
 ### Dependencies ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -167,7 +171,8 @@ combinedEstimate_df <- exp(combinedEstimate_df)
 meanEstimate_v <- colMeans(combinedEstimate_df)
 
 ### "Normalize" estimates by dividing by mean
-normEstimate_df <- combinedEstimate_df / meanEstimate_v
+                                        #normEstimate_df <- combinedEstimate_df / meanEstimate_v
+normEstimate_df <- meanEstimate_v / combinedEstimate_df
 
 ### Add extra set for V121
 rownames(normEstimate_df) <- gsub("V1212", "V121", rownames(normEstimate_df))
