@@ -161,7 +161,6 @@ write.table(records.to.remove.ids.dt,
             file=reads.to.remove.list,
             quote=FALSE,
             row.names=FALSE,
-            col.names=FALSE,
             sep='\t');
 
 
