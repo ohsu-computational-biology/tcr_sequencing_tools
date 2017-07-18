@@ -110,11 +110,8 @@ count_data$"nb.clone.count" <- 0
 count_data$"nb.clone.fraction" <- 0
 
 ### Change clone count to numeric rather than integer
-#print("About to change columns")
 changeCols_v <- c("Clone count", "Clone fraction", "Normalized clone count", "Normalized clone fraction", "nb.clone.count", "nb.clone.fraction")
 count_data[, (changeCols_v) := lapply(.SD, as.numeric), .SDcols=changeCols_v]
-#str(count_data)
-#print("Changed columns")
 
 ### Go through every spike in the spike file
 for(index in 1:nrow(spiked_reads)) {

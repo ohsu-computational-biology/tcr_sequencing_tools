@@ -4,7 +4,7 @@
   <command>
     <!-- /usr/bin/Rscript /home/exacloud/lustre1/users/letaw/galaxy-dist/tools/tcrseq/normalize/normalize.clonotype.counts.R -->
     /usr/bin/Rscript /home/exacloud/lustre1/GalaxyinstalledTest/galaxy-dist/tools/tcr_seq/galaxy_tools/normalize/normalize.clonotype.counts.R
-  $clone $count $scaling $out
+  $clone $count $naiv_scaling $nb_scaling $out
   </command>
 
   <inputs>
@@ -16,8 +16,12 @@
 							     Identical to spike file, with an added column summing
 							     the number of occurrences of each spike in the sample."/>
     
-    <param name="scaling" type="data" label="Scaling Factor" help="Single column of integers to apply to clonotype counts.
-								   Produced by Calculate Scaling Factor."/>    
+    <param name="naive_scaling" type="data" label="Naive Scaling Factor" help="3-column table. Columns = V identity, J identity, scaling factor for that combo.
+								   Produced by Calculate Scaling Factor."/>
+    
+    <param name="nb_scaling" type="data" label="NB Scaling Factor" help="3-column table. Columns = V identity, J identity, scaling factor for that combo.
+									 Reference data that must be pre-loaded in."/>
+    
   </inputs>
 
   <outputs>
