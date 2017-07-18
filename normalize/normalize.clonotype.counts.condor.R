@@ -38,6 +38,16 @@ spiked_reads <- rbind(spiked_reads, add.V122)
 ### Remove the extra characters for the V segments in the spiked counts, so matches occur
 spiked_reads$V <- gsub("-","", spiked_reads$V)
 
+### Read in MiXCR count data
+count_data <- fread(exported.clone.file)
+print(c("original row count:", count_data[,.N]))
+
+### Remove pseudo genes
+pseudo=c("V22","V8","V10","V11","V123","V18","V21","V27","V28","V25")
+pseudo_reads_v <- unique(count_data$`V segments`[count_data$`V segments` %in% pseudo])
+count_data <- count_data[!(count_data$`V segments` %in% pseudo),]
+print(c("remove-pseudo row count:", count_data[,.N]))
+print(c("removed pseudo genes: ", pseudo_reads_v))
 
 ### Read in scaling factor file
 scaling.factor_dt <- fread(scaling.factor.file)
@@ -80,7 +90,7 @@ if (ncol(scaling.factor_dt) == 1) {
 #  MiTCR_file_data <- read.csv(exported.clone.file, stringsAsFactors = FALSE)
                                         #   End original
 ### Read in MiXCR count data
-count_data <- fread(exported.clone.file)
+##count_data <- fread(exported.clone.file)
 
 ### THIS SHOULD BE OBSOLETE WITH ADDITION OF DECONTAM SCRIPT (DOES IT THERE INSTEAD)
 ### Leaving here as a reminder, in case something changes and we get weird behavior.
@@ -98,6 +108,13 @@ count_data$"Normalized clone count" <- 0;
 count_data$"Normalized clone fraction" <- 0;
 count_data$"nb.clone.count" <- 0
 count_data$"nb.clone.fraction" <- 0
+
+### Change clone count to numeric rather than integer
+#print("About to change columns")
+changeCols_v <- c("Clone count", "Clone fraction", "Normalized clone count", "Normalized clone fraction", "nb.clone.count", "nb.clone.fraction")
+count_data[, (changeCols_v) := lapply(.SD, as.numeric), .SDcols=changeCols_v]
+#str(count_data)
+#print("Changed columns")
 
 ### Go through every spike in the spike file
 for(index in 1:nrow(spiked_reads)) {
@@ -144,3 +161,5 @@ write.table(count_data,
 
 ### Update
 cat("Writing output to: ", output.file.name, "\n");
+
+warnings()
