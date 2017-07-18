@@ -66,12 +66,15 @@ v.122$V1 <- gsub("V12-1-2-", "V12-2-", v.122$V1)
 
 ###   Add V122 to the other scaling factors
 final.vj <- as.data.frame(rbind(temp.vj, v.122), stringsAsFactors = F)
-###   Extract just scaling factor values
-scaling.factor <- final.vj$scaling.factor
+
+### Update column names
+colnames(final.vj) <- c("V", "J", "naive")
+
+###   Remove trailing dashes
+final.vj$V <- gsub("-", "", final.vj$V)
 
 #   Write output.
-write.table(scaling.factor,
+write.table(final.vj,
             file=output,
             quote=FALSE,
-            row.names=FALSE,
-            col.names=FALSE);
+            row.names=FALSE);
