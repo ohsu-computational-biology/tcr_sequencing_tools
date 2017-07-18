@@ -16,6 +16,10 @@ arguments <- commandArgs(trailingOnly=TRUE);
 clone.dir <- arguments[1];    # Typically .../dhaarini/DNAXXXXLC/normalization/normalized_clones/
 count.dir <- arguments[2];    # Typically .../dhaarini/DNAXXXXLC/spike_counts/9bp/counts/
 out.dir <- arguments[3];
+divisions_v <- arguments[4]; # How many top-clone divisions to make? Should be a comma-separated list of integers with no quotes nor spaces
+                                        # example - 10,25,50,100
+
+
 
 
 #	Examine the current directory for the files to process and sort them.
@@ -35,13 +39,33 @@ raw.max.clonal.freq <- numeric(length(count.files.in.dir)); naive.max.clonal.fre
 raw.norm.entropy <- numeric(length(clone.files.in.dir)); naive.norm.entropy <- raw.norm.entropy; nb.norm.entropy <- raw.norm.entropy
 raw.adaptive.clonality <- NULL; naive.adaptive.clonality <- raw.adaptive.clonality; nb.adaptive.clonality <- raw.adaptive.clonality
 raw.max.clone.count <- numeric(length(clone.files.in.dir)); naive.max.clone.count <- raw.max.clone.count; nb.max.clone.count <- raw.max.clone.count
-raw.top.10 <- data.frame(matrix(nrow = 10, ncol = length(clone.files.in.dir))); naive.top.10 <- raw.top.10; nb.top.10 <- raw.top.10
-raw.top.25 <- data.frame(matrix(nrow = 25, ncol = length(clone.files.in.dir))); naive.top.25 <- raw.top.25; nb.top.25 <- raw.top.25
-raw.top.50 <- data.frame(matrix(nrow = 50, ncol = length(clone.files.in.dir))); naive.top.50 <- raw.top.50; nb.top.50 <- raw.top.50
-raw.top.100 <- data.frame(matrix(nrow = 100, ncol = length(clone.files.in.dir))); naive.top.100 <- raw.top.100; nb.top.100 <- raw.top.100
-raw.top.200 <- data.frame(matrix(nrow = 200, ncol = length(clone.files.in.dir))); naive.top.200 <- raw.top.200; nb.top.200 <- raw.top.200
-raw.top.250 <- data.frame(matrix(nrow = 250, ncol = length(clone.files.in.dir))); naive.top.250 <- raw.top.250; nb.top.250 <- raw.top.250
-raw.top.500 <- data.frame(matrix(nrow = 500, ncol = length(clone.files.in.dir))); naive.top.500 <- raw.top.500; nb.top.500 <- raw.top.500
+
+
+###
+### Handle different divisions
+###
+topDivisions_lsdf <- list()
+
+### Split divisions into individual numbers
+divisions_v <- sapply(strsplit(divisions_v, split = ',')[[1]], function(x) as.numeric(x), USE.NAMES=F)
+
+### Create a list of list of data.frames, one list for each division containing 3 data.frames (1 for each norm type)
+topDivisions_lslsdf <- as.list(divisions_v)
+names(topDivisions_lslsdf) <- sapply(divisions_v, as.character)
+
+lapply(topDivisions_lslsdf, function(x) {
+    raw <- data.frame(matrix(nrow = x, ncol = length(clone.files.in.dir)))
+    naive <- raw; nb <-	raw
+    x <- list("raw" = raw, "naive" = naive, "nb" = nb)
+    return(x)
+})
+## raw.top.10 <- data.frame(matrix(nrow = 10, ncol = length(clone.files.in.dir))); naive.top.10 <- raw.top.10; nb.top.10 <- raw.top.10
+## raw.top.25 <- data.frame(matrix(nrow = 25, ncol = length(clone.files.in.dir))); naive.top.25 <- raw.top.25; nb.top.25 <- raw.top.25
+## raw.top.50 <- data.frame(matrix(nrow = 50, ncol = length(clone.files.in.dir))); naive.top.50 <- raw.top.50; nb.top.50 <- raw.top.50
+## raw.top.100 <- data.frame(matrix(nrow = 100, ncol = length(clone.files.in.dir))); naive.top.100 <- raw.top.100; nb.top.100 <- raw.top.100
+## raw.top.200 <- data.frame(matrix(nrow = 200, ncol = length(clone.files.in.dir))); naive.top.200 <- raw.top.200; nb.top.200 <- raw.top.200
+## raw.top.250 <- data.frame(matrix(nrow = 250, ncol = length(clone.files.in.dir))); naive.top.250 <- raw.top.250; nb.top.250 <- raw.top.250
+## raw.top.500 <- data.frame(matrix(nrow = 500, ncol = length(clone.files.in.dir))); naive.top.500 <- raw.top.500; nb.top.500 <- raw.top.500
 
 for(i in 1:length(clone.files.in.dir))	{
 
