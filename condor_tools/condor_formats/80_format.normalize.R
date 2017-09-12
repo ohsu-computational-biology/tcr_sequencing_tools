@@ -41,17 +41,18 @@ for (i in 1:length(list.of.clone.files))   {
        index <- clone.index
 
        formatted.vector[i+1] <- paste(
-         	"output=$(log_dir)stdout_normalize_clonotypes_", index, ".out\n",
-         	"error=$(log_dir)stderr_normalize_clonotypes_", index, ".out\n",
-         	"log=$(log_dir)condor_normalize_clonotypes_", index, ".log\n",
-         	"arguments=$(script_dir)normalize.clonotype.counts.condor.R ",
-         	"$(normalization_dir)decontam/", list.of.clone.files[i], " ",   #   clone input
-         	"$(normalization_dir)counts/", list.of.count.files[i], " ",    #   count input
-         	"$(normalization_dir)normalized_clones/ ", #  ouput directory
-         	"$(normalization_dir)scaling_factor.txt",
-         	"\nqueue 1\n",
-         	sep=""); 
-	} # if
+           "output=$(log_dir)stdout_normalize_clonotypes_", index, ".out\n",
+           "error=$(log_dir)stderr_normalize_clonotypes_", index, ".out\n",
+           "log=$(log_dir)condor_normalize_clonotypes_", index, ".log\n",
+           "arguments=$(script_dir)normalize.clonotype.counts.condor.R ",
+           "$(normalization_dir)decontam/", list.of.clone.files[i], " ",   #   clone input
+           "$(normalization_dir)counts/", list.of.count.files[i], " ",    #   count input
+           "$(normalization_dir)normalized_clones/ ", #  ouput directory
+           "$(normalization_dir)scaling_factor.txt ",
+           "$(ref_dir)/nb.scaling.factors.txt",
+           "\nqueue 1\n",
+           sep="");
+   } # if
 }   #   for
 
 

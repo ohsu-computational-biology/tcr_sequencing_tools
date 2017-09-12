@@ -65,6 +65,9 @@ for (i in 1:length(clone.files)){
     ## Sample name
     currName_v <- unlist(strsplit(clone.files[i], split = "_"))[2]
 
+    ## Update
+    print(currName_v)
+
     ## Sample number
     currNum_v <- gsub("S", "", currName_v)
     
@@ -156,6 +159,7 @@ for (i in 1:length(clone.files)){
   
         if (is.na(offending.clone.3$Reads[1])) {
             count.clone.3 <- 0
+            read.count.clone.3 <- 0
         } else {
             count.clone.3 <- offending.clone.3$`Clone count`
             read.count.clone.3 <- length(unlist(strsplit(as.character(offending.clone.3$Reads), split = ',')))

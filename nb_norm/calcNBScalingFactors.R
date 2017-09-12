@@ -52,6 +52,12 @@ check_v <- arguments[3] # T or F. If T, plot adjusted counts of one of the input
 
 ### Read in spike data
 readSpikes <- function(file_v,directory_v, sep_v = "\t") {
+    
+  ## This function is used within readDir via apply()  
+  ## file_v - specific file name within a data directory. 
+  ## directory_v - directory containing spike count files
+  ## sep_v - column separator of file_v. Usually \t, but can be , sometimes
+    
   ## Get spike data
   spike_dt <- fread(file.path(directory_v, file_v), sep = sep_v)
   ## Subset to contain only V, J, and spike counts
@@ -68,6 +74,9 @@ readSpikes <- function(file_v,directory_v, sep_v = "\t") {
 
 ### Read in directory of data
 readDir <- function(sub_v) {
+
+  ## sub_v - sub-directory of the global variable dataDir_v
+    
   ## Get directory
   directory_v <- paste0(dataDir_v, sub_v)
   ## Get files in directory
@@ -86,6 +95,10 @@ readDir <- function(sub_v) {
 
 ### Change V and J columns to rownames
 colToRowNames<-function(data_dt, cols_v = c("V", "J")) {
+
+  ## data_dt - a data.table object of spike counts
+  ## cols_v - column names to be used to extract values for new  rownames  
+
   ## Paste selected columns together and assign as row names
   rownames(data_dt) <- paste0(data_dt[[cols_v[1]]], " | ", data_dt[[cols_v[2]]])
   ## Remove those columns
@@ -98,6 +111,10 @@ colToRowNames<-function(data_dt, cols_v = c("V", "J")) {
 
 ### Calcualte dispersion
 calcDispersion <- function(spike_v, cols_v){
+
+  ## spike_v - vector of 260 spike counts
+  ## cols_v - vector of columns to extract from NB model
+    
   ## Create Negative Binomial Model
   m.nb <- glm.nb (spike_v ~ 1)
   ## Extract theta
