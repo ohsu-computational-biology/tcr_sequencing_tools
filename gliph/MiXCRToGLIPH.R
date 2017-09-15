@@ -1,8 +1,11 @@
+#!/usr/bin/Rscript
+
 ###
 ### Convert MiXCR to GLIPH
 ###
 
 ### Convert clone files in the MiXCR format into GLIPH-compatible tables
+### All samples from a batch will be combined into one file
 
 ### Format:
   ### Column 1 : CDR3 AA seq
@@ -14,6 +17,11 @@
   ### Column 3 : J sequence
     ### MiXCR - "Best J hit"; format TRBJ2-5*00
     ### GLIPH - "TRBJ"; format TRBJ2-5
+  ### Column 4 : Patient (Sample, but want consistent names with tool)
+    ### MiXCR - from file name
+  ### Column 5 : Counts
+    ### MiXCR - Normalized clone count
+
 
 ### Dependencies
 library(data.table)
@@ -45,6 +53,39 @@ outDir_v <- args$outDir
 
 ### Get files
 cloneFiles_v <- list.files(cloneDir_v)
+
+### Get batch
+batchName_v <- strsplit(cloneFiles_v[1], split = "_")[[1]][1]
+
+### Column variables
+toRead_v <- c("AA. Seq. CDR3", "Best V hit", "Best J hit", "Normalized clone count")
+vj_v <- c("Best V hit", "Best J hit")
+
+### Read in files and fix up
+clones_lsdt <- sapply(cloneFiles_v, function(x) {
+    ## Get data
+    y <- fread(file.path(cloneDir_v, x), select = toRead_v)
+    ## Add sample column
+    y$Patient <- strsplit(x, split = "_")[[1]][2]
+    ## Reformat V and J
+    y[, (vj_v) := lapply(.SD, function(z) gsub("\\*00|", "", z)), .SDcols = vj_v]
+    ## Change column order
+    y <- y[,c(1:3,5,4), with = F]
+    ## Change column names
+    colnames(y) <- c("CDR3b", "TRBV", "TRBJ", "Patient", "Counts")
+    ## Return
+    return(y)
+}, simplify = F)
+
+### Combine Together
+clones_dt <- do.call("rbind", clones_lsdt)
+
+### Write Output
+outName_v <- paste0(batchName_v, "_gliphClones.txt")
+outFile_v <- file.path(outDir_v, outName_v)
+
+write.table(clones_dt, outFile_v, row.names = F, quote = F, sep = '\t')
+
 
 
 for (i in 1:length(cloneFiles_v)){
