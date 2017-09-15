@@ -1,6 +1,0 @@
-1775643 fastq reads to process
-	215159 spikes detected
-Writing spike count file to: /mnt/lustre1/CompBio/data/tcrseq/dhaarini/DNA150624LC/redux/peared_fastqs/assembled/DNA150624LC_18_S29.assembled.fastqDNA150624LC_18_S29.assembled.spike.counts.9bp.txt
-Writing list of reads to remove to: /mnt/lustre1/CompBio/data/tcrseq/dhaarini/DNA150624LC/redux/peared_fastqs/assembled/DNA150624LC_18_S29.assembled.fastqDNA150624LC_18_S29.assembled.reads.to.remove.txt
-Writing QC summary to: /mnt/lustre1/CompBio/data/tcrseq/dhaarini/DNA150624LC/redux/peared_fastqs/assembled/DNA150624LC_18_S29.assembled.fastqDNA150624LC_18_S29.assembled.qc.txt
-9bp.rev, processed: /mnt/lustre1/CompBio/data/tcrseq/dhaarini/DNA150624LC/redux/peared_fastqs/assembled/DNA150624LC_18_S29.assembled.fastq
