@@ -28,11 +28,19 @@ optlist <- list(
       type = "character",
       default = c("Normalized clone count", "Normalized clone fraction", "Clonal sequence(s)", "AA. Seq. CDR3", "V segments", "J segments"),
       help = "column names to read in. Count and fraction are required, but all default columns are recommended."),
+    make_option(
+    c("-m", "--meta"),
+    type = "character",
+    help = "Metadata file containing at a minimum treatment designations for each sample."),
   make_option(
       c("-d", "--divisions"),
       type = "character",
       default = c("Blank" = 0, "Rare" = 0.00001, "Small" = 0.0001, "Medium" = 0.001, "Large" = 0.01, "Hyperexpanded" = 1),
-      help = "Clonal frequency divisions to group clones into")
+      help = "Clonal frequency divisions to group clones into"),
+    make_option(
+    c("-l", "--log"),
+    type = "logical",
+    help = "TRUE if log file should be written to outDir. FALSE if no log should be written.")
 )
 
 ### Parse commandline
@@ -42,9 +50,16 @@ args <- parse_args(p)
 opt <- args$options
 
 inputDir_v <- args$inputDir
+metaFile_v <- args$meta
 outDir_v <- args$outDir
 columns_v <- args$columns
 divisions_v <- args$divisions
+log_v <- args$log
+
+### Print log
+if (!is.null(log_v)){
+    returnSessionInfo(args_lsv = args, out_dir_v = outDir_v)
+} # fi
 
 ### Get files and names
 inputFiles_v <- list.files(inputDir_v)
@@ -52,11 +67,23 @@ inputFiles_v <- inputFiles_v[order(as.numeric(gsub("^.*_S|_.*", "", inputFiles_v
 inputNames_v <- sapply(inputFiles_v, function(x) strsplit(x, split = "_")[[1]][2], USE.NAMES = F)
 batchName_v <- strsplit(inputFiles_v[1], split = "_")[[1]][1]
 
+### Get metadata
+meta_dt <- fread(metaFile_v)
+sampleCol_v <- grep("ample", colnames(meta_dt), value = T)
+treatCol_v <- grep("eatment", colnames(meta_dt), value = T)
+
 ### Read in data
-numericCols_v <- c("Normalized clone count", "Normalized clone fraction")
 clones_lsdt <- sapply(inputFiles_v, function(x) {
+    ## Get data
     y <- fread(file.path(inputDir_v, x), select = columns_v)
-    y$Sample <- strsplit(x, split = "_")[[1]][2]
+    ## Get sample character
+    sample_v <- strsplit(x, split = "_")[[1]][2]
+    ## Get sample number
+    sampNum_v <- as.numeric(gsub("S", "", sample_v))
+    ## Add sample character to data
+    y$Sample <- sample_v
+    ## Add treatment to data
+    y$Treatment <- meta_dt[get(sampleCol_v) == sampNum_v, get(treatCol_v)]
     return(y)}, simplify = F)
 
 names(clones_lsdt) <- inputNames_v
