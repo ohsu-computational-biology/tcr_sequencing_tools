@@ -34,8 +34,9 @@ optlist <- list(
     help = "Metadata file containing at a minimum treatment designations for each sample."),
   make_option(
       c("-d", "--divisions"),
-      type = "character",
-      default = c("Blank" = 0, "Rare" = 0.00001, "Small" = 0.0001, "Medium" = 0.001, "Large" = 0.01, "Hyperexpanded" = 1),
+      type = "double",
+      #default = c("Blank" = 0, "Rare" = 0.00001, "Small" = 0.0001, "Medium" = 0.001, "Large" = 0.01, "Hyperexpanded" = 1),
+      default = c("Rare" = 0.00001, "Small" = 0.0001, "Medium" = 0.001, "Large" = 0.01, "Hyperexpanded" = 1),
       help = "Clonal frequency divisions to group clones into"),
     make_option(
     c("-l", "--log"),
@@ -64,13 +65,18 @@ if (!is.null(log_v)){
 ### Get files and names
 inputFiles_v <- list.files(inputDir_v)
 inputFiles_v <- inputFiles_v[order(as.numeric(gsub("^.*_S|_.*", "", inputFiles_v)))]
-inputNames_v <- sapply(inputFiles_v, function(x) strsplit(x, split = "_")[[1]][2], USE.NAMES = F)
 batchName_v <- strsplit(inputFiles_v[1], split = "_")[[1]][1]
 
 ### Get metadata
 meta_dt <- fread(metaFile_v)
 sampleCol_v <- grep("ample", colnames(meta_dt), value = T)
 treatCol_v <- grep("eatment", colnames(meta_dt), value = T)
+
+### Subset to only contain samples in meta
+baseFile_v <- strsplit(inputFiles_v[1], split = "S[0-9]+")[[1]]
+toKeep_v <- paste0(baseFile_v[1], "S", unlist(meta_dt[,get(sampleCol_v)]), baseFile_v[2])
+inputFiles_v <- inputFiles_v[inputFiles_v %in% toKeep_v]
+inputNames_v <- sapply(inputFiles_v, function(x) strsplit(x, split = "_")[[1]][2], USE.NAMES = F)
 
 ### Read in data
 clones_lsdt <- sapply(inputFiles_v, function(x) {
@@ -84,6 +90,10 @@ clones_lsdt <- sapply(inputFiles_v, function(x) {
     y$Sample <- sample_v
     ## Add treatment to data
     y$Treatment <- meta_dt[get(sampleCol_v) == sampNum_v, get(treatCol_v)]
+    ## Add clone index column
+    y$id <- 1:nrow(y)
+    ## Add empty division column
+    y$Div <- character()
     return(y)}, simplify = F)
 
 names(clones_lsdt) <- inputNames_v
@@ -92,9 +102,11 @@ names(clones_lsdt) <- inputNames_v
 clones_lsdt <- clones_lsdt[sapply(clones_lsdt, function(x) dim(x)[1]) > 0]
 
 ### Classify Clones
+
 clones_lsdt <- sapply(clones_lsdt, function(x) {
     ## Create empty column
-    x$Div <- character()
+#    x$Div <- character()
+print(head(x))
     ## Iterate for each row and determine which divisions are greater than the current row's frequency
     ## Since the division values represent the upper limit of that grouping, the first division that is
     ## greater than the frequency is the one that we want. (e.g. Large is 0.001 to 0.01, Medium is 0.0001 to 0.001,
@@ -102,6 +114,7 @@ clones_lsdt <- sapply(clones_lsdt, function(x) {
     ## freq of 0.0010001, which is less than Large and Hyper, Large will be chosen. Given freq of 0.01, Large and Hyper
     ## will match, and large will be chosen.)
     x[, Div := sapply(x[,`Normalized clone fraction`], function(y) names(which(divisions_v >= y)[1]))]
+print(head(x))
     return(x)
 }, simplify = F)
 
@@ -131,3 +144,6 @@ for (i in 1:length(divisions_lsdt)){
                 file.path(outDir_v, paste(batchName_v, currName_v, "clones.txt", sep = "_")),
                 sep = '\t', quote = F, row.names = F)
 } # for i
+
+
+
