@@ -26,18 +26,19 @@ optlist <- list(
   make_option(
       c("-c", "--columns"),
       type = "character",
-      default = c("Normalized clone count", "Normalized clone fraction", "Clonal sequence(s)", "AA. Seq. CDR3", "V segments", "J segments"),
-      help = "column names to read in. Count and fraction are required, but all default columns are recommended."),
+      default = c("Normalized clone count,Normalized clone fraction,Clonal sequence(s),AA. Seq. CDR3,V segments,J segments"),
+      help = "Column names to read in. Count and fraction are required, but all default columns are recommended. Comma-separated, no spaces.\
+		Example: 'Col1,Col 2,Col 3 a'"),
     make_option(
     c("-m", "--meta"),
     type = "character",
     help = "Metadata file containing at a minimum treatment designations for each sample."),
   make_option(
       c("-d", "--divisions"),
-      type = "double",
-      #default = c("Blank" = 0, "Rare" = 0.00001, "Small" = 0.0001, "Medium" = 0.001, "Large" = 0.01, "Hyperexpanded" = 1),
-      default = c("Rare" = 0.00001, "Small" = 0.0001, "Medium" = 0.001, "Large" = 0.01, "Hyperexpanded" = 1),
-      help = "Clonal frequency divisions to group clones into"),
+      type = "character",
+      default = c("Rare = 0.00001,Small = 0.0001,Medium = 0.001,Large = 0.01,Hyperexpanded = 1"),
+      help = "Clonal frequency divisions to group clones into. Comma-separated, no spaces. Requires name and value separated by equals.\
+		Example: 'Rare = 0.00001,Small=0.0001,Medium = 0.001'"),
     make_option(
     c("-l", "--log"),
     type = "logical",
@@ -45,7 +46,7 @@ optlist <- list(
 )
 
 ### Parse commandline
-p <- OptionParser(usage = "%prog -i inputDirectory -o outputDirectory",
+p <- OptionParser(usage = "%prog -i inputDirectory -o outputDirectory -c columns -m metadata -d freqDivisions -l T/F",
                   option_list = optlist)
 args <- parse_args(p)
 opt <- args$options
@@ -53,12 +54,17 @@ opt <- args$options
 inputDir_v <- args$inputDir
 metaFile_v <- args$meta
 outDir_v <- args$outDir
-columns_v <- args$columns
-divisions_v <- args$divisions
 log_v <- args$log
 
+### Handle non-traditional arguments
+columns_v <- args$columns; columns_v <- unlist(strsplit(columns_v, split = ','))
+divisions_v <- args$divisions; divisions_v <- unlist(strsplit(divisions_v, split = ','))
+divNames_v <- sapply(divisions_v, function(x) trimws(strsplit(x, split = '=')[[1]][1]), USE.NAMES = F)
+divNums_v <- sapply(divisions_v, function(x) trimws(strsplit(x, split = '=')[[1]][2]), USE.NAMES = F)
+divisions_v <- as.numeric(divNums_v); names(divisions_v) <- divNames_v
+
 ### Print log
-if (!is.null(log_v)){
+if (log_v){
     returnSessionInfo(args_lsv = args, out_dir_v = outDir_v)
 } # fi
 
