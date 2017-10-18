@@ -9,6 +9,7 @@ GENERAL NOTES
 1. Remember to create an interactive job on ExaCloud when running interactive and computationally-intensive jobs.  For example:
 
      `~% condor_submit -interactive -append 'request_memory = 10 GB' -append 'request_cpus = 4'`
+     `~% srun --mincpus 4 --mem 4G --time 1-00 --pty bash`
 
 DIRECTORY SET UP AND ENV VARS
 =============================
@@ -53,6 +54,10 @@ DIRECTORY SET UP AND ENV VARS
         │   ├── pear
         │   ├── decontaminate
         │   ├── QC
+        │   ├── gliph
+        │   │   ├── convert
+        │   │   └── run
+        │   ├── groups
         │   ├── spike_counts
         │   │   ├── 25bp
         │   │   └── 9bp
@@ -104,6 +109,19 @@ DIRECTORY SET UP AND ENV VARS
         │       ├── counts
         │       ├── qc
         │       └── reads_to_remove
+        ├── freqGroups
+        │   ├── baseLine
+        │   ├── groupData
+        │   ├── overLapResults
+	│   └── treatSpecificClones
+        ├── gliph
+        │   ├── byTreat
+        │   │   ├── clones
+        │   │   └── results
+        │   ├── specificTreat
+        │   │   ├── clones
+        │   │   └── results
+	│   └── todo
         └── tools
             ├── condor_formats
             │   ├── 01_format.unzip.R
