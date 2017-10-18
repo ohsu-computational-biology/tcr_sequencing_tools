@@ -14,7 +14,8 @@ ref.file <- arguments[2];		# /tcr_sequencing_tools/reference/text_barcodesvj.txt
 spike.count.files <- list.files(spike.count.dir);
 
 ### Confirm that files are 25bp-count files
-suffixes <- sapply(spike.count.files, function(x) gsub("^[A-Z0-9]+_S[0-9]+", "", x), USE.NAMES=F)
+#suffixes <- sapply(spike.count.files, function(x) gsub("^[A-Z0-9]+_S[0-9]+", "", x), USE.NAMES=F)
+suffixes <- sapply(spike.count.files, function(x) strsplit(x, split = "S[0-9]+")[[1]][2], USE.NAMES = F)
 suffixes <- unique(suffixes)
 if (length(suffixes) != 1 || suffixes != ".assembled.spike.counts.25bp.txt") stop("Wrong spike input files")
 
