@@ -56,8 +56,27 @@ mkdir spike_counts/9bp/reads_to_remove
 mkdir spike_counts/9bp/spikes
 mkdir spike_counts/9bp/empty
 
+# Directories to hold freqGroups output
+mkdir freqGroups
+mkdir freqGroups/baseLine
+mkdir freqGroups/groupData
+mkdir freqGroups/overLapResults
+mkdir freqGroups/treatSpecificClones
+
+# Directories to hold gliph output
+mkdir gliph
+mkdir gliph/byTreat
+mkdir gliph/byTreat/clones
+mkdir gliph/byTreat/results
+mkdir gliph/specificTreat
+mkdir gliph/specificTreat/clones
+mkdir gliph/specificTreat/results
+
 # QC directory
 mkdir QC
+mkdir QC/meta
+mkdir QC/std
+mkdir QC/homeo
 
 # Directory to hold condor's log outputs
 mkdir condor_logs
@@ -78,8 +97,29 @@ mkdir condor_logs/setup
 mkdir condor_logs/setup/unzip
 mkdir condor_logs/setup/md5
 mkdir condor_logs/aggregate
+mkdir condor_logs/gliph
+mkdir condor_logs/gliph/run
+mkdir condor_logs/gliph/convert
+mkdir condor_logs/groups
+
+# Directory to hold slurm log output
+mkdir slurm_logs
+mkdir slurm_logs/align
+mkdir slurm_logs/analysis
+mkdir slurm_logs/assemble
+mkdir slurm_logs/count9
+mkdir slurm_logs/count25
+mkdir slurm_logs/decontam
+mkdir slurm_logs/exportAlign
+mkdir slurm_logs/exportClones
+mkdir slurm_logs/normalize
+mkdir slurm_logs/qc
+mkdir slurm_logs/remove
 
 # Directory for tools
 mkdir tools
+mkdir tools/todo
 cp -r $tool/condor_tools/condor_formats $data/tools/
 cp -r $tool/condor_tools/submits $data/tools/
+cp -r $tool/slurm $data/tools/
+
