@@ -11,10 +11,10 @@
 #
 #   load depdencies
 
-library(ShortRead);
+suppressMessages(suppressWarnings(library(ShortRead)));
 #library(stringr);
 #library(Biostrings);
-library(data.table);
+suppressMessages(library(data.table));
 
 arguments <- commandArgs(trailingOnly=TRUE);
 input.fastq <- arguments[1];

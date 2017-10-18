@@ -18,9 +18,9 @@
 
 #   load depdencies
 #.libPaths("/mnt/lustre1/CompBio/lib/R/library")
-library(ShortRead);
+suppressMessages(suppressWarnings(library(ShortRead)));
 #library(stringr);
-library(data.table);
+suppressMessages(library(data.table));
 
 ###   TODO: handle warnings more better.  At least read.delim() is generating warnings
 options(warn=-1);   
@@ -33,6 +33,7 @@ out.remove.dir <- arguments[3];
 out.spike.dir <- arguments[4];
 
 ###   Read in fastq file
+cat("Beginning to read input Fastq")
 fastq.records <- readFastq(input.fastq);
 num.fastqs <- length(fastq.records);
 cat(num.fastqs, " fastq reads to process\n", sep="");
