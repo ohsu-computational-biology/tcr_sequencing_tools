@@ -110,7 +110,9 @@ count_data$"nb.clone.count" <- 0
 count_data$"nb.clone.fraction" <- 0
 
 ### Change clone count to numeric rather than integer
-changeCols_v <- c("Clone count", "Clone fraction", "Normalized clone count", "Normalized clone fraction", "nb.clone.count", "nb.clone.fraction")
+countCol_v <- grep("Clone count|cloneCount", colnames(count_data), value = T)
+fracCol_v <- grep("Clone fraction|cloneFraction", colnames(count_data), value = T)
+changeCols_v <- c(countCol_v, fracCol_v, "Normalized clone count", "Normalized clone fraction", "nb.clone.count", "nb.clone.fraction")
 count_data[, (changeCols_v) := lapply(.SD, as.numeric), .SDcols=changeCols_v]
 
 ### Go through every spike in the spike file
@@ -124,10 +126,10 @@ for(index in 1:nrow(spiked_reads)) {
 
     if(length(indices.to.modify) > 0)   {
         ## Create naive norm count
-        count_data[indices.to.modify, `Normalized clone count` := current.spike.info$naive * count_data[indices.to.modify,`Clone count`]]
+        count_data[indices.to.modify, `Normalized clone count` := current.spike.info$naive * count_data[indices.to.modify,get(countCol_v)]]
         ## Create nb norm count
         #count_data[indices.to.modify, `nb.clone.count` := count_data[indices.to.modify, `Clone count`] / current.spike.info$nb]
-        count_data[indices.to.modify, `nb.clone.count` := current.spike.info$nb * count_data[indices.to.modify, `Clone count`]]
+        count_data[indices.to.modify, `nb.clone.count` := current.spike.info$nb * count_data[indices.to.modify, get(countCol_v)]]
     }   #   fi
 }   #   for index
 

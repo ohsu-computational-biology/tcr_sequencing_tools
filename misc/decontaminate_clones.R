@@ -57,13 +57,16 @@ if (metadata.file == "NULL") {
 ### Calculation ###
 ###################
 
+
 # Iterate through each clone file, removing monoclonal contaminants
 for (i in 1:length(clone.files)){
     ## Counter for how many reads are devoted to contaminated sequences
     curr_contam_count_v <- 0
     
     ## Sample name
-    currName_v <- unlist(strsplit(clone.files[i], split = "_"))[2]
+    temp <- unlist(strsplit(clone.files[i], split = "_"))
+    currName_v <- grep("S[0-9]+", temp, value = T)
+    #currName_v <- unlist(strsplit(clone.files[i], split = "_"))[2]
 
     ## Update
     print(currName_v)
@@ -74,19 +77,28 @@ for (i in 1:length(clone.files)){
     ## Get a clone file
     curr.clone <- fread(paste(clone.dir, clone.files[i], sep = ''))
 
+    ## Get column names
+    idCol_v <- grep("Clone ID|cloneId", colnames(curr.clone), value = T)[1]
+    rawCountCol_v <- grep("Clone count|cloneCount", colnames(curr.clone), value = T)
+    vCol_v <- grep("Best V hit|bestVHit", colnames(curr.clone), value = T)
+    jCol_v <- grep("Best J hit|bestJHit", colnames(curr.clone), value = T)
+    readCol_v <- grep("Reads|reads", colnames(curr.clone), value = T)
+    seqCol_v <- grep("aa.*CDR3|AA.*CDR3", colnames(curr.clone), value = T)
+    fracCol_v <- grep("Clone fraction|cloneFraction", colnames(curr.clone), value = T)
+    print(c(idCol_v, rawCountCol_v, vCol_v, jCol_v, readCol_v, seqCol_v, fracCol_v))
 
     ## Add index for ranking
-    curr.clone$index <- seq(1, length(curr.clone$`Clone ID`))
+    curr.clone$index <- seq(1, length(curr.clone[[idCol_v]]))
 
     ## Get first QC info
-    orig.unique.count <- length(curr.clone$`Clone ID`)
-    orig.total.count <- sum(curr.clone$`Clone count`)
+    orig.unique.count <- length(curr.clone[[idCol_v]])
+    orig.total.count <- sum(curr.clone[[rawCountCol_v]])
     
 
     ## Update column names and contents for V and J segments
-    curr.clone$`V segments` <- gsub("TRB|\\*00", "", curr.clone$`Best V hit`)
+    curr.clone$`V segments` <- gsub("TRB|\\*00", "", curr.clone[[vCol_v]])
     curr.clone$`V segments` <- gsub("-", "", curr.clone$`V segments`)
-    curr.clone$`J segments` <- gsub("TRB|\\*00", "", curr.clone$`Best J hit`)
+    curr.clone$`J segments` <- gsub("TRB|\\*00", "", curr.clone[[jCol_v]])
 
     
     ## Extract clones (take just the first entry if more than one clone matches the criteria)
@@ -95,16 +107,16 @@ for (i in 1:length(clone.files)){
     if (is.na(metadata_dt) || !("p14" %in% unlist(strsplit(metadata_dt[metadata_dt$sample == currNum_v, `mono`], split = ',')))) {
         offending.clone.1 <- curr.clone[(curr.clone$`V segments` == "V133" # p14
             & curr.clone$`J segments` == "J2-4" &
-              curr.clone$`AA. Seq. CDR3` == "CASSDAGGRNTLYF"),]
+              curr.clone[[seqCol_v]] == "CASSDAGGRNTLYF"),]
     
         offending.clone.1 <- offending.clone.1[1,] # subset for first only
 
         ## Update count of contaminated sequences
-        if (is.na(offending.clone.1$Reads[1])) {
+        if (is.na(offending.clone.1[[readCol_v]][1])) {
             count.clone.1 <- 0
         } else {
-            count.clone.1 <- offending.clone.1$`Clone count`
-            read.count.clone.1 <- length(unlist(strsplit(as.character(offending.clone.1$Reads), split = ',')))
+            count.clone.1 <- offending.clone.1[[rawCountCol_v]]
+            read.count.clone.1 <- length(unlist(strsplit(as.character(offending.clone.1[[readCol_v]]), split = ',')))
         }
         curr_contam_count_v <- curr_contam_count_v + count.clone.1
     
@@ -125,16 +137,16 @@ for (i in 1:length(clone.files)){
     if (is.na(metadata_dt) || !("ot1" %in% unlist(strsplit(metadata_dt[metadata_dt$sample == currNum_v, `mono`], split = ',')))) {
         offending.clone.2 <- curr.clone[(curr.clone$`V segments` == "V121" # ot1
             & curr.clone$`J segments` == "J2-7" &
-              curr.clone$`AA. Seq. CDR3` == "CASSRANYEQYF"),]
+              curr.clone[[seqCol_v]] == "CASSRANYEQYF"),]
         offending.clone.2 <- offending.clone.2[1,] # subset for first only
 
 
         ## Update count of contaminated sequences
-        if (is.na(offending.clone.2$Reads[1])) {
+        if (is.na(offending.clone.2[[readCol_v]][1])) {
             count.clone.2 <- 0
         } else {
-            count.clone.2 <- offending.clone.2$`Clone count`
-            read.count.clone.2 <- length(unlist(strsplit(as.character(offending.clone.2$Reads), split = ',')))
+            count.clone.2 <- offending.clone.2[[rawCountCol_v]]
+            read.count.clone.2 <- length(unlist(strsplit(as.character(offending.clone.2[[readCol_v]]), split = ',')))
         }
         curr_contam_count_v <- curr_contam_count_v + count.clone.2
     
@@ -154,15 +166,15 @@ for (i in 1:length(clone.files)){
     if (is.na(metadata_dt) || !("el4" %in% unlist(strsplit(metadata_dt[metadata_dt$sample == currNum_v, `mono`], split = ',')))) {
         offending.clone.3 <- curr.clone[(curr.clone$`V segments` == "V15" # el4
             & curr.clone$`J segments` == "J2-3" &
-              curr.clone$`AA. Seq. CDR3` == "CASSTGTETLYF"),]
+              curr.clone[[seqCol_v]] == "CASSTGTETLYF"),]
         offending.clone.3 <- offending.clone.3[1,] # subset for first only
   
-        if (is.na(offending.clone.3$Reads[1])) {
+        if (is.na(offending.clone.3[[readCol_v]][1])) {
             count.clone.3 <- 0
             read.count.clone.3 <- 0
         } else {
-            count.clone.3 <- offending.clone.3$`Clone count`
-            read.count.clone.3 <- length(unlist(strsplit(as.character(offending.clone.3$Reads), split = ',')))
+            count.clone.3 <- offending.clone.3[[rawCountCol_v]]
+            read.count.clone.3 <- length(unlist(strsplit(as.character(offending.clone.3[[readCol_v]]), split = ',')))
         }
         curr_contam_count_v <- curr_contam_count_v + count.clone.3
     
@@ -186,7 +198,7 @@ for (i in 1:length(clone.files)){
     combo <- rbind(curr.clone, offending.clone.1, offending.clone.2, offending.clone.3)
     ## Remove duplicated entries (i.e. offending clones) from combined dataframe
     new.clone <- combo[!duplicated(combo, fromLast = T) & seq(nrow(combo)) <= nrow(curr.clone),]
-    new.clone <- new.clone[!(is.na(new.clone$`Clone ID`)),]
+    new.clone <- new.clone[!(is.na(new.clone[[idCol_v]])),]
 
     ## If desired, save monoclonal sequences
     if (keep.mono) {
@@ -208,8 +220,8 @@ for (i in 1:length(clone.files)){
     ## Recalculation - re-calculate clone fraction.
     ##
   
-    new_total_count_v <- sum(new.clone$`Clone count`)
-    new.clone$`Clone fraction` <- new.clone$`Clone count` / new_total_count_v
+    new_total_count_v <- sum(new.clone[[rawCountCol_v]])
+    new.clone[[fracCol_v]] <- new.clone[[rawCountCol_v]] / new_total_count_v
     
     ## Count clean clone files as well
     clean.counter <- 0
