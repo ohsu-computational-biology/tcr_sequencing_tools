@@ -13,17 +13,17 @@
 ##SBATCH --mem-per-cpu        8000                    # Memory required per allocated CPU (mutually exclusive with mem)
 #SBATCH --mem                16000                  # memory pool for each node
 #SBATCH --time               0-24:00                 # time (D-HH:MM)
-#SBATCH --output             countSpikes25_%A_%a.out        # Standard output
-#SBATCH --error              countSpikes25_%A_%a.err        # Standard error
-#SBATCH --array              1-6                    # sets number of jobs in array
+#SBATCH --output             pear_%A_%a.out        # Standard output
+#SBATCH --error              pear_%A_%a.err        # Standard error
+#SBATCH --array              1-1                    # sets number of jobs in array
 
 
 ### SET I/O VARIABLES
 
-IN=$data/peared_fastqs/assembled             # Directory containing all input files. Should be one job per file
-OUT=$data/spike_counts/25bp           # Directory where output files should be written
-REF=$tool/reference
-MYBIN=$tool/process_spikes/count.spikes.R          # Path to shell script or command-line executable that will be used
+IN=$data/fastqs_from_core/fastqs             # Directory containing all input files. Should be one job per file
+OUT=$data/peared_fastqs/           # Directory where output files should be written
+QC=$data/QC
+MYBIN=$tool/misc/run_pear_exacloud.pl          # Path to shell script or command-line executable that will be used
 
 ### Record slurm info
 
@@ -46,25 +46,29 @@ printf "\n\n"
 ### create array of file names in this location (input files)
 ### Extract file name information as well
 
-TODO=$data/tools/todo/count25.txt
-CURRFILE=`awk -v line=$SLURM_ARRAY_TASK_ID '{if (NR == line) print $0}' $TODO`
-#CURRFILE=`ls -v $IN | awk -v line=$SLURM_ARRAY_TASK_ID '{if (NR == line) print $0}'`
-BASE="${CURRFILE%%S[0-9]*}"
-SNUM="${CURRFILE%%.assembled.fastq}"; SNUM="${SNUM##*S}"
+#TODO=$data/tools/todo/pear.txt
+#FWDFILE=`awk -v line=$SLURM_ARRAY_TASK_ID '{if (NR == line) print $0}' $TODO`
 
-echo "Fastq File: " $CURRFILE
+FWDFILE=`ls -v $IN/*_R1_001.fastq | awk -v line=$SLURM_ARRAY_TASK_ID '{if (NR == line) print $0}'`
+BASE="${FWDFILE%%S[0-9]*}"
+SNUM="${FWDFILE%%_R1_001.fastq}"; SNUM="${SNUM##*S}"
+
+REVFILE=$BASE\S$SNUM\_R2_001.fastq
+
+### Check file assignments
+echo "Forward File: " $FWDFILE
 echo "Base name: " $BASE
 echo "Sample number: " $SNUM
+echo "Reverse File: " $REVFILE
 printf "\n\n"
 
-echo "Fastq input: " $IN/$CURRFILE
-echo "Base count output directory: " $OUT
-echo "Reference file: " $REF/text_barcodesvj.txt
-printf "\n\n"
+### Set QC assignments
+QC1=$QC/pear_full_log.txt
+QC2=$QC/pear_summary_log.txt
 
 ### Execute
 
-cmd="/usr/bin/Rscript $MYBIN $IN/$CURRFILE $REF/text_barcodesvj.txt 25 $OUT" 
+cmd="/usr/bin/perl $MYBIN $FWDFILE $REVFILE -o $OUT -f $QC1 -s $QC2"
 
 echo $cmd
 eval $cmd

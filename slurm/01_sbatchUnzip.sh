@@ -1,29 +1,23 @@
 #!/bin/bash
 
-### This script provides a template containg many of the commonly-used resource management SBATCH commands.
-### You can submit this script as-is using `sbatch sbatchTemplate.sh` and it will output the slurm info into each log file.
-### Use the following commands to combine the 10 (default) log files into a space-delimited file for testing purposes.
-### From directory of output files (directory where sbatch is run from):
+### Unzip all of the fastq files. Need to first determine the number of different tens place file names there are. There will be that many array jobs.
 
 #SBATCH --partition          exacloud                # partition (queue)
 #SBATCH --nodes              1                       # number of nodes
 #SBATCH --ntasks             1                       # number of "tasks" to be allocated for the job
 #SBATCH --ntasks-per-core    1                       # Max number of "tasks" per core.
 #SBATCH --cpus-per-task      1                       # Set if you know a task requires multiple processors
-##SBATCH --mem-per-cpu        8000                    # Memory required per allocated CPU (mutually exclusive with mem)
 #SBATCH --mem                16000                  # memory pool for each node
 #SBATCH --time               0-24:00                 # time (D-HH:MM)
-#SBATCH --output             countSpikes25_%A_%a.out        # Standard output
-#SBATCH --error              countSpikes25_%A_%a.err        # Standard error
-#SBATCH --array              1-6                    # sets number of jobs in array
+#SBATCH --output             unzip_%A_%a.out        # Standard output
+#SBATCH --error              unzip_%A_%a.err        # Standard error
+#SBATCH --array              0-14                    # sets number of jobs in array
 
 
 ### SET I/O VARIABLES
 
-IN=$data/peared_fastqs/assembled             # Directory containing all input files. Should be one job per file
-OUT=$data/spike_counts/25bp           # Directory where output files should be written
-REF=$tool/reference
-MYBIN=$tool/process_spikes/count.spikes.R          # Path to shell script or command-line executable that will be used
+IN=$data/fastqs_from_core/fastqs             # Directory containing all input files. Should be one job per file
+MYBIN=$tool/misc/unzip.sh                    # Path to shell script or command-line executable that will be used
 
 ### Record slurm info
 
@@ -46,26 +40,44 @@ printf "\n\n"
 ### create array of file names in this location (input files)
 ### Extract file name information as well
 
-TODO=$data/tools/todo/count25.txt
-CURRFILE=`awk -v line=$SLURM_ARRAY_TASK_ID '{if (NR == line) print $0}' $TODO`
-#CURRFILE=`ls -v $IN | awk -v line=$SLURM_ARRAY_TASK_ID '{if (NR == line) print $0}'`
-BASE="${CURRFILE%%S[0-9]*}"
-SNUM="${CURRFILE%%.assembled.fastq}"; SNUM="${SNUM##*S}"
+### Get a template file
+TEMP=`ls -v $IN | head -1`
+BASE="${TEMP%%S[0-9]*}"
+TENS=$SLURM_ARRAY_TASK_ID
 
-echo "Fastq File: " $CURRFILE
-echo "Base name: " $BASE
-echo "Sample number: " $SNUM
-printf "\n\n"
-
-echo "Fastq input: " $IN/$CURRFILE
-echo "Base count output directory: " $OUT
-echo "Reference file: " $REF/text_barcodesvj.txt
+### Print checks
+echo "Example file: " $TEMP
+echo "File base: " $BASE
 printf "\n\n"
 
 ### Execute
 
-cmd="/usr/bin/Rscript $MYBIN $IN/$CURRFILE $REF/text_barcodesvj.txt 25 $OUT" 
+for i in {0..9}; do
 
-echo $cmd
-eval $cmd
+    ## Get file names
+    if [ $TENS == 0 ]; then
+        FILE1=$IN/$BASE\S$i\_R1_001.fastq.gz
+        FILE2=$IN/$BASE\S$i\_R2_001.fastq.gz
+    else
+        FILE1=$IN/$BASE\S$TENS$i\_R1_001.fastq.gz
+        FILE2=$IN/$BASE\S$TENS$i\_R2_001.fastq.gz
+    fi
 
+    ## Check file names
+    echo "Files to run: " $FILE1 $FILE2
+
+    ## Prepare command
+    cmd1="sh $MYBIN $FILE1"
+    cmd2="sh $MYBIN $FILE2"
+
+    ## Echo command
+    echo $cmd1
+    echo $cmd2
+
+    ## Evaluate command
+    eval $cmd1
+    eval $cmd2
+
+    printf "\n\n"
+
+done
