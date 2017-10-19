@@ -82,14 +82,16 @@ treatCol_v <- grep("eatment", colnames(meta_dt), value = T)
 baseFile_v <- strsplit(inputFiles_v[1], split = "S[0-9]+")[[1]]
 toKeep_v <- paste0(baseFile_v[1], "S", unlist(meta_dt[,get(sampleCol_v)]), baseFile_v[2])
 inputFiles_v <- inputFiles_v[inputFiles_v %in% toKeep_v]
-inputNames_v <- sapply(inputFiles_v, function(x) strsplit(x, split = "_")[[1]][2], USE.NAMES = F)
+#inputNames_v <- sapply(inputFiles_v, function(x) strsplit(x, split = "_")[[1]][2], USE.NAMES = F)
+inputNames_v <- sapply(inputFiles_v, function(x) grep("S[0-9]+", unlist(strsplit(x, split = "_")), value = T), USE.NAMES=F)
 
 ### Read in data
 clones_lsdt <- sapply(inputFiles_v, function(x) {
     ## Get data
     y <- fread(file.path(inputDir_v, x), select = columns_v)
     ## Get sample character
-    sample_v <- strsplit(x, split = "_")[[1]][2]
+    sample_v <- grep("S[0-9]+", unlist(strsplit(x, split = "_")), value = T)
+    #sample_v <- strsplit(x, split = "_")[[1]][2]
     ## Get sample number
     sampNum_v <- as.numeric(gsub("S", "", sample_v))
     ## Add sample character to data
@@ -152,4 +154,5 @@ for (i in 1:length(divisions_lsdt)){
 } # for i
 
 
+warnings()
 
