@@ -26,7 +26,11 @@ type_v <- arguments[7]         # sometimes divide by a certain category of treat
 ### Get files and names
 cloneFiles_v <- list.files(cloneDir_v)
 cloneFiles_v <- cloneFiles_v[order(as.numeric(gsub("^.*_S|_.*$", "", cloneFiles_v)))]
-cloneNames_v <- sapply(cloneFiles_v, function(x) strsplit(x, split = "_")[[1]][2], USE.NAMES=F)
+#cloneNames_v <- sapply(cloneFiles_v, function(x) strsplit(x, split = "_")[[1]][2], USE.NAMES=F)
+cloneNames_v <- sapply(cloneFiles_v, function(x) {
+	temp <- unlist(strsplit(x, split = "_"))
+	name_v <- grep("S[0-9]+", temp, value = T)
+	return(name_v)}, USE.NAMES = F)
 batchName_v <- strsplit(cloneFiles_v[1], split = "_")[[1]][1]
 
 ### Read in data
