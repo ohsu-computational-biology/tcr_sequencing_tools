@@ -1,3 +1,4 @@
+#!/usr/bin/Rscript
 #	RScript that calculates number of unique clonotypes, Shannon entropy, and clonality for multiple clonotype files
 #
 #   Input is a directory containing one or more files with MiXCR output format
