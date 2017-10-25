@@ -6,10 +6,10 @@
 #SBATCH --ntasks-per-core	1
 #SBATCH --cpus-per-task		1
 #SBATCH --mem-per-cpu		16000
-#SBATCH --output		homeo-%j.out
-#SBATCH --error			homeo-%j.err
+#SBATCH --output		groupClones-%j.out
+#SBATCH --error			groupClones-%j.err
 
-MYBIN=$tool/analysis/homeo
+MYBIN=$tool/clonalDivisions/newMixcrOutput/groupClones.R
 IN=$data/normalization/normalized_clones
 OUT=$data/freqGroups
 META=$data/QC/meta/LIB170920LC_meta.txt
@@ -21,5 +21,5 @@ echo "Current file: " $CURRFILE
 
 mkdir -p $OUT
 
-$MYBIN -i $IN -o $OUT -m $META -l TRUE
+$MYBIN -i $IN -o $OUT -m $META -l TRUE -n FALSE
 

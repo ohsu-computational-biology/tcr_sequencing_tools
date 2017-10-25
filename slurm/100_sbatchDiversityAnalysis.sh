@@ -13,16 +13,15 @@
 ##SBATCH --mem-per-cpu        8000                    # Memory required per allocated CPU (mutually exclusive with mem)
 #SBATCH --mem                16000                  # memory pool for each node
 #SBATCH --time               0-24:00                 # time (D-HH:MM)
-#SBATCH --output             tcR_analysis_%j.out        # Standard output
-#SBATCH --error              tcR_analysis_%j.err        # Standard error
+#SBATCH --output             divAnalysis_%j.out        # Standard output
+#SBATCH --error              divAnalysis_%j.err        # Standard error
 
 
 ### SET I/O VARIABLES
 
 IN=$data/normalization/normalized_clones/             # Directory containing all input files. Should be one job per file
-IN2=$data/spike_counts/9bp/counts/
 OUT=$data/QC/
-MYBIN=$tool/analysis/tcR.Analysis.R          # Path to shell script or command-line executable that will be used
+MYBIN=$tool/analysis/diversityAnalysis.R          # Path to shell script or command-line executable that will be used
 
 ### Record slurm info
 
@@ -43,7 +42,7 @@ echo "SLURM_TASKS_PER_NODE " $SLURM_TASKS_PER_NODE
 printf "\n\n"
 
 
-cmd="/usr/bin/Rscript $MYBIN $IN $IN2 $OUT LIB170920LC" 
+cmd="/usr/bin/Rscript $MYBIN $IN $OUT FALSE" 
 
 echo $cmd
 eval $cmd
