@@ -106,6 +106,8 @@ clones_lsdt <- sapply(inputFiles_v, function(x) {
 
 names(clones_lsdt) <- inputNames_v
 
+print("Finished reading data")
+
 ### Remove any empty files
 clones_lsdt <- clones_lsdt[sapply(clones_lsdt, function(x) dim(x)[1]) > 0]
 

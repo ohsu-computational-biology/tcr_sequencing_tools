@@ -26,7 +26,7 @@ optlist <- list(
   make_option(
       c("-c", "--columns"),
       type = "character",
-      default = c("Normalized clone count,Normalized clone fraction,Clonal sequence(s),AA. Seq. CDR3,V segments,J segments"),
+      default = c("nb.clone.count,nb.clone.fraction,Clonal sequence(s),AA. Seq. CDR3,V segments,J segments"),
       help = "Column names to read in. Count and fraction are required, but all default columns are recommended. Comma-separated, no spaces.\
 		Example: 'Col1,Col 2,Col 3 a'"),
     make_option(
@@ -39,7 +39,12 @@ optlist <- list(
       default = c("Rare = 0.00001,Small = 0.0001,Medium = 0.001,Large = 0.01,Hyperexpanded = 1"),
       help = "Clonal frequency divisions to group clones into. Comma-separated, no spaces. Requires name and value separated by equals.\
 		Example: 'Rare = 0.00001,Small=0.0001,Medium = 0.001'"),
-    make_option(
+  make_option(
+      c("-n", "--newNorm"),
+      type = "logical",
+      default = FALSE,
+      help = "TRUE - use old normalization column. FALSE - use new normalization column"),
+  make_option(
     c("-l", "--log"),
     type = "logical",
     help = "TRUE if log file should be written to outDir. FALSE if no log should be written.")
@@ -55,6 +60,7 @@ inputDir_v <- args$inputDir
 metaFile_v <- args$meta
 outDir_v <- args$outDir
 log_v <- args$log
+old_v <- args$newNorm
 
 ### Handle non-traditional arguments
 columns_v <- args$columns; columns_v <- unlist(strsplit(columns_v, split = ','))
@@ -77,6 +83,23 @@ batchName_v <- strsplit(inputFiles_v[1], split = "_")[[1]][1]
 meta_dt <- fread(metaFile_v)
 sampleCol_v <- grep("ample", colnames(meta_dt), value = T)
 treatCol_v <- grep("eatment", colnames(meta_dt), value = T)
+
+## Get fraction column
+if (old_v) {
+    ## Set column variables
+    column_v <- "Normalized clone fraction"
+    count_v <- "Normalized clone count"
+    ## Switch columns to be read in
+    columns_v[grep("count", columns_v)] <- count_v
+    columns_v[grep("fraction", columns_v)] <- column_v
+} else {
+    ## Set column variables
+    column_v <- "nb.clone.fraction"
+    count_v <- "nb.clone.count"
+    ## Switch the columns to be read in
+    columns_v[grep("count", columns_v)] <- count_v
+    columns_v[grep("fraction", columns_v)] <- column_v
+} # fi
 
 ### Subset to only contain samples in meta
 baseFile_v <- strsplit(inputFiles_v[1], split = "S[0-9]+")[[1]]
@@ -121,7 +144,7 @@ print(head(x))
     ## and Hyper is 0.01 to 1. Given freq of 0.00099, which is less than all 3, medium will be chosen. Given freq of
     ## freq of 0.0010001, which is less than Large and Hyper, Large will be chosen. Given freq of 0.01, Large and Hyper
     ## will match, and large will be chosen.)
-    x[, Div := sapply(x[,`Normalized clone fraction`], function(y) names(which(divisions_v >= y)[1]))]
+    x[, Div := sapply(x[,get(column_v)], function(y) names(which(divisions_v >= y)[1]))]
 print(head(x))
     return(x)
 }, simplify = F)
