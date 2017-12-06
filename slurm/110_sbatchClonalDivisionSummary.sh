@@ -19,8 +19,9 @@ META=$data/QC/meta/meta.txt
 ### 2. metadata_v
 ### 3. outDir_v
 ### 4. toWrite_v
-### 5. tissue_v (optional)
-### 6. type_v (optional, but requires tissue_v)
+### 5. old_v
+### 6. tissue_v (optional)
+### 7. type_v (optional, but requires tissue_v)
 
 echo "SLURM_JOBID: " $SLURM_JOBID
 echo "SLURM_JOB_NODELIST: " $SLURM_JOB_NODELIST

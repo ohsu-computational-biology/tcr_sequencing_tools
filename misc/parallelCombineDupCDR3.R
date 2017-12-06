@@ -7,7 +7,7 @@
 ### Dependencies
 library(data.table)
 library(optparse)
-source("/home/exacloud/lustre1/users/hortowe/2016_11_27_stable_repos/WesPersonal/utilityFxns.R")
+source("/home/exacloud/lustre1/CompBio/users/hortowe/2016_11_27_stable_repos/WesPersonal/utilityFxns.R")
 
 ### TODO - should change outFile to outDir and write out the complete file, but also each frequency division as well
 
@@ -69,18 +69,22 @@ new_dt <- inputData_dt[, lapply(.SD, function(y) paste(y, collapse = ';')), by =
 new_dt$`Normalized clone count` <- sapply(new_dt$`Normalized clone count`, function(y) 
 						sum(as.numeric(unlist(strsplit(y, split = ";")))), USE.NAMES = F)
     
-new_dt$`nb.clone.count` <- sapply(new_dt$`nb.clone.count`, function(y) 
-						sum(as.numeric(unlist(strsplit(y, split = ";")))), USE.NAMES = F)
-    
 new_dt$`Normalized clone fraction` <- sapply(new_dt$`Normalized clone fraction`, function(y) 
 						sum(as.numeric(unlist(strsplit(y, split = ";")))), USE.NAMES = F)
-    
-new_dt$`nb.clone.fraction` <- sapply(new_dt$`nb.clone.fraction`, function(y) 
-						sum(as.numeric(unlist(strsplit(y, split = ";")))), USE.NAMES = F)
-    
 ### Check fractions
 if (!(all.equal(sum(new_dt$`Normalized clone fraction`), 1))) stop("Incorrect 'Normalized clone fraction' summation")
-if (!(all.equal(sum(new_dt$`nb.clone.fraction`), 1))) stop("Incorrect 'nb.clone.fraction' summation")
+
+
+### Do for nb, if present
+if (length(grep("nb", colnames(new_dt))) > 0){
+    new_dt$`nb.clone.fraction` <- sapply(new_dt$`nb.clone.fraction`, function(y) 
+						sum(as.numeric(unlist(strsplit(y, split = ";")))), USE.NAMES = F)
+
+    new_dt$`nb.clone.count` <- sapply(new_dt$`nb.clone.count`, function(y) 
+						sum(as.numeric(unlist(strsplit(y, split = ";")))), USE.NAMES = F)
+    
+    if (!(all.equal(sum(new_dt$`nb.clone.fraction`), 1))) stop("Incorrect 'nb.clone.fraction' summation")
+} # fi
 
 ### Collect new number of clones
 newCloneCount_v <- nrow(new_dt)

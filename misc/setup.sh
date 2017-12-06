@@ -104,14 +104,18 @@ mkdir condor_logs/groups
 
 # Directory to hold slurm log output
 mkdir slurm_logs
-mkdir slurm_logs/align
+mkdir slurm_logs/mixcr
+mkdir slurm_logs/mixcr/align
 mkdir slurm_logs/analysis
-mkdir slurm_logs/assemble
-mkdir slurm_logs/count9
-mkdir slurm_logs/count25
-mkdir slurm_logs/decontam
-mkdir slurm_logs/exportAlign
-mkdir slurm_logs/exportClones
+mkdir slurm_logs/mixcr/assemble
+mkdir slurm_logs/spike_counts
+mkdir slurm_logs/spike_counts/count9
+mkdir slurm_logs/spike_counts/count25
+mkdir slurm_logs/postprocess
+mkdir slurm_logs/postprocess/decontam
+mkdir slurm_logs/postprocess/collapse
+mkdir slurm_logs/mixcr/exportAlign
+mkdir slurm_logs/mixcr/exportClones
 mkdir slurm_logs/normalize
 mkdir slurm_logs/qc
 mkdir slurm_logs/remove
