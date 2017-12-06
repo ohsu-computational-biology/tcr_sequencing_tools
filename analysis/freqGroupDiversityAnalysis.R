@@ -11,14 +11,14 @@
         ### old_v - TRUE - use old normalization method; FALSE - use new normalization method
 
 ### Load necessary libraries
-library(entropy);
-library(data.table);
-library(tcR)
+suppressMessages(library(entropy));
+suppressMessages(library(data.table));
+suppressMessages(library(tcR))
 
 ### Get command-line arguments
 arguments <- commandArgs(trailingOnly=TRUE);
 
-clone.file <- arguments[1];    # Typically .../dhaarini/DNAXXXXLC/normalization/normalized_clones/
+clone.file <- arguments[1];    # Typically .../dhaarini/DNAXXXXLC/freqGroups/BATCH_full_clones.txt/
 out.dir <- arguments[2];
 old_v <- arguments[3]
 divisions_v <- arguments[4] # Which frequency groups to divide (comma-sep, no spaces)
@@ -39,14 +39,29 @@ if (is.na(divisions_v)) {
 sampCol_v <- grep("ample", colnames(cloneData_dt), value = T)
 samples_v <- unique(cloneData_dt[[sampCol_v]])
 
+### Get batch
+batch_v <- strsplit(basename(clone.file), split = "_")[[1]][1]
+
 ### Run analysis for each division
 for (j in 1:length(divisions_v)) {
 
     ## Get divisions
     currDiv_v <- divisions_v[j]
 
+    ## Subset Data
+    currDivData_dt <- cloneData_dt[Div == currDiv_v,]
+    
+    ## Update
+    print(c("Working on division: ", currDiv_v))
+    print(c("Number of clones in this division: ", nrow(currDivData_dt)))
+
+    ## Update samples
+    print(c("Original samples: ", samples_v))
+    subSamples_v <- unique(currDivData_dt[[sampCol_v]])
+    print(c("Samples in this division: ", subSamples_v))
+
     ## Create arrays
-    clonality <- numeric(length(samples_v))
+    clonality <- numeric(length(subSamples_v))
     calculated.entropies <- clonality
     unique.clones <- clonality
     max.clonal.freq <- clonality
@@ -56,12 +71,6 @@ for (j in 1:length(divisions_v)) {
     gini <- clonality
     trueD <- clonality
 
-    ## Update
-    print(c("Working on division: ", currDiv_v))
-
-    ## Subset Data
-    currDivData_dt <- cloneData_dt[Div == currDiv_v,]
-    
     ## Get fraction column
     if (old_v) {
         column_v <- "Normalized clone fraction"
@@ -71,10 +80,10 @@ for (j in 1:length(divisions_v)) {
         count_v <- "nb.clone.count"
     } # fi
 
-    for(i in 1:length(samples_v)) {
+    for(i in 1:length(subSamples_v)) {
 
         ## Get current sample
-        currSample_v <- samples_v[i]
+        currSample_v <- subSamples_v[i]
         currData_dt <- currDivData_dt[get(sampCol_v) == currSample_v,]
 
         ## Count number of lines in file, i.e. number of unique clonotypes
@@ -107,13 +116,13 @@ for (j in 1:length(divisions_v)) {
     
         ## Update progress
         if((i %%10) == 0)   {
-            cat("Processing file ", i, " (out of ", length(count.files.in.dir), ")\n", sep="");
+            cat("Processing file ", i, " (out of ", length(subSamples_v), ")\n", sep="");
         } # fi
 
     } # for i
 
     ## Create output data.frame
-    output.df <- data.frame(samples_v, calculated.entropies, norm.entropy, unique.clones, clonality,
+    output.df <- data.frame(subSamples_v, calculated.entropies, norm.entropy, unique.clones, clonality,
 	     		    adaptive.clonality, max.clonal.freq, max.clone.count, gini, trueD)
 
     colnames(output.df) <- c("Sample", "Shannon Entropy", "Normalized Entropy", "Unique Clonotypes", "Clonality",

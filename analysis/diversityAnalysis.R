@@ -9,9 +9,9 @@
 	### out.dir - directory to write analysis output
         ### old_v - TRUE - use old normalization method; FALSE - use new normalization method
 ###   Load necessary libraries
-library(entropy);
-library(data.table);
-library(tcR)
+suppressMessages(library(entropy))
+suppressMessages(library(data.table))
+suppressMessages(library(tcR))
 
 ### Get command-line arguments
 arguments <- commandArgs(trailingOnly=TRUE);
@@ -47,8 +47,7 @@ for(i in 1:length(clone.files.in.dir))	{
 
     ## Get a clone file to process
     clone.curr.file <- clone.files.in.dir[i];
-    clone.index <- strsplit(clone.curr.file, split = "_|\\.")[[1]][2]
-
+    clone.index <- grep("S[0-9]+", strsplit(clone.curr.file, split = "_|\\.")[[1]], value = T)
     clone.curr.record <- fread(file.path(clone.dir, clone.curr.file))
 
     ## Get fraction column
