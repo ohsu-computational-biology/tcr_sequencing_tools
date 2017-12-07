@@ -1,7 +1,7 @@
 TCRseq_tools
 ============
 
-This repository contains all of the tools needed to run a TCRseq pipeline from accessing the files on mpssr to performing QC on output.
+This repository contains all of the tools needed to run a TCRseq pipeline from accessing the files on nix (formerly mpssr) to performing QC on output.
 
 GENERAL NOTES
 ==============
@@ -11,8 +11,17 @@ GENERAL NOTES
      `~% condor_submit -interactive -append 'request_memory = 10 GB' -append 'request_cpus = 4'`
      `~% srun --mincpus 4 --mem 4G --time 1-00 --pty bash`
 
+The new servers (exahead1 and exahead2) use the slurm job scheduler, not condor, the first command will no longer work.  
+
 DIRECTORY SET UP AND ENV VARS
 =============================
+
+1. Log into exacloud via the exahead1 server:
+
+    ```
+    ~$ ssh userName@exahead1.ohsu.edu
+    ~$ <enter password>
+    ```
 
 1. Create a location on ExaCloud for storing the project files, by creating a new directory in the tcrseq project area:
 
@@ -158,9 +167,9 @@ PREPROCESS
 ===========
 
 ## Copy Files
-The Core places the files on their IGL server, mpssr. You will need access to this server in order to copy files to exacloud.
+The Core places the files on their IGL server, nix (formerly mpssr). You will need access to this server in order to copy files to exacloud.
 
-1. Use scp or rsync to copy the fastq files from the Core's IGL server (mpssr) to the fastqs\_from\_core directory on ExaCloud.  For example:  
+1. Use scp or rsync to copy the fastq files from the Core's IGL server (nix) to the fastqs\_from\_core directory on ExaCloud. For example:  
 
      ```
      ~% pwd
@@ -229,7 +238,7 @@ Optionally, we can remove 1 other field, if there happens to be a treatment desi
 
 UnZip
 =====
-The files are zipped to allow fast transfer from mpssr1, but need to be unzipped for the remainder of the pipeline. 
+The files are zipped to allow fast transfer from nix, but need to be unzipped for the remainder of the pipeline. 
 We will now begin using the condor job scheduler to run our jobs. This basic format will be followed for most of the remaining steps. 
 All the format scripts point to 1-3 input locations and the final argument should almost always be `../submits` for the output of the final submission script. 
 You can use `head -15 format.file.R` to view the top of the file and see example locations for the inputs.
