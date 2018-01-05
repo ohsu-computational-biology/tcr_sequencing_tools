@@ -9,7 +9,7 @@
 #SBATCH --output		groupClones-%j.out
 #SBATCH --error			groupClones-%j.err
 
-MYBIN=$tool/clonalDivisions/newMixcrOutput/groupClones.R
+MYBIN=$tool/clonalDivisions/groupClones.R
 IN=$data/normalization/normalized_clones/
 OUT=$data/freqGroups/
 META=$data/QC/meta/LIB170920LC_meta.txt
