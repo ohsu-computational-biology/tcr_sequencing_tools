@@ -23,7 +23,7 @@
 IN=$data/mixcr/assemblies             # Directory containing all input files. Should be one job per file
 OUT=$data/mixcr/export_clones           # Directory where output files should be written
 INDEX=$data/mixcr/indexes
-MYBIN=$tool/mixcr/mixcr-2.1.1/mixcr.jar          # Path to shell script or command-line executable that will be used
+MYBIN=$MIXCR/mixcr.jar          # Path to shell script or command-line executable that will be used
 PRESET=$tool/mixcr/assemble_preset.txt
 
 ### Record slurm info

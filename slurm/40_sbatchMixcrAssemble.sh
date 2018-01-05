@@ -25,7 +25,7 @@ OUT=$data/mixcr/assemblies           # Directory where output files should be wr
 REPORT=$data/mixcr/reports/assemble
 INDEX=$data/mixcr/indexes
 LOG=$data/path/to/logDir           # Directory where log files should be moved to
-MYBIN=$tool/mixcr/mixcr-2.1.1/mixcr.jar          # Path to shell script or command-line executable that will be used
+MYBIN=$MIXCR/mixcr.jar          # Path to shell script or command-line executable that will be used
 
 ### Record slurm info
 
