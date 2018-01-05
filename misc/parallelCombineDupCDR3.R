@@ -48,10 +48,12 @@ if (log_v){
     returnSessionInfo(args_lsv = args, out_dir_v = outDir_v)
 } # fi
 
-### Read in data
-#inputData_dt <- fread(inputFile_v, drop = "reads") # new format
-inputData_dt <- fread(inputFile_v, drop = "Reads") # old format
+### Get column to skip (either Reads (old) or reads (new))
+temp_dt <- fread(inputFile_v, nrows = 1)
+skipCol_v <- grep("eads", colnames(temp_dt), value = T)
 
+### Read in data and get name
+inputData_dt <- fread(inputFile_v, drop = skipCol_v)
 sampleName_v <- grep("S[0-9]+", unlist(strsplit(inputFile_v, split = "_")), value = T)
 
 ### Collect number of clones
@@ -59,21 +61,39 @@ origCloneCount_v <- nrow(inputData_dt)
 
 ### Get columns
 seqCol_v <- grep("aa.*CDR3|AA.*CDR3", colnames(inputData_dt), value = T)
-groupCols_v <- c("V segments", seqCol_v, "J segments")
+
+if (length(grep("V segments", colnames(inputData_dt))) > 0){
+    groupCols_v <- c("V segments", seqCol_v, "J segments")
+} else if (length(grep("bestVHit", colnames(inputData_dt))) > 0) {
+    groupCols_v <- c("bestVHit", seqCol_v, "bestJHit")
+} else {
+    groupCols_v <- c("Best V hit", seqCol_v, "Best J hit")
+} # fi
+
 aggCols_v <-  colnames(inputData_dt)[!(colnames(inputData_dt) %in% groupCols_v)]
+rawCountCol_v <- grep("cloneCount|Clone count", colnames(inputData_dt), value = T)
+rawFreqCol_v <- grep("cloneFraction|Clone fraction", colnames(inputData_dt), value = T)
 
 ### Combine clones
 new_dt <- inputData_dt[, lapply(.SD, function(y) paste(y, collapse = ';')), by = groupCols_v]
-    
+
 ### Add back clone counts and freqs
-new_dt$`Normalized clone count` <- sapply(new_dt$`Normalized clone count`, function(y) 
+new_dt[[rawCountCol_v]] <- sapply(new_dt[[rawCountCol_v]], function(y)
+						sum(as.numeric(unlist(strsplit(y, split = ";")))), USE.NAMES = F)
+new_dt[[rawFreqCol_v]] <- sapply(new_dt[[rawFreqCol_v]], function(y)
+						sum(as.numeric(unlist(strsplit(y, split = ";")))), USE.NAMES = F)
+
+### Do for normalized, if present
+if (length(grep("Normalized", colnames(new_dt))) > 0){
+    new_dt$`Normalized clone count` <- sapply(new_dt$`Normalized clone count`, function(y) 
 						sum(as.numeric(unlist(strsplit(y, split = ";")))), USE.NAMES = F)
     
-new_dt$`Normalized clone fraction` <- sapply(new_dt$`Normalized clone fraction`, function(y) 
+    new_dt$`Normalized clone fraction` <- sapply(new_dt$`Normalized clone fraction`, function(y) 
 						sum(as.numeric(unlist(strsplit(y, split = ";")))), USE.NAMES = F)
+
 ### Check fractions
 if (!(all.equal(sum(new_dt$`Normalized clone fraction`), 1))) stop("Incorrect 'Normalized clone fraction' summation")
-
+} # fi
 
 ### Do for nb, if present
 if (length(grep("nb", colnames(new_dt))) > 0){

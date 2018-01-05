@@ -114,6 +114,7 @@ for (i in 1:length(clone.files)){
         ## Update count of contaminated sequences
         if (is.na(offending.clone.1[[readCol_v]][1])) {
             count.clone.1 <- 0
+	    read.count.clone.1 <- 0
         } else {
             count.clone.1 <- offending.clone.1[[rawCountCol_v]]
             read.count.clone.1 <- length(unlist(strsplit(as.character(offending.clone.1[[readCol_v]]), split = ',')))
@@ -144,6 +145,7 @@ for (i in 1:length(clone.files)){
         ## Update count of contaminated sequences
         if (is.na(offending.clone.2[[readCol_v]][1])) {
             count.clone.2 <- 0
+	    read.count.clone.2 <- 0
         } else {
             count.clone.2 <- offending.clone.2[[rawCountCol_v]]
             read.count.clone.2 <- length(unlist(strsplit(as.character(offending.clone.2[[readCol_v]]), split = ',')))
