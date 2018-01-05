@@ -211,7 +211,11 @@ colnames(perTreatCumFreq_dt) <- colnames(perTreatMeanFreq_dt)
 colnames(perTreatGrpCount_dt) <- colnames(perTreatMeanFreq_dt)
 
 ### Revert cumulative freq back to matrix for ggplot
-perTreatCumFreq_mat <- as.matrix(perTreatCumFreq_dt[,2:ncol(perTreatCumFreq_dt)])
+if (nrow(perTreatCumFreq_dt) == 1) {
+    perTreatCumFreq_mat <- t(as.matrix(perTreatCumFreq_dt[,2:ncol(perTreatCumFreq_dt)]))
+else {
+    perTreatCumFreq_mat <- as.matrix(perTreatCumFreq_dt[,2:ncol(perTreatCumFreq_dt)])
+} # fi
 rownames(perTreatCumFreq_mat) <- perTreatCumFreq_dt[,1]
 perTreatCumFreq_mat <- apply(perTreatCumFreq_mat, c(1,2), as.numeric)
 
