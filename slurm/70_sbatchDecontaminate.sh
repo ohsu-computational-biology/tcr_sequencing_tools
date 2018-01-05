@@ -22,7 +22,7 @@
 IN=$data/mixcr/export_clones/             # Directory containing all input files. Should be one job per file
 OUT=$data/normalization/decontam/           # Directory where output files should be written
 QC=$data/QC/
-MYBIN=$tool/misc/newMixcrOutput/decontaminate_clones.R          # Path to shell script or command-line executable that will be used
+MYBIN=$tool/misc/decontaminate_clones.R          # Path to shell script or command-line executable that will be used
 
 ### Record slurm info
 
