@@ -59,6 +59,12 @@ if (old_v) {
     count_v <- "nb.clone.count"
 } # fi
 
+### Change columns in case it's raw data
+if (!column_v %in% colnames(cloneData_lsdt[[1]])){
+    column_v <- grep("cloneFraction|Clone fraction", colnames(cloneData_lsdt[[1]]), value = T)
+    count_v <- grep("cloneCount|Clone count", colnames(cloneData_lsdt[[1]]), value = T)
+} # fi
+
 ### Get appropriate columns and subset
 
 tissueCol_v <- grep("issue", colnames(metadata_dt), value = T)

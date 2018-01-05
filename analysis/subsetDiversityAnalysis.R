@@ -66,8 +66,14 @@ for (j in 1:length(divisions_v)) {
 
         ## Get fraction column
         if (old_v) {
-            column_v <- "Normalized clone fraction"
-            count_v <- "Normalized clone count"
+            hasNorm_v <- grep("Normalized", colnames(clone.curr.record), value = T)
+            if (length(hasNorm_v) > 0){
+                column_v <- "Normalized clone fraction"
+                count_v <- "Normalized clone count"
+            } else {
+                column_v <- grep("Clone fraction|cloneFraction", colnames(clone.curr.record), value = T)
+                count_v <- grep("Clone count|cloneCount", colnames(clone.curr.record), value = T)
+            } # fi
         } else {
             column_v <- "nb.clone.fraction"
             count_v <- "nb.clone.count"
