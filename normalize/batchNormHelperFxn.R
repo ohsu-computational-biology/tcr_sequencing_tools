@@ -15,14 +15,14 @@ read_clone<-function(file, directory, norm_v) {
   
   ## Specify desired columns
   if (norm_v == "orig"){
-    getCols_v <- c("Clone ID", "cloneId", "Normalized clone count", "clonalSequence", "Clonal sequence(s)", "V segments", "J segments")
-    newCols_v <- c("ID", "Seq", "V", "J", "CloneCount")
+    getCols_v <- c("Clone ID", "cloneId", "Normalized clone count", "clonalSequence", "Clonal sequence(s)", "AA. Seq. CDR3", "aaSeqCDR3", "V segments", "J segments")
+    newCols_v <- c("ID", "Seq", "aaSeq", "V", "J", "CloneCount")
   } else if (norm_v == "raw") {
-    getCols_v <- c("Clone ID", "cloneId", "Clone count", "clonalSequence", "Clonal sequence(s)", "V segments", "J segments")
-    newCols_v <- c("ID", "CloneCount", "Seq", "V", "J")
+    getCols_v <- c("Clone ID", "cloneId", "Clone count", "clonalSequence", "Clonal sequence(s)", "AA. Seq. CDR3", "aaSeqCDR3", "V segments", "J segments")
+    newCols_v <- c("ID", "CloneCount", "Seq", "aaSeq", "V", "J")
   } else if (norm_v == "nb") {
-    getCols_v <- c("Clone ID", "cloneId", "nb.clone.count", "clonalSequence", "Clonal sequence(s)", "V segments", "J segments")
-    newCols_v <- c("ID", "Seq", "V", "J", "CloneCount")
+    getCols_v <- c("Clone ID", "cloneId", "nb.clone.count", "clonalSequence", "Clonal sequence(s)", "AA. Seq. CDR3", "aaSeqCDR3", "V segments", "J segments")
+    newCols_v <- c("ID", "Seq", "aaSeq", "V", "J", "CloneCount")
   } else {
     stop("Incorrect designation of norm_v argument. Must be 'orig', 'raw', or 'nb'.")
   }
@@ -201,7 +201,7 @@ groupVJ <- function(data_lsdt, column_v) {
     ## Add vj column
     y$VJ <- paste(y$V, y$J, sep = "_")
     ## Remove other columns
-    y[,(c("ID", "sample", "Seq", "V", "J")) := NULL]
+    y[,(c("ID", "sample", "Seq", "aaSeq", "V", "J")) := NULL]
     ## Collapse by VJ column
     collapseY <- y[, sum(get(column_v)), by = .(VJ)]
     ## Return
