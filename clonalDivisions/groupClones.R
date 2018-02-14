@@ -73,12 +73,19 @@ if (log_v){
 ### Get files and names
 inputFiles_v <- list.files(inputDir_v)
 inputFiles_v <- inputFiles_v[order(as.numeric(gsub("^.*_S|_.*", "", inputFiles_v)))]
-batchName_v <- strsplit(inputFiles_v[1], split = "_")[[1]][1]
 
 ### Get metadata
 meta_dt <- fread(metaFile_v)
 sampleCol_v <- grep("ample", colnames(meta_dt), value = T)
 treatCol_v <- grep("eatment", colnames(meta_dt), value = T)
+
+### Pre-subset inputFiles for specific batch, if necessary
+batchCol_v <- grep("atch", colnames(meta_dt), value = T)
+if (length(batchCol_v) == 1) {
+    batch_v <- unique(meta_dt[[batchCol_v]])
+    inputFiles_v <- grep(batch_v, inputFiles_v, value = T)
+    print(sprintf("Pre-subset inputFiles_v to only contain files from batch %s", batch_v))
+}
 
 ### Subset to only contain samples in meta
 baseFile_v <- strsplit(inputFiles_v[1], split = "S[0-9]+")[[1]]
@@ -86,6 +93,9 @@ toKeep_v <- paste0(baseFile_v[1], "S", unlist(meta_dt[,get(sampleCol_v)]), baseF
 inputFiles_v <- inputFiles_v[inputFiles_v %in% toKeep_v]
 #inputNames_v <- sapply(inputFiles_v, function(x) strsplit(x, split = "_")[[1]][2], USE.NAMES = F)
 inputNames_v <- sapply(inputFiles_v, function(x) grep("S[0-9]+", unlist(strsplit(x, split = "_")), value = T), USE.NAMES=F)
+
+### Get batch name
+batchName_v <- strsplit(inputFiles_v[1], split = "_")[[1]][1]
 
 ### Get frequency column
 column_v <- grep("fraction", columns_v, value = T)
