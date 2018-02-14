@@ -10,6 +10,7 @@ print("Start")
 ### Dependencies
 suppressMessages(library(data.table))
 suppressMessages(library(optparse))
+suppressMessages(library(ggplot2))
 source("/home/exacloud/lustre1/CompBio/users/hortowe/2016_11_27_stable_repos/WesPersonal/utilityFxns.R")
 
 ### TODO - should change outFile to outDir and write out the complete file, but also each frequency division as well
@@ -89,6 +90,9 @@ inputNames_v <- sapply(inputFiles_v, function(x) grep("S[0-9]+", unlist(strsplit
 ### Get frequency column
 column_v <- grep("fraction", columns_v, value = T)
 
+### If batch-normalized data, frequency column will be different
+if (length(column_v) == 0) column_v <- "normFreq"
+
 ### Read in data
 clones_lsdt <- sapply(inputFiles_v, function(x) {
     ## Get data
@@ -109,6 +113,7 @@ clones_lsdt <- sapply(inputFiles_v, function(x) {
     return(y)}, simplify = F)
 
 names(clones_lsdt) <- inputNames_v
+print("Finished reading in data.")
 
 ### Remove any empty files
 clones_lsdt <- clones_lsdt[sapply(clones_lsdt, function(x) dim(x)[1]) > 0]
@@ -135,6 +140,7 @@ clones_lsdt <- sapply(clones_lsdt, function(x) {
 
 ### Combine into giant data.table
 clones_dt <- do.call(rbind, clones_lsdt)
+print("Finished classification.")
 
 ### Gather summary info
 summary_lsdt <- sapply(names(divisions_v), function(x) clones_dt[Div == x, .N, by = Sample], simplify = F)
@@ -150,6 +156,7 @@ for (i in 1:length(divisions_v)){
     ## Add to list
     divisions_lsdt[[currDiv_v]] <- currSubset_dt
 } # for i
+print("Finish split and summary.")
 
 ### Write out all of the data.tables
 for (i in 1:length(divisions_lsdt)){
@@ -159,7 +166,7 @@ for (i in 1:length(divisions_lsdt)){
                 file.path(outDir_v, paste(batchName_v, currName_v, "clones.txt", sep = "_")),
                 sep = '\t', quote = F, row.names = F)
 } # for i
-
+print("Finish writing.")
 
 warnings()
 

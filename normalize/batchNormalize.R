@@ -107,11 +107,12 @@ treatments_v <- unique(metadata_dt[[treatCol_v]])
 ### List where each element is a list containing the clone data.tables for one batch
 ### Name of each base element is the batch name. The name of that list's elements are the sample numbers
 clones_lslsdt <- readDir_clone(dataDir = baseDir_v, subDir = dataDir_v, meta = metadata_dt, norm_v = norm_v)
+print("Done reading in data.")
 
 ### Clean Data
 ### Remove pseudo clones and adjust V121/V122
 clones_lslsdt <- sapply(clones_lslsdt, function(x) sapply(x, function(y) cln_clones(y), simplify = F), simplify = F)
-
+print("Done cleaning data.")
 
 #####################
 ### NORMALIZATION ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -132,6 +133,7 @@ normClones_lslsdt <- lapply(normClones_lslsdt, function(x) lapply(x, function(y)
 	freq_v <- y$normC / sum_v
 	y$normFreq <- freq_v
 	return(y)}))
+print("Done normalizing data.")
 
 
 ##############
