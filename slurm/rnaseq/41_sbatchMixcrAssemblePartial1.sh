@@ -22,6 +22,7 @@
 
 IN=$data/mixcr/alignments             # Directory containing all input files. Should be one job per file
 OUT=$data/mixcr/partial1           # Directory where output files should be written
+REPORT=$data/mixcr/reports/partial1
 MYBIN=$MIXCR/mixcr.jar          # Path to shell script or command-line executable that will be used
 
 ### Record slurm info
@@ -59,13 +60,15 @@ printf "\n\n"
 ### Assign I/O files/paths
 ALIGNMENT=$IN/$CURRFILE
 PARTIAL=$OUT/$BASE\S$SNUM\_partial1.vdjca
+REPORTFILE=$REPORT/S$SNUM\_partial1_report.txt
 echo "File input: " $ALIGNMENT
 echo "File output: " $PARTIAL
+echo "Report file: " $REPORTFILE
 printf "\n\n"
 
 ### Execute
 
-cmd="/usr/bin/java -Xmx15g -jar $MYBIN assemblePartial -f $ALIGNMENT $PARTIAL"
+cmd="/usr/bin/java -Xmx15g -jar $MYBIN assemblePartial -f -r $REPORTFILE $ALIGNMENT $PARTIAL"
 
 echo $cmd
 eval $cmd

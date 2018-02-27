@@ -20,7 +20,7 @@
 
 ### SET I/O VARIABLES
 
-IN=$data/mixcr/fastqs             # Directory containing all input files. Should be one job per file
+IN=$data/fastqs_from_core/fastqs             # Directory containing all input files. Should be one job per file
 OUT=$data/mixcr/alignments        # Directory where output files should be written
 REPORT=$data/mixcr/reports/align
 LOG=$data/path/to/logDir           # Directory where log files should be moved to
@@ -71,7 +71,7 @@ printf "\n\n"
 
 ### Execute
 
-cmd="/usr/bin/java -Xmx15g -jar $MYBIN align -f --species $SPECIES --save-description --save-reads -v --report $REPORTFILE $FASTQ $OUTPUT"
+cmd="/usr/bin/java -Xmx15g -jar $MYBIN align -f --species $SPECIES -OallowPartialAlignments=true --save-description --save-reads -v --report $REPORTFILE $FASTQ $OUTPUT"
 
 echo $cmd
 eval $cmd
