@@ -1,6 +1,6 @@
 #!/bin/sh
 
-RNA=$1
+RNA=$1   # Type in anything to specify that it's an RNA run.
 
 cd $data/
 
@@ -17,16 +17,6 @@ mkdir fastqs_from_core/QC_recopy
 
 # Directories to hold mixcr output
 mkdir mixcr
-
-## Depends on RNAseq or normal
-if [ $RNA != '' ]; then
-	mkdir mixcr/partial1
-	mkdir mixcr/partial2
-	mkdir mixcr/extended
-else
-	mkdir mixcr/despiked_fastqs
-fi
-
 mkdir mixcr/alignments
 mkdir mixcr/assemblies
 mkdir mixcr/export_clones
@@ -34,6 +24,19 @@ mkdir mixcr/indexes
 mkdir mixcr/reports
 mkdir mixcr/reports/align
 mkdir mixcr/reports/assemble
+
+# Different depending on if RNAseq or normal TCRseq
+if [ $RNA != '' ]; then
+	mkdir mixcr/partial1
+	mkdir mixcr/partial2
+	mkdir mixcr/extended
+	mkdir mixcr/reports/partial1
+	mkdir mixcr/reports/partial2
+else
+	mkdir mixcr/despiked_fastqs
+fi
+
+
 
 # Directories to hold normalization output
 if [ $RNA == '' ]; then
@@ -119,21 +122,28 @@ mkdir QC/homeo
 
 # Directory to hold slurm log output
 mkdir slurm_logs
-mkdir slurm_logs/mixcr
-mkdir slurm_logs/mixcr/align
 mkdir slurm_logs/analysis
-mkdir slurm_logs/mixcr/assemble
 mkdir slurm_logs/spike_counts
 mkdir slurm_logs/spike_counts/count9
 mkdir slurm_logs/spike_counts/count25
 mkdir slurm_logs/postprocess
 mkdir slurm_logs/postprocess/decontam
 mkdir slurm_logs/postprocess/collapse
-mkdir slurm_logs/mixcr/exportAlign
-mkdir slurm_logs/mixcr/exportClones
 mkdir slurm_logs/normalize
 mkdir slurm_logs/qc
 mkdir slurm_logs/remove
+mkdir slurm_logs/setup
+
+mkdir slurm_logs/mixcr
+mkdir slurm_logs/mixcr/align
+mkdir slurm_logs/mixcr/assemble
+mkdir slurm_logs/mixcr/exportClones
+
+if [ $RNA != '' ]; then
+	mkdir slurm_logs/mixcr/partial1
+	mkdir slurm_logs/mixcr/partial2
+	mkdir slurm_logs/mixcr/extend
+fi
 
 # Directory for tools
 mkdir tools
