@@ -1,8 +1,12 @@
 #!/bin/sh
 
+### Split a batch submission job by 10s.
+### If you have a batch with 170 files, this will submit the specified script for the first 10 files, then wait until they're done before
+### submitting for the second 10 files, etc.
+
 ### Set variables
 SCRIPT=$1        # sbatch script to be submitted
-FILES=$2         # maximum number of files
+FILES=$2         # maximum number of files (however many files are in your batch, e.g. 170)
 
 ### Going to run for every 10 files
 TENS=$(expr $FILES / 10)

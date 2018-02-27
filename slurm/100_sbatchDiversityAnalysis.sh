@@ -22,6 +22,7 @@
 IN=$data/normalization/normalized_clones/             # Directory containing all input files. Should be one job per file
 OUT=$data/QC/
 MYBIN=$tool/analysis/diversityAnalysis.R          # Path to shell script or command-line executable that will be used
+OLD=FALSE 					# old mixcr column names (TRUE) or new (FALSE)
 
 ### Record slurm info
 
@@ -42,7 +43,7 @@ echo "SLURM_TASKS_PER_NODE " $SLURM_TASKS_PER_NODE
 printf "\n\n"
 
 
-cmd="/usr/bin/Rscript $MYBIN $IN $OUT FALSE" 
+cmd="/usr/bin/Rscript $MYBIN $IN $OUT $OLD" 
 
 echo $cmd
 eval $cmd
