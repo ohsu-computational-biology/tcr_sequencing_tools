@@ -16,8 +16,8 @@
 
 ### SET I/O VARIABLES
 
-BATCH=DNA151124LC
-IN=$dha/$BATCH/mixcr/alignments 	# Directory containing all input files. Should be one job per file
+BATCH=LIB170213LC
+IN=$dha/$BATCH/forUpload/normCounts/ 	# Directory containing all input files. Should be one job per file
 MYBIN=$tool/misc/zip.sh                    # Path to shell script or command-line executable that will be used
 
 ### Record slurm info
