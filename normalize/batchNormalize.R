@@ -53,7 +53,7 @@ optlist <- list(
   make_option(
     c("-p", "--pre"),
     type = "character",
-    help = "prefix and suffix to add around batch name when outputting files. comma-sep, no spaces."
+    help = "prefix and suffix to add around batch name when outputting files. comma-sep, no spaces. If two different batches, separte them by '.'"
   ),
   make_option(
     c("-f", "--debug"),

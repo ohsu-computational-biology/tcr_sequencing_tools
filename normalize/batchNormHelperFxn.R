@@ -52,7 +52,7 @@ read_clone<-function(file, directory, norm_v) {
   colnames(clone)<- newCols_v
   
   ## Add column with sample number
-  snum <- (gsub(".*_S|*_alignment.*", '', file))
+  snum <- (gsub(".*_S|*_alignment.*|_clones.*", '', file))
   clone$sample <- snum
   
   ## Return
@@ -89,9 +89,9 @@ readDir_clone<-function(dataDir, subDir, meta, norm_v) {
     ## Get files
     currFiles_v <- list.files(directory, pattern = paste0(".*", currBatch_v, ".*txt$"))
     ## Sort by sample number
-    currFiles_v <- currFiles_v[order(as.numeric(gsub("^.*_S|_align.*", "", currFiles_v)))]
+    currFiles_v <- currFiles_v[order(as.numeric(gsub("^.*_S|_align.*|_clones.*", "", currFiles_v)))]
     ## Get names
-    currNames_v <- gsub(".*_S|_align.*", "", currFiles_v)
+    currNames_v <- gsub(".*_S|_align.*|_clones.*", "", currFiles_v)
     ## Read in data
     #currData_lsdt <- lapply(currFiles_v, read_clone, directory = directory)
     currData_lsdt <- lapply(currFiles_v, function(x) read_clone(file = x, directory = directory, norm_v = norm_v))
