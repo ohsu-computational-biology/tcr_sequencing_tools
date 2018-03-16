@@ -35,7 +35,7 @@ mono.dir <- arguments[7]
 
 ### Sort files
 clone.files <- list.files(clone.dir)
-clone.files <- clone.files[order(as.numeric(gsub(".*_S|_align.*", '', clone.files)))]
+clone.files <- clone.files[order(as.numeric(gsub(".*_S|_align.*|_clones.txt", '', clone.files)))]
 
 ### Empty matrix for output summary
 contam_reads_mat <- matrix(nrow = length(clone.files), ncol = 2)
