@@ -12,7 +12,7 @@
 suppressMessages(library(entropy))
 suppressMessages(library(data.table))
 suppressMessages(library(tcR))
-
+print("Start")
 ### Get command-line arguments
 arguments <- commandArgs(trailingOnly=TRUE);
 
@@ -39,8 +39,9 @@ max.clone.count <- numeric(length(clone.files.in.dir))
 gini <- numeric(length(clone.files.in.dir))
 true <- numeric(length(clone.files.in.dir))
 
-for(i in 1:length(clone.files.in.dir))	{
-
+#for(i in 1:length(clone.files.in.dir))	{
+for(i in 1:length(clone.files.in.dir)){
+print(i)
     ###
     ### DATA
     ###
@@ -50,6 +51,7 @@ for(i in 1:length(clone.files.in.dir))	{
     clone.index <- grep("S[0-9]+", strsplit(clone.curr.file, split = "_|\\.")[[1]], value = T)
     clone.curr.record <- fread(file.path(clone.dir, clone.curr.file))
 
+    if (nrow(clone.curr.record) == 0) next
     ## Get fraction column
     if (old_v) {
 	hasNorm_v <- grep("Normalized", colnames(clone.curr.record), value = T)
