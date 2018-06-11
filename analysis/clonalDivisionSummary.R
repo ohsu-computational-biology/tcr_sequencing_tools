@@ -20,18 +20,63 @@ suppressMessages(library(entropy))
 suppressMessages(library(data.table))
 suppressMessages(library(tcR))
 suppressMessages(library(ggplot2))
+suppressMessages(library(optparse))
 source("/home/exacloud/lustre1/CompBio/users/hortowe/2016_11_27_stable_repos/WesPersonal/utilityFxns.R")
 
-###	Get command-line arguments
-arguments <- commandArgs(trailingOnly=TRUE);
+### Command LIne
+optlist <- list(
+	make_option(
+		c("-c", "--cloneDir"),
+		type = "character",
+		help = "Path to directory of normalized clone files."
+	),
+	make_option(
+		c("-m", "--metadata"),
+		type = "character",
+		help = "Path to metadata file."
+	),
+	make_option(
+		c("-o", "--outDir"),
+		type = "character",
+		help = "Path to output directory"
+	),
+	make_option(
+		c("-w", "--write"),
+		type = "logical",
+		help = "TRUE - write output. FALSE - no output"
+	),
+	make_option(
+		c("-l", "--old"),
+		type = "logical",
+		help = "TRUE - old column names; FALSE - new column names"
+	),
+	make_option(
+		c("-t", "--tissue"),
+		type = "character",
+		help = "Specific tissue to subset by. If blank, will use all tissues"
+	),
+	make_option(
+		c("-y", "--type"),
+		type = "character",
+		help = "Character vector for a specific category of treatments to divide by, rather than each treatment individually.
+			If blank, will not divide."
+	)
+)
 
-cloneDir_v <- arguments[1];    # Typically .../dhaarini/DNAXXXXLC/normalization/normalized_clones/
-metadata_v <- arguments[2]     # Typically $data/QC/meta
-outDir_v <- arguments[3];      # Typeically $data/QC/clonalFreq
-toWrite_v <- arguments[4]
-old_v <- arguments[5]
-tissue_v <- arguments[6]       # specify a specific tissue to subset by. If NA, will use all tissues
-type_v <- arguments[7]         # sometimes divide by a certain category of treatment, rather than each treatment. If NA, will not divide
+### Parse Command Line
+p <- OptionParser(usage = "%prog -c cloneDir -m metadata -o outDir -w write -l old -t tissue -y type",
+		option_list = optlist)
+args <- parse_args(p)
+opt <- args$options
+
+### Get command-line arguments
+cloneDir_v <- args$cloneDir
+metadata_v <- args$metadata
+outDir_v <- args$outDir
+toWrite_v <- args$write
+old_v <- args$old
+tissue_v <- args$tissue
+type_v <- args$type
 
 print("After assign args")
 ### Get files and names
@@ -70,7 +115,7 @@ if (!column_v %in% colnames(cloneData_lsdt[[1]])){
 tissueCol_v <- grep("issue", colnames(metadata_dt), value = T)
 sampleCol_v <- grep("ample", colnames(metadata_dt), value = T)[1]
 
-if (!is.na(tissue_v)) {
+if (!is.null(tissue_v)) {
     ## Subset metadata
     metadata_dt <- metadata_dt[get(tissueCol_v) == tissue_v,]
     ## Subset clone data
@@ -79,7 +124,7 @@ if (!is.na(tissue_v)) {
 } #fi
 
 ### Get treatments to run analysis on
-if (!is.na(type_v)){
+if (!is.null(type_v)){
     treatCol_v <- type_v
 } else {
     treatCol_v <- grep("eatment", colnames(metadata_dt), value = T)
