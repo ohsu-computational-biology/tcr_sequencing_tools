@@ -1,6 +1,6 @@
 #!/bin/sh
 
-RNA=$1   # Type in anything to specify that it's an RNA run.
+RNA=$1   # Type in 'RNA' to specify that it is an RNA run.
 
 cd $data/
 
@@ -26,7 +26,7 @@ mkdir mixcr/reports/align
 mkdir mixcr/reports/assemble
 
 # Different depending on if RNAseq or normal TCRseq
-if [ $RNA != '' ]; then
+if [ $RNA == "RNA" ]; then
 	mkdir mixcr/partial1
 	mkdir mixcr/partial2
 	mkdir mixcr/extended
@@ -39,7 +39,7 @@ fi
 
 
 # Directories to hold normalization output
-if [ $RNA == '' ]; then
+if [ $RNA != "RNA" ]; then
 	mkdir normalization
 	mkdir normalization/decontam
 	mkdir normalization/counts
@@ -48,7 +48,7 @@ if [ $RNA == '' ]; then
 fi 
 
 # Directories to hold PEAR output
-if [ $RNA == '' ]; then
+if [ $RNA != "RNA" ]; then
 	mkdir peared_fastqs
 	mkdir peared_fastqs/assembled
 	mkdir peared_fastqs/discarded
@@ -60,7 +60,7 @@ if [ $RNA == '' ]; then
 fi
 
 # Directories to hold count spikes output
-if [ $RNA == '' ]; then
+if [ $RNA != "RNA" ]; then
 	mkdir spike_counts
 	mkdir spike_counts/25bp
 	mkdir spike_counts/25bp/counts
@@ -139,7 +139,7 @@ mkdir slurm_logs/mixcr/align
 mkdir slurm_logs/mixcr/assemble
 mkdir slurm_logs/mixcr/exportClones
 
-if [ $RNA != '' ]; then
+if [ $RNA == "RNA" ]; then
 	mkdir slurm_logs/mixcr/partial1
 	mkdir slurm_logs/mixcr/partial2
 	mkdir slurm_logs/mixcr/extend
