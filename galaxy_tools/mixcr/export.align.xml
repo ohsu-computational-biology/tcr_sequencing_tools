@@ -1,0 +1,53 @@
+<tool id="mixcr.export.align" name="Export Alignments (MiXCR)" version="0.1.0">
+  <description>Export alignments produced by MiXCR into human-readable tsv files</description>
+
+  <macros>
+    <import>macros.xml</import>
+  </macros>
+
+  <expand macro="requirements"/>
+    
+    <command detect_errors="exit_code">
+      <![CDATA[
+	       @CMD_BEGIN@ exportAlignments -f
+	       -vHit
+	       -jHit
+	       -dHit
+	       -vAlignment
+	       -jAlignment
+	       -sequence
+	       -readId
+	       -descrR1
+	       -cloneId
+	       $index
+	       $input
+	       $output
+      ]]>
+<!--    java -Xmx10g -jar /home/exacloud/lustre1/GalaxyinstalledTest/galaxy-dist/tools/tcr_seq/galaxy_tools/export.align/mixcr.jar
+    exportAlignments -f -vHit -jHit -dHit -vAlignment -jAlignment -sequence -readId
+    -descrR1 -cloneId $index $input $output 2>%261 // The 2>%261 is xml version of 2>&1, which redirects stderr to stdout -->
+  </command>
+
+  <inputs>
+    <param name="input" type="data" format="data" label="Input alignment file (.vdjca)" help="File produced by MiXCR align command."/>
+    <param name="index" type="data" format="data" label="Read-to-clone index file" help="Index file produced by MiXCR assemble command."/>
+
+  </inputs>
+
+  <outputs>
+    <data name="output" format="tabular" label="Exported Alignment"/>
+  </outputs>
+
+  <help>
+    <![CDATA[
+	     This tool exports the alignments produced by the MiXCR Align command so that they may be manually inspected.
+	     Information such as best V, D, and J alignments are contained in these files.
+	     In addition, the read ID that gave rise to each alignment is also saved.
+	     ]]>
+  </help>
+
+  <citations>
+  </citations>
+  
+</tool>
+

@@ -17,13 +17,13 @@ options(scipen=999);
 suppressMessages(require(data.table))
 
 
-# Galaxy Argument Test
-exported.clone.file <- commandArgs(trailingOnly = TRUE)[1]
-spike.count.file <- commandArgs(trailingOnly = TRUE)[2]
-scaling.factor.file <- commandArgs(trailingOnly = TRUE)[3]
-nb.scaling.factor.file <- commandArgs(trailingOnly = TRUE)[4]
-output.file <- commandArgs(trailingOnly = TRUE)[5]
-
+### Galaxy Argument Test
+arguments <- commandArgs(trailingOnly = TRUE)
+exported.clone.file <- arguments[1]
+spike.count.file <- arguments[2]
+scaling.factor.file <- arguments[3]
+nb.scaling.factor.file <- arguments[4]
+output.file <- arguments[5]
 
 ### Get spikes
 spiked_reads <- fread(spike.count.file)
@@ -48,9 +48,6 @@ pseudo_reads_v <- unique(count_data$`V segments`[count_data$`V segments` %in% ps
 count_data <- count_data[!(count_data$`V segments` %in% pseudo),]
 print(c("remove-pseudo row count:", count_data[,.N]))
 print(c("removed pseudo genes: ", pseudo_reads_v))
-
-### Read in scaling factor
-scaling.factor <- as.numeric(read.table(scaling.factor.file)[,1]);
 
 ### Read in scaling factor file
 scaling.factor_dt <- fread(scaling.factor.file)
@@ -84,7 +81,10 @@ count_data$"nb.clone.count" <- 0;
 count_data$"nb.clone.fraction" <- 0;
 
 ### Change clone count to numeric rather than integer
-changeCols_v <- c("Clone count", "Clone fraction", "Normalized clone count", "Normalized clone fraction", "nb.clone.count", "nb.clone.fraction")
+countCol_v <- grep("[Nn]orm|nb", grep("[Cc]ount", grep("[Cc]lone", colnames(count_data), value = T), value = T), value = T, invert = T)
+freqCol_v <- grep("[Nn]ormalized|nb", grep("[Ff]raction", grep("[Cc]lone", colnames(count_data), value = T), value = T), value = T, invert = T)
+
+changeCols_v <- c(countCol_v, freqCol_v, "Normalized clone count", "Normalized clone fraction", "nb.clone.count", "nb.clone.fraction")
 count_data[, (changeCols_v) := lapply(.SD, as.numeric), .SDcols=changeCols_v]
 
 ### Go through every spike in the spike file
@@ -99,10 +99,10 @@ for(index in 1:nrow(spiked_reads)) {
 
     if(length(indices.to.modify) > 0)   {
         ## Create naive norm count
-        count_data[indices.to.modify, `Normalized clone count` := current.spike.info$naive * count_data[indices.to.modify, `Clone count`]]
+        count_data[indices.to.modify, `Normalized clone count` := current.spike.info$naive * count_data[indices.to.modify, get(countCol_v)]]
 
         ## Create nb norm count
-        count_data[indices.to.modify, `nb.clone.count` := current.spike.info$nb * count_data[indices.to.modify, `Clone count`]]
+        count_data[indices.to.modify, `nb.clone.count` := current.spike.info$nb * count_data[indices.to.modify, get(countCol_v)]]
         
     }   #   fi
 }   #   for index
@@ -123,7 +123,4 @@ write.table(count_data,
             file = output.file,
             quote = FALSE,
             row.names = FALSE,
-            sep="\t");
-
- 
- 
+            sep="\t")

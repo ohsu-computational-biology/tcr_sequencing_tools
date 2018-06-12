@@ -4,199 +4,170 @@
 
 suppressMessages(library(data.table))
 
-# We have three monoclonal sequences that have been used at various points throughout the project. After their introduction, 
+# We have three monoclonal sequences that have been used at various points throughout the project. After their introduction,
 # we have noticed an overabundance of their presence in later samples. This script searches through clone files exported by
 # Mixcr exportClones using the V identity, J identity, and AA sequence of the three clonal contaminants and removes them from
 # the file. The output is the exact same as our usual MiXCR export, minus these clones
 
-### Clones
+##################
+### CLONE INFO ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##################
 
-# p14
-  # V133, J2-4, CASSDAGGRNTLYF
-# ot1
-  # V121, J2-7, CASSRANYEQYF
-# el4
-  # V15, J2-3, CASSTGTETLYF
+contam_lsv <- list("p14" = c("V133", "J2-4", "CASSDAGGRNTLYF"),
+                   "ot1" = c("V121", "J2-7", "CASSRANYEQYF"),
+                   "el4" = c("V15", "J2-3", "CASSTGTETLYF"))
 
 ##############
-### Set Up ###
+### SET UP ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ##############
 
 arguments <- commandArgs(trailingOnly = T)
 
-## clone.dir <- arguments[1]        # #data/mixcr/export_clones
-## out.dir <- arguments[2]          # $data/normalization/decontam
-## qc.dir <- arguments[3]           # $data/QC
-## which.outputs <- arguments[4]    # "clones", "qc", or "both"
-
 clone_inputs <- arguments[1]
-clone_outputs <- arguments[2]
-qc_output <- arguments[3]
-#which.outputs <- arguments[4]
-
-### Sort files
-#clone.files <- unlist(strsplit(clone.inputs, ','))
-##clone.files <- clone.files[order(as.numeric(gsub(".*_S|_align.*", '', clone.files)))]
-
-### Empty matrix for output summary
-#contam_reads_mat <- matrix(nrow = length(clone.files), ncol = 2)
-
-### Batch name for output files
-#batch_v <- unlist(strsplit(clone.files[1], split = "_"))[1]
+clone_name <- arguments[2]
+sample_id <- arguments[3]
+clone_outputs <- arguments[4]
+qc_output <- arguments[5]
 
 ### Empty QC Matrix
 contamination.qc <- matrix(nrow = 1, ncol = 11)
 
-###################
-### Calculation ###
-###################
+###############
+### WRANGLE ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+###############
 
-# Iterate through each clone file, removing monoclonal contaminants
-#for (i in 1:length(clone.files)){
-    ## Counter for how many reads are devoted to contaminated sequences
-    curr_contam_count_v <- 0
-    ## Sample name
-#    currName_v <- unlist(strsplit(clone.files[i], split = "_"))[2]
-    
-    ## Get a clone file
-    ##   curr.clone <- fread(paste(clone.dir, clone.files[i], sep = ''))
-#    curr.clone <- fread(clone.files[i])
+### Turn id index into numeric
+sample_id <- as.numeric(sample_id)
+
+### Extract sample number from name
+sample_number <- strsplit(clone_name, split = "_")[[1]][sample_id]
+
+### Read in data
 curr.clone <- fread(clone_inputs)
-    ## Add index for ranking
-    curr.clone$index <- seq(1, length(curr.clone$`Clone ID`))
 
-    ## Get first QC info
-    orig.unique.count <- length(curr.clone$`Clone ID`)
-    orig.total.count <- sum(curr.clone$`Clone count`)
-    
+### Remove duplicate columns
+colCounts_dt <- as.data.table(table(colnames(curr.clone)))
+dupCols_dt <- colCounts_dt[N > 1,]
+removeIndexes_v <- unlist(sapply(dupCols_dt$V1, function(x) {
+  y <- grep(x, colnames(curr.clone))
+  z <- y[2:length(y)]
+  return(z)}, simplify = F))
+curr.clone <- curr.clone[,-removeIndexes_v,with=F]
 
-    ## Update column names and contents for V and J segments
-    curr.clone$`V segments` <- gsub("TRB|\\*00", "", curr.clone$`Best V hit`)
-    curr.clone$`V segments` <- gsub("-", "", curr.clone$`V segments`)
-    curr.clone$`J segments` <- gsub("TRB|\\*00", "", curr.clone$`Best J hit`)
+### Grab columns
+idCol_v <- grep("[Ii][dD]", grep("[Cc]lone", colnames(curr.clone), value = T), value = T)
+countCol_v <- grep("[Nn]orm|nb", grep("[Cc]ount", grep("[Cc]lone", colnames(curr.clone), value = T), value = T), value = T, invert = T)
+freqCol_v <- grep("[Ff]raction", grep("[Cc]lone", colnames(curr.clone), value = T), value = T)
+hitCols_v <- grep("[Hh]it", grep("[Bb]est", colnames(curr.clone), value = T), value = T)
+vHit_v <- grep("V", hitCols_v, value = T); jHit_v <- grep("J", hitCols_v, value = T)
+newV_v <- "V segments"; newJ_v <- "J segments"
+aaSeqCol_v <- grep("[Aa]{2}", grep("CDR3", colnames(curr.clone), value = T), value = T)
+readsCol_v <- grep("[Rr]eads", colnames(curr.clone), value = T)
 
-    
-    ## Extract clones (take just the first entry if more than one clone matches the criteria)
-    ## p14
-    offending.clone.1 <- curr.clone[(curr.clone$`V segments` == "V133" # p14
-        & curr.clone$`J segments` == "J2-4" &
-          curr.clone$`AA. Seq. CDR3` == "CASSDAGGRNTLYF"),]
-    
-    offending.clone.1 <- offending.clone.1[1,] # subset for first only
+### Add index for ranking
+curr.clone$index <- seq(1, length(curr.clone[[idCol_v]]))
 
-    ## Update count of contaminated sequences
-    if (is.na(offending.clone.1$Reads[1])) {
-        count.clone.1 <- 0
-    } else {
-        count.clone.1 <- length(unlist(strsplit(as.character(offending.clone.1$Reads), split = ',')))
-    }
-    curr_contam_count_v <- curr_contam_count_v + count.clone.1
-    
+## Get first QC info
+orig.unique.count <- length(curr.clone[[idCol_v]])
+orig.total.count <- sum(curr.clone[[countCol_v]])
 
-    ## QC
-    p14.rank <- offending.clone.1$index[1]
-    p14.count <- count.clone.1
+## Update column names and contents for V and J segments
+curr.clone[[newV_v]] <- gsub("TRB|\\*00", "", curr.clone[[vHit_v]])
+curr.clone[[newV_v]] <- gsub("-", "", curr.clone[[newV_v]])
+curr.clone[[newJ_v]] <- gsub("TRB|\\*00", "", curr.clone[[jHit_v]])
 
-    ## ot1
-    offending.clone.2 <- curr.clone[(curr.clone$`V segments` == "V121" # ot1
-        & curr.clone$`J segments` == "J2-7" &
-          curr.clone$`AA. Seq. CDR3` == "CASSRANYEQYF"),]
-    offending.clone.2 <- offending.clone.2[1,] # subset for first only
+###################
+### OUTPUT PREP ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+###################
 
+### Counter for how many reads are devoted to contaminated sequences
+totalContamCount_v <- 0
 
-    ## Update count of contaminated sequences
-    if (is.na(offending.clone.2$Reads[1])) {
-        count.clone.2 <- 0
-    } else {
-        count.clone.2 <- length(unlist(strsplit(as.character(offending.clone.2$Reads), split = ',')))
-    }
-    curr_contam_count_v <- curr_contam_count_v + count.clone.2
-    
-    ## QC
-    ot1.rank <- offending.clone.2$index[1]
-    ot1.count <- count.clone.2
+### Empty data.table to contain results
+qcOut_dt <- data.table("Sample" = sample_number, "Orig.Uniq.Clones" = orig.unique.count, "Orig.Total.Clones" = orig.total.count, "Remaining.Clones" = numeric(length = 1),
+                       "Contam.Clones" = numeric(length = 1))
+contamCols_v <- unlist(sapply(names(contam_lsv), function(x) paste(x, c("rank", "count"), sep = '.'), simplify = F))
+for (col_v in contamCols_v) qcOut_dt[[col_v]] <- numeric(length = 1)
 
+### Copy of clone data for removal
+### TODO - can I do this without making a copy?
+forRemoval_dt <- curr.clone
 
-    ## el4
-    offending.clone.3 <- curr.clone[(curr.clone$`V segments` == "V15" # el4
-        & curr.clone$`J segments` == "J2-3" &
-          curr.clone$`AA. Seq. CDR3` == "CASSTGTETLYF"),]
-    offending.clone.3 <- offending.clone.3[1,] # subset for first only
+################
+### DECONTAM ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+################
+
+### For each previously-identified contaminant, extract any matching entries
+### Take just the first entry, if more than one is found
+### Record its rank and count, remove from data, and update rolling count of total contaminant clones
+
+for (i in 1:length(contam_lsv)){
+  ## Get current info
+  currContam_v <- names(contam_lsv)[i]; print(sprintf("Currently checking for: %s", currContam_v))
+  currV_v <- contam_lsv[[currContam_v]][1]
+  currJ_v <- contam_lsv[[currContam_v]][2]
+  currCDR3_v <- contam_lsv[[currContam_v]][3]
   
-    if (is.na(offending.clone.3$Reads[1])) {
-        count.clone.3 <- 0
-    } else {
-        count.clone.3 <- length(unlist(strsplit(as.character(offending.clone.3$Reads), split = ',')))
-    }
-    curr_contam_count_v <- curr_contam_count_v + count.clone.3
-    
-    ## QC
-    el4.rank <- offending.clone.3$index[1]
-    el4.count <- count.clone.3
-    
-
-    ## Add count of contaminated reads to output matrix
-#    contam_reads_mat[i,] <- c(currName_v, curr_contam_count_v)
-
-    
-    ## Combine contaminants together into a data frame with the original clone data frame
-    combo <- rbind(curr.clone, offending.clone.1, offending.clone.2, offending.clone.3)
-    ## Remove duplicated entries (i.e. offending clones) from combined dataframe
-    new.clone <- combo[!duplicated(combo, fromLast = T) & seq(nrow(combo)) <= nrow(curr.clone),]
-    new.clone <- new.clone[!(is.na(new.clone$`Clone ID`)),]
-
-    ## QC Data
-remaining.count <- orig.total.count - p14.count - ot1.count - el4.count
-qc.columns <- c("Sample", "Orig.Unique.Clones", "Orig.Total.Clones", "Remaining.Clones", "Contam.clones", "p14.rank", "p14.count", "ot1.rank",
-                "ot1.count", "el4.rank", "el4.count")
-qc.row <- c(clone_inputs, orig.unique.count, orig.total.count, remaining.count, curr_contam_count_v, p14.rank,
-            p14.count, ot1.rank, ot1.count, el4.rank, el4.count)
-contamination.qc[1,] <- qc.row
-colnames(contamination.qc) <- qc.columns
+  ## Get appropriate output columns
+  currRankCol_v <- grep(currContam_v, grep("rank", colnames(qcOut_dt), value = T), value = T)
+  currCountCol_v <- grep(currContam_v, grep("count", colnames(qcOut_dt), value = T), value = T)
   
-    ##
-    ## Recalculation - re-calculate clone fraction.
-    ##
+  ## Extract clone
+  currOffendingClone_dt <- curr.clone[(get(newV_v) == currV_v &
+                                         get(newJ_v) == currJ_v &
+                                         get(aaSeqCol_v) == currCDR3_v),]
   
-    new_total_count_v <- sum(new.clone$`Clone count`)
-    new.clone$`Clone fraction` <- new.clone$`Clone count` / new_total_count_v
-    
-    ## Count clean clone files as well
-    ## clean.counter <- 0
-    ## if (nrow(new.clone) == nrow(curr.clone)){
-    ##     clean.counter <- clean.counter + 1
-    ##     cat("No contaminant sequences found in sample:", i, "\n")
-    ## }
-    
-    ## Remove extension from file name and add "_decontam"
-#    out.name <- paste(gsub(".txt", '', clone.files[i]), "_decontam.txt", sep = '')
+  ## Subset for first only
+  currOffendingClone_dt <- currOffendingClone_dt[1,]
   
-    ## Write output to new file
-#    if (which.outputs %in% c("clones", "both")){
-        ## Write output
-        write.table(new.clone, clone_outputs,
-                    sep = '\t', quote = F, row.names = F)
-        ## Update progress
-#        print(c("Writing output to ", paste(out.dir, out.name, sep = '')))
-#    } # fi
+  ## Update count
+  if (is.na(currOffendingClone_dt[[readsCol_v]][1])) {
+    currContamCount_v <- 0
+  } else {
+    currContamCount_v <- length(unlist(strsplit(as.character(currOffendingClone_dt[[readsCol_v]]), split = ",")))
+  } # fi
+  
+  ## Update total
+  totalContamCount_v <- totalContamCount_v + currContamCount_v
+  
+  ## Get rank
+  currRank_v <- currOffendingClone_dt$index[1]
+  
+  ## Update rank and count
+  qcOut_dt[1,eval(currRankCol_v)] <- currRank_v
+  qcOut_dt[1,eval(currCountCol_v)] <- currContamCount_v
+  
+  ## Add contaminant entry back to data.table for later removal
+  forRemoval_dt <- rbind(forRemoval_dt, currOffendingClone_dt)
+}
 
+### Remove clones
+final.clone <- forRemoval_dt[!duplicated(forRemoval_dt, fromLast = T) & seq(nrow(forRemoval_dt)) <= nrow(curr.clone),]
+final.clone <- final.clone[!(is.na(final.clone[[idCol_v]]))]
+
+### Final QC update
+remainingCount_v <- orig.total.count - totalContamCount_v
+
+qcOut_dt$Remaining.Clones <- remainingCount_v
+qcOut_dt$Contam.Clones <- totalContamCount_v
+
+#######################
+### POST-PROCESSING ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#######################
+
+## Re-calculate the clone fractions of the removed clones
+
+new_total_count_v <- sum(final.clone[[countCol_v]])
+final.clone[[freqCol_v]] <- final.clone[[countCol_v]] / new_total_count_v
+
+##############
+### OUTPUT ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##############
+
+### Write decontaminated clone
+write.table(final.clone, clone_outputs,
+            sep = '\t', quote = F, row.names = F)
+
+### Write QC row
 write.table(contamination.qc, qc_output,
             sep = '\t', quote = F, row.names = F)
-    ## Update progress
-#    if (i %% 10 == 0){print(c("Currently on clone ", i))}
-
-    ## ## Write QC output
-    ## if (which.outputs %in% c("qc", "both")){
-    ##     if (i == 1){
-    ##         colnames(contamination.qc) <- c("Sample", "Orig.Unique.Clones", "Orig.Total.Clones", "Remaining.Clones", "Contam.clones",
-    ##                             "p14.rank", "p14.count", "ot1.rank", "ot1.count", "el4.rank", "el4.count")
-    ##         write.table(contamination.qc, file = paste0(qc.dir, batch_v, "_contaminationQC.txt"),
-    ##                     sep = '\t', quote = F, row.names = F, append = F)
-    ##     } else {
-    ##         write.table(contamination.qc, file = paste0(qc.dir, batch_v, "_contaminationQC.txt"),
-    ##                     sep = '\t', quote = F, row.names = F, append = T)
-    ## } # fi
-    
-
-    
-#} # for

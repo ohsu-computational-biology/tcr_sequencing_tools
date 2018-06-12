@@ -77,4 +77,5 @@ final.vj$V <- gsub("-", "", final.vj$V)
 write.table(final.vj,
             file=output,
             quote=FALSE,
-            row.names=FALSE);
+            row.names=FALSE)
+

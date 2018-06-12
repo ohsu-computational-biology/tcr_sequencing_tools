@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<macros>
+
+  <xml name="requirements">
+    <requirements>
+      <requirement type="package" version="1.28.0">bioconductor-shortread</requirement>
+      <requirement type="package" version="1.10.4">r-data.table</requirement>
+      <requirement type="package" version="2.46.0">bioconductor-biostrings</requirement>
+    </requirements>
+  </xml>
+
+</macros>
+

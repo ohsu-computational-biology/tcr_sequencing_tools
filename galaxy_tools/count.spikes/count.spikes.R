@@ -12,17 +12,33 @@
 #' @param output.dir Directory in which output files will be written
 
 #   load depdencies
-suppressMessages(source("https://bioconductor.org/biocLite.R", echo=FALSE, verbose=FALSE))
-suppressMessages(library(ShortRead));
+suppressWarnings(suppressMessages(library(ShortRead)))
 suppressMessages(library(data.table))
 
 
 input.fastq <- commandArgs(trailingOnly=T)[1]
-spike.file <- commandArgs(trailingOnly=T)[2]
-spike.length <- commandArgs(trailingOnly=T)[3]
-output.count <- commandArgs(trailingOnly=T)[4]
-output.remove <- commandArgs(trailingOnly=T)[5]
-output.qc <- commandArgs(trailingOnly=T)[6]
+input.name <- commandArgs(trailingOnly=T)[2]
+sample.id <- commandArgs(trailingOnly=T)[3]
+spike.file <- commandArgs(trailingOnly=T)[4]
+spike.length <- commandArgs(trailingOnly=T)[5]
+output.count <- commandArgs(trailingOnly=T)[6]
+output.remove <- commandArgs(trailingOnly=T)[7]
+output.qc <- commandArgs(trailingOnly=T)[8]
+
+### For debugging
+print(sprintf("Input Fastq File: %s", input.fastq))
+print(sprintf("Input File Name: %s", input.name))
+print(sprintf("Sample Index: %s", sample.id))
+print(sprintf("Spike File Name: %s", spike.file))
+print(sprintf("Spike Length: %s", spike.length))
+sprintf("Outputs (count, toRemove, qc): %s \n %s \n %s \n", output.count, output.remove, output.qc)
+
+### Turn to numeric
+spike.length <- as.numeric(spike.length)
+sample.id <- as.numeric(sample.id)
+
+### Get sample number
+input.name <- strsplit(input.name, split = "_")[[1]][sample.id]
 
 ###   Read in fastq file
 fastq.reads <- readFastq(input.fastq);
@@ -101,7 +117,7 @@ qc.summary <- data.frame(sample.id=character(),
                          num.spiked.reads=integer(),
                          pct.spiked.reads=numeric(),
                          stringsAsFactors=FALSE);
-qc.summary[1,]$sample.id <- input.fastq;
+qc.summary[1,]$sample.id <- input.name;
 qc.summary[1,]$num.reads <- num.fastqs;
 qc.summary[1,]$num.spiked.reads <- sum(output.table$spike.count);
 qc.summary[1,]$pct.spiked.reads <- (qc.summary$num.spiked.reads / num.fastqs) * 100;

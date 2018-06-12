@@ -1,0 +1,90 @@
+<tool id="mixcr.export.clones" name="Export Clones (MiXCR)" version="0.1.0">
+  <description>Export tab-separated file of clonotype counts and identification.</description>
+
+  <macros>
+    <import>macros.xml</import>
+  </macros>
+
+  <expand macro="requirements"/>
+
+   <!--  @VERSION_CMD@ -->
+  
+   <command detect_errors="exit_code">
+     <![CDATA[
+	      @CMD_BEGIN@ exportClones -f
+	      $filter_out_of_frames
+	      $filter_stops
+	      -cloneId
+	      -count
+	      -fraction
+	      -sequence
+	      -vHits
+	      -dHits
+	      -jHits
+	      -vAlignments
+	      -dAlignments
+	      -jAlignments
+	      -nFeature CDR3
+	      -minFeatureQuality CDR3
+	      -aaFeature CDR3
+	      -vHit
+	      -dHit
+	      -jHit
+	      -vAlignment
+	      -dAlignment
+	      -jAlignment
+	      -readIds $index
+	      -cloneId $index
+	      $input
+	      $output
+     ]]>
+
+<!--    java -Xmx10g -jar /home/exacloud/lustre1/GalaxyinstalledTest/galaxy-dist/tools/tcr_seq/galaxy_tools/export.clones/mixcr.jar -->
+<!--    exportClones -\-filter-out-of-frames -\-filter-stops -\-preset full -vHit -jHit -f -readIds $index -cloneId $index $input $output 2>%261 -->
+    <!-- The 2>%261 is xml version of 2>&1, which redirects stderr to stdout -->
+  </command>
+
+  <inputs>
+    <param name="input" type="data" format="data" label="Input Clone File" help="Clonotype file (.clns) exported by MiXCR assemble"/>
+    <param name="index" type="data" format="data" label="Read-to-clone index file" help="Index file created by MiXCR assemble"/>
+    <param name="filter_out_of_frames" type="select" label="Filter Out-of-Frames" help="Exclude clones with out-of-frame clone sequences
+											(fractions will be recalculated)">
+      <option value="-o">Yes</option>
+      <option value="">No</option>
+    </param>
+    <param name="filter_stops" type="select" label="Filter Stops" help="Exclude sequences containing stop codons
+											(fractions will be recalculated)">
+      <option value="-t">Yes</option>
+      <option value="">No</option>
+    </param>
+
+  </inputs>
+
+  <outputs>
+    <data name="output" format="tabular" label="Exported Clones"/>
+  </outputs>
+  
+<!--
+  <tests>
+    <test>
+      <param name="input" value="/Users/hortowe/newGalaxy/test-data/mixcr/mixcr_S10_assembly.clns"/>
+      <param name="index" value="/Users/hortowe/newGalaxy/test-data/mixcr/mixcr_S10_index"/>
+      <param name="filter_out_of_frames" value="-o"/>
+      <param name="filter_stops" value="-t"/>
+      <output name="output" value="/Users/hortowe/newGalaxy/test-data/mixcr/mixcr_S10_exportClones.txt"/>
+    </test>
+  </tests>
+-->
+
+  <help>
+    <![CDATA[
+	     This tool exports the important information describing the gene regions extracted during the MiXCR Assemble tool.
+	     It contains the sequence of the extracted gene region, as well as the identity of V, D, and J alignments.
+	     It also contains a count of occurrences of each clone (unique gene region).
+	     ]]>
+  </help>
+
+  <citations>
+  </citations>
+  
+</tool>

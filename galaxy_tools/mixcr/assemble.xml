@@ -1,0 +1,54 @@
+<tool id="mixcr.assemble" name="Assemble (MiXCR)" version="0.1.0">
+  <description>Extract specific gene regions from aligned reads</description>
+
+  <macros>
+    <import>macros.xml</import>
+  </macros>
+
+  <expand macro="requirements"/>
+
+  <!--  @VERSION_CMD@ -->
+  
+  <command detect_errors="exit_code">
+    <![CDATA[
+	     @CMD_BEGIN@ assemble -f -r $report -i $index -t 4 $input $output
+    ]]>
+  </command>
+
+  <inputs>
+    <param name="input" type="data" format="data" label="Input VDJ alignment (.vdjca)" help="This file is output by MiXCR align."/>
+  </inputs>
+
+  <outputs>
+    <data name="report" format="tabular" label="Assemble Report"/>
+    <data name="index" format="data" label="Index"/>
+    <data name="output" format="data" label="Assembly"/>
+  </outputs>
+
+  <!--
+  <tests>
+    <test>
+      <param name="input" value="/Users/hortowe/newGalaxy/test-data/mixcr/mixcr_S10_alignment.vdjca"/>
+      <output name="report" value="/Users/hortowe/newGalaxy/test-data/mixcr/mixcr_S10_assembleReport.txt"/>
+      <output name="index" value="/Users/hortowe/newGalaxy/test-data/mixcr/mixcr_S10_index"/>
+      <output name="output" value="/Users/hortowe/newGalaxy/test-data/mixcr/mixcr_S10_assembly.clns"/>
+      <output name="output" checksum="3d0c63c685c4e87abaa886cb853d17a4"/>
+      <output name="index" checksum="eff0b502baf18530c1719cdb5784a424"/>
+    </test>
+  </tests>
+  -->
+  <help>
+    <![CDATA[
+	     The MiXCR Assemble tool takes the alignment information and sequencing reads from MiXCR Align and uses them to extract specific gene regions.
+	     Our tool currently extracts the CDR3 locus and does not support other loci.
+	     Once these gene regions are identified, sets of "clones" (unique CDR3 sequence) are built.
+	     Reads are dropped based on a variety of factors such as lack of sequence and low quality base calls.
+	     A mapping program is utilized to rescue reads of moderate sequence quality based on similarity to those of high quality.
+	     Finally a clustering program clusters similar reads together to produce final counts of unique clones (unique CDR3 sequences).
+	     ]]>
+  </help>
+
+  <citations>
+  </citations>
+
+</tool>

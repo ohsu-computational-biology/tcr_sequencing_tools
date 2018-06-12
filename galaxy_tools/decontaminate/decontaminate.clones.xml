@@ -1,18 +1,22 @@
-<tool id="decontaminate.clones" name="Deconatminate Clones">
+<tool id="decontaminate.clones" name="Decontaminate Clones" version="0.1.0">
   <description>Search for sequences belonging to the 3 standard monoclonal contaminants and remove them from the files.</description>
 
-  <command>
-    <!-- /usr/bin/Rscript /home/exacloud/lustre1/users/letaw/galaxy-dist/tools/tcrseq/decontaminate/decontaminate.clones.R -->
-    /usr/bin/Rscript /home/exacloud/lustre1/GalaxyinstalledTest/galaxy-dist/tools/tcr_seq/galaxy_tools/decontaminate/decontaminate.clones.R
-    $clone_inputs $clone_outputs $qc_output
+  <command detect_errors="exit_code">
+    <![CDATA[
+	     Rscript $__tool_directory__/decontaminate.clones.R
+	     $clone_inputs
+	     ${clone_inputs.element_identifier}
+	     $sample_id
+	     $clone_outputs
+	     $qc_output
+    ]]>
   </command>
 
   <inputs>
-    <param name="clone_inputs" type="data"  label="MiXCR Clone Files" help="Tab-separated file produced by MiXCR.
+    <param name="clone_inputs" type="data" format="tabular" label="MiXCR Clone Files" help="Tab-separated file produced by MiXCR.
 							      Contains counts, fractions, and identifying
 							      information about each clonotype."/>
-    
-
+    <param name="sample_id" type="text" format="integer" label="Sample Identifier Index" value="2" help="Index of sample number to extract from sample name, when split by '_'."/>
   </inputs>
 
   <outputs>
@@ -20,9 +24,22 @@
     <data name="qc_output" format="tabular" label="Decontamination QC"/>
   </outputs>
 
+  <tests>
+    <test>
+      <param name="clone_inputs" value="/Users/hortowe/newGalaxy/test-data/decontam/mixcr_S10_exportClones.txt"/>
+      <output name="clone_outputs" value="/Users/hortowe/newGalaxy/test-data/decontam/decontam_S10_clones.txt"/>
+      <output name="qc_output" value="/Users/hortowe/newGalaxy/test-data/decontam/decontam_S10_qc.txt"/>
+    </test>
+  </tests>
+
   <help>
-    This tool removes monoclonal contamination from the clone files produced by MiXCR, prior to normalization.
+    <![CDATA[
+	     This tool removes monoclonal contamination from the clone files produced by MiXCR, prior to normalization.
+    ]]>
   </help>
+
+  <citations>
+  </citations>
 
 </tool>
 

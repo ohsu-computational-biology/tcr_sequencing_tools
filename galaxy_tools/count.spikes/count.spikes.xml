@@ -1,29 +1,66 @@
 <tool id="count.spikes" name="Count Spikes" version="0.1.0">
   <description>for spike removal or normalization.</description>
 
-  <command>
-    /usr/bin/Rscript /home/exacloud/lustre1/GalaxyinstalledTest/galaxy-dist/tools/tcr_seq/galaxy_tools/count.spikes/count.spikes.R 
-<!--  <command>/usr/bin/Rscript /home/exacloud/lustre1/users/letaw/galaxy_intel/galaxy/tools/tcrseq/galaxy_tools/count.spikes/count.spikes.R -->
-  $input_fastq $spike_file $spike_length $output_count $output_remove $output_qc
+  <macros>
+    <import>macros.xml</import> 
+  </macros> 
+
+  <command detect_errors="exit_code">
+    <![CDATA[
+	     Rscript $__tool_directory__/count.spikes.R
+	     $input_fastq
+	     ${input_fastq.element_identifier}
+	     $sample_id
+	     $spike_file
+	     $spike_length
+	     $output_count
+	     $output_remove
+	     $output_qc
+	     ]]>
   </command>
 
-   <inputs>
+  <inputs>
     <param name="input_fastq" type="data" format="fastq" label="Input Fastq" help="PEARed fastq file"/>
-    <param name="spike_file" type="data"  format="tsv" label="Spike reference file" help="Reference list of spike barcodes"/>
-    <param  name="spike_length" type="text" format="integer" value="9" help="9 for spike removal and 25 for normalization"/>
+    <param name="sample_id" type="text" format="integer" label="Sample Identifier Index" value="2"
+	   help="Index of sample number from sample name, when split by '_'."/>
+    <param name="spike_file" type="data"  format="txt" label="Spike reference file" help="Reference list of spike barcodes"/>
+    <param  name="spike_length" type="text" format="integer" value="9" label="Spike Length" help="9 for spike removal and 25 for normalization"/>
   </inputs>
 
   <outputs>
     <data name="output_count" format="tabular" label="Spike Count (${spike_length}-bp)"/>
-    <data name="output_remove" format="tabular" label="Reads to remove"/>
+    <data name="output_remove" format="tabular" label="Reads to remove (${spike_length}-bp)"/>
     <data name="output_qc" format="tabular" label="Spike QC (${spike_length}-bp)"/>
   </outputs>
 
   <tests>
+    <test>
+      <param name="input_fastq" value="/Users/hortowe/newGalaxy/test-data/count.spikes/pear_S10_data.fastq"/>
+      <param name="spike_file" value="/Users/hortowe/newGalaxy/test-data/count.spikes/text_barcodesvj.txt"/>
+      <param name="spike_length" value="9"/>
+      <output name="output_count" value="/Users/hortowe/newGalaxy/test-data/count.spikes/9bp_S10_counts.txt"/>
+      <output name="output_remove" value="/Users/hortowe/newGalaxy/test-data/count.spikes/9bp_S10_rtr.txt"/>
+      <output name="output_qc" value="/Users/hortowe/newGalaxy/test-data/count.spikes/9bp_S10_qc.txt"/>
+    </test>
+    <test>
+      <param name="input_fastq" value="/Users/hortowe/newGalaxy/test-data/count.spikes/pear_S10_data.fastq"/>
+      <param name="spike_file" value="/Users/hortowe/newGalaxy/test-data/count.spikes/text_barcodesvj.txt"/>
+      <param name="spike_length" value="25"/>
+      <output name="output_count" value="/Users/hortowe/newGalaxy/test-data/count.spikes/25bp_S10_counts.txt"/>
+      <output name="output_remove" value="/Users/hortowe/newGalaxy/test-data/count.spikes/25bp_S10_rtr.txt"/>
+      <output name="output_qc" value="/Users/hortowe/newGalaxy/test-data/count.spikes/25bp_S10_qc.txt"/>
+    </test>
   </tests>
   
   <help>
-    This tool searches for spiked reads within a fastq file by comparing sequences to a reference file containing spike sequences. It aggregates spiked read IDs for subsequent removal by 'Remove Spikes'. It also counts occurrences of individual spikes when the 25-bp length is used and total spikes when 9-bp spike length is used.
+    <![CDATA[
+	     This tool searches for spiked reads within a fastq file by comparing sequences to a reference file containing spike sequences.
+	     It aggregates spiked read IDs for subsequent removal by 'Remove Spikes'.
+	     It also counts occurrences of individual spikes when the 25-bp length is used and total spikes when 9-bp spike length is used.
+	     ]]>
   </help>
+
+  <citations>
+  </citations>
 
 </tool>
