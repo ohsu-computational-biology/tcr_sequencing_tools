@@ -33,7 +33,14 @@ mkdir -p $OUT
 TOWRITE=TRUE
 OLD=FALSE
 
-cmd="$MYBIN $IN $META $OUT $TOWRITE $OLD"
+cmd="$MYBIN \
+	--cloneDir $IN \
+	--metadata $META \
+	--outDir $OUT \
+	--write $TOWRITE \
+	--old $OLD" 
+	#--tissue $TISSUE \
+	#--type $TYPE"
 
 echo $cmd
 eval $cmd
