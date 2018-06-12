@@ -20,63 +20,17 @@ suppressMessages(library(entropy))
 suppressMessages(library(data.table))
 suppressMessages(library(tcR))
 suppressMessages(library(ggplot2))
-suppressMessages(library(optparse))
 source("/home/exacloud/lustre1/CompBio/users/hortowe/2016_11_27_stable_repos/WesPersonal/utilityFxns.R")
 
-### Command LIne
-optlist <- list(
-	make_option(
-		c("-c", "--cloneDir"),
-		type = "character",
-		help = "Path to directory of normalized clone files."
-	),
-	make_option(
-		c("-m", "--metadata"),
-		type = "character",
-		help = "Path to metadata file."
-	),
-	make_option(
-		c("-o", "--outDir"),
-		type = "character",
-		help = "Path to output directory"
-	),
-	make_option(
-		c("-w", "--write"),
-		type = "logical",
-		help = "TRUE - write output. FALSE - no output"
-	),
-	make_option(
-		c("-l", "--old"),
-		type = "logical",
-		help = "TRUE - old column names; FALSE - new column names"
-	),
-	make_option(
-		c("-t", "--tissue"),
-		type = "character",
-		help = "Specific tissue to subset by. If blank, will use all tissues"
-	),
-	make_option(
-		c("-y", "--type"),
-		type = "character",
-		help = "Character vector for a specific category of treatments to divide by, rather than each treatment individually.
-			If blank, will not divide."
-	)
-)
+###	Get command-line arguments
+arguments <- commandArgs(trailingOnly=TRUE);
 
-### Parse Command Line
-p <- OptionParser(usage = "%prog -c cloneDir -m metadata -o outDir -w write -l old -t tissue -y type",
-		option_list = optlist)
-args <- parse_args(p)
-opt <- args$options
-
-### Get command-line arguments
-cloneDir_v <- args$cloneDir
-metadata_v <- args$metadata
-outDir_v <- args$outDir
-toWrite_v <- args$write
-old_v <- args$old
-tissue_v <- args$tissue
-type_v <- args$type
+cloneDir_v <- arguments[1];    # Typically .../dhaarini/DNAXXXXLC/normalization/normalized_clones/
+metadata_v <- arguments[2]     # Typically $data/QC/meta
+outDir_v <- arguments[3];      # Typeically $data/QC/clonalFreq
+toWrite_v <- arguments[4]
+tissue_v <- arguments[5]       # specify a specific tissue to subset by. If NA, will use all tissues
+type_v <- arguments[6]         # sometimes divide by a certain category of treatment, rather than each treatment. If NA, will not divide
 
 print("After assign args")
 ### Get files and names
@@ -95,27 +49,16 @@ names(cloneData_lsdt) <- cloneNames_v
 metadata_dt <- fread(metadata_v)
 
 ### Get fraction/count columns
-## Get fraction column
-if (old_v) {
-    column_v <- "Normalized clone fraction"
-    count_v <- "Normalized clone count"
-} else {
-    column_v <- "nb.clone.fraction"
-    count_v <- "nb.clone.count"
-} # fi
-
-### Change columns in case it's raw data
-if (!column_v %in% colnames(cloneData_lsdt[[1]])){
-    column_v <- grep("cloneFraction|Clone fraction", colnames(cloneData_lsdt[[1]]), value = T)
-    count_v <- grep("cloneCount|Clone count", colnames(cloneData_lsdt[[1]]), value = T)
-} # fi
+column_v <- grep("[Ff]raction", colnames(cloneData_lsdt[[1]]), value = T)
+count_v <- grep("[Cc]ount", colnames(cloneData_lsdt[[1]]), value = T)
+print(sprintf("Currently using %s for frequency column and %s for count column.\n", column_v, count_v))
 
 ### Get appropriate columns and subset
 
 tissueCol_v <- grep("issue", colnames(metadata_dt), value = T)
 sampleCol_v <- grep("ample", colnames(metadata_dt), value = T)[1]
 
-if (!is.null(tissue_v)) {
+if (!is.na(tissue_v)) {
     ## Subset metadata
     metadata_dt <- metadata_dt[get(tissueCol_v) == tissue_v,]
     ## Subset clone data
@@ -124,7 +67,7 @@ if (!is.null(tissue_v)) {
 } #fi
 
 ### Get treatments to run analysis on
-if (!is.null(type_v)){
+if (!is.na(type_v)){
     treatCol_v <- type_v
 } else {
     treatCol_v <- grep("eatment", colnames(metadata_dt), value = T)
@@ -156,7 +99,7 @@ for (i in 1:length(treatments_v)){
     currTreat_v <- treatments_v[i]
 
     ## Subset files
-    currFiles_v <- paste0("S", metadata_dt[get(treatCol_v) == currTreat_v, get(sampleCol_v)]) # LIB170728LC
+    currFiles_v <- paste0("S", gsub("S", "", metadata_dt[get(treatCol_v) == currTreat_v, get(sampleCol_v)])) # LIB170728LC
     currData_lsdt <- cloneData_lsdt[currFiles_v]
 
     ## Make empty matrix
