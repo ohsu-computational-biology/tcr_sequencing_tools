@@ -1,104 +1,115 @@
-#	RScript that aggregates reports from MiXCR's alignment tool
-#   
-#   At this point the script simply accumulates results, but it'd be easy to add
-#       some visualization, analysis, etc. once the data is aggregated
+#!/usr/bin/Rscript
+### RScript that aggregates reports from MiXCR's alignment tool
+### Basically turn their report files into a single text file that can be easily manipulated
 
-#   Load required libraries
-#library(stringr);
+####################
+### DEPENDENCIES ###
+####################
 
-#	Get command-line arguments
-arguments <- commandArgs(trailingOnly=TRUE);
-#   Directory should contain all and only MiXCR alignment reports for a given "batch"
-working.dir <- arguments[1];
-out.dir <- arguments[2]
+library(optparse)
+source(file.path(Sys.getenv("tool"), "misc/helperFxn.R"))
+options(warn=1)
 
-#   for debugging purposes
-#working.dir <- "/Users/leyshock/Desktop/TCRseq/tools/temp/QC/";
+####################
+### COMMAND ARGS ###
+####################
 
-#	Examine the current directory for the files to process
-files.in.dir <- list.files(working.dir);
+optlist <- list(
+	make_option(
+		c("-i", "--inputDir"),
+		type = "character",
+		help = "Path to directory containing all and only MiXCR alignment reports for a batch."
+	),
+	make_option(
+		c("-o", "--outDir"),
+		type = "character",
+		help = "Path to directory where aggregated results will be written. File is mixcr.alignment.QC.summary.txt"
+	)
+)
 
-output.df <- data.frame(analysis.date=character(),  #   1
-                        inputs=character(),
-                        output=character(),
-			version=character(),
-			time=character(),	# 5
-                        command=character(),
-                        total.reads=integer(),  
-                        aligned.reads=integer(), aligned.pct=numeric(),
-                        failed.alignment.no.hits=numeric(), pct.no.hits=numeric(),
-                        failed.alignment.no.j.hits=numeric(), pct.no.j.hits=numeric(),	# 10
-                        failed.alignment.low.score=numeric(), pct.low.score=numeric(),
-                        num.overlapped=numeric(), pct.overlapped=numeric(),
-                        num.overlapped.and.aligned=numeric(), pct.overlapped.and.aligned=numeric(),
-                        num.overlapped.and.not.aligned=numeric(), pct.overlapped.and.not.aligned=numeric(),   #   14
-                        stringsAsFactors=FALSE);
+##################
+### PARSE ARGS ###
+##################
 
-for(i in 1:length(files.in.dir))	{
-    #   get a QC file to process
-    curr.file <- file.path(working.dir, files.in.dir[i]);
+p <- OptionParser(usage = "%prog -i inputDir -o outDir",
+		option_list = optlist)
+args <- parse_args(p)
+opt <- args$options
+
+inputDir_v <- args$inputDir
+outDir_v <- args$outDir
+
+###############
+### ACTIONS ###
+###############
+
+### Get files
+inputFiles_v <- list.files(inputDir_v)
+
+### Sort files
+inputFiles_v <- inputFiles_v[order(as.numeric(gsub("^S|_align.*", "", inputFiles_v)))]
+
+### Create empty data.frame
+output_df <- data.frame()
+
+### Extract info from each report
+for (i in 1:length(inputFiles_v)){
+
+    ## Get Record
+    currFile_v <- inputFiles_v[i]
+    curr.record <- readLines(file.path(inputDir_v, currFile_v))
+
+    ## Update user
+    if (length(curr.record) != 17){
+	print(sprintf("Sample %s has %d lines. The norm is 17.", currFile_v, length(curr.record)))
+    }
+
+    ## Date
+    curr.date <- grep("Analysis Date", curr.record, value = T)
+    curr.date <- trimws(gsub("[A-z ]+:|[0-9]+:.*PDT ", "", curr.date))
+    names(curr.date) <- "analysis.date"
     
-	curr.record <- readLines(curr.file);
-
-    #   misc QC
-    if(length(curr.record) != 15)   {
-        stop("Unexpected length of report for file: ", curr.file, "\n", sep="");
-    }   #   fi
-
-    curr.date <- strsplit(curr.record[1], ":")[[1]];
-    curr.date <- curr.date[-1];
-    curr.date <- paste(curr.date, collapse="");
-    output.df[i,]$analysis.date <- curr.date;
+    ## I/0
+    curr.input <- basename(trimws(strsplit(grep("Input file", curr.record, value = T), ':')[[1]][2]))
+    curr.output <- basename(trimws(strsplit(grep("Output file", curr.record, value = T), ':')[[1]][2]))
+    names(curr.input) <- "inputs"; names(curr.output) <- "output"
     
-    curr.input <- strsplit(curr.record[2], ":")[[1]][2];
-    curr.input <- trimws(curr.input);
-    curr.input <- basename(curr.input);
-    output.df[i,]$inputs <- curr.input;
-
-    curr.output <- strsplit(curr.record[3], ":")[[1]][2];
-    curr.output <- trimws(curr.output);
-    curr.output <- basename(curr.output);
-    output.df[i,]$output <- curr.output;
-
-    curr.version <- strsplit(curr.record[4], ":|;")[[1]][2];
-    curr.version <- trimws(curr.version);
-    output.df[i,]$version <- curr.version;
-
-    curr.time <- strsplit(curr.record[5], ":")[[1]][2]
-    curr.time <- trimws(curr.time)
-    output.df[i,]$time <- curr.time
-
-    curr.command <- strsplit(curr.record[6], ":")[[1]][2];
-    curr.command <- trimws(curr.command);
-    ##    curr.command <- basename(curr.command);
-    curr.command <- gsub(" --report.*", "", curr.command)
-    output.df[i,]$command <- curr.command;
+    ## Version
+    curr.version <- trimws(strsplit(grep("Version", curr.record, value = T), ":")[[1]][2])
+    names(curr.version) <- "version"
     
-    curr.total <- strsplit(curr.record[7], ":")[[1]][2];
-    output.df[i,]$total.reads <- curr.total;
-    
-#    curr.aligned <- strsplit(curr.record[6], ":")[[1]][2];
-#    output.df[i,]$aligned.reads <- curr.aligned;
+    ## Total Reads
+    curr.total <- trimws(strsplit(grep("Total seq", curr.record, value = T), ':')[[1]][2])
+    names(curr.total) <- "total.reads"
 
-    counter <- 0
-    for(j in 8:14)  {
-        curr.temp <- trimws(strsplit(curr.record[j], ":")[[1]][2]);
-	curr.temp <- unlist(strsplit(curr.temp, " "));
-	curr.num <- as.numeric(curr.temp[1])
-	curr.pct <- curr.temp[2]
-	curr.pct <- as.numeric(gsub("\\(|%|\\)", "", curr.pct))
-        output.df[i,(j+counter)]<- curr.num;
-	output.df[i,(j+counter+1)] <- curr.pct
-	counter <- counter + 1
-    }   #   for j
-     
-}	#	for i
+    ## Alignment
+    curr.Success <- extractRecord("Success", curr.record, c("aligned.reads", "aligned.pct"))
+    curr.NoHit <- extractRecord("no hits", curr.record, c("failed.align.no.hits", "pct.no.hits"))
+    curr.NoJ <- extractRecord("J hits", curr.record, c("failed.align.no.j", "pct.no.j"))
+    curr.Low <- extractRecord("low total", curr.record, c("failed.aling.low.score", "pct.low.score"))
+    curr.Overlap <- extractRecord("Overlapped:", curr.record, c("num.overlapped", "pct.overlapped"))
+    curr.Overlap.Align <- extractRecord("Overlapped and aligned:", curr.record,
+                                        c("num.overlapped.and.aligned", "pct.overlapped.and.aligned"))
+    curr.Alignment.Aided <- extractRecord("Alignment-aided", curr.record, 
+					c("num.align.aided.overlap", "pct.align.aided.overlap"))
+    curr.Overlap.Not.Align <- extractRecord("Overlapped and not", curr.record,
+                                            c("num.overlapped.and.not.algned", "pct.overlapped.and.not.aligned"))
+    curr.TRB.chains <- extractRecord("TRB chains", curr.record, c("num.TRB.chains", "pct.TRB.chains"))
 
-#   order results, to make them more intuitive
-output.df <- output.df[order(output.df$aligned.pct, decreasing=TRUE),];
+  ## Combine into a row to add to data frame
+    row_v <- c(curr.date, curr.input, curr.output, curr.version, curr.total,
+               curr.Success, curr.NoHit, curr.NoJ, curr.Overlap, curr.Overlap.Align, curr.Overlap.Not.Align)
+    colNames_v <- names(row_v)
+  
+  # Populate data frame
+  output_df <- rbind(output_df, row_v, stringsAsFactors = F)
+  colnames(output_df) <- colNames_v
 
-write.table(output.df, 
-            file=file.path(out.dir, "mixcr.alignment.QC.summary.txt"),
+}  #  for
+
+### Output
+write.table(output_df, 
+            file=file.path(outDir_v, "mixcr.alignment.QC.summary.txt"),
             quote=FALSE,
             sep="\t",
             row.names=FALSE)

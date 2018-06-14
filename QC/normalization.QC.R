@@ -1,73 +1,159 @@
-#   Rscript that performs quality control on the normalization step of the
-#       TCRseq workflow
-#
-#   Run this as an Rscript, with two arguments
-#
-#   Output is a csv file, suitable for further processing, or import into Excel
+#!/usr/bin/Rscript
+###   Rscript that performs quality control on the normalization step of the TCRseq workflow
 
-#   disable scientific notation
-options(scipen=999);
+####################
+### DEPENDENCIES ###
+####################
 
-###   load required libraries
-library(data.table)
-#library(stringr);
+suppressMessages(library(optparse))
+suppressMessages(library(data.table))
+options(scipen=999); # disable scientific notation
 
+####################
+### COMMAND ARGS ###
+####################
+
+optlist <- list(
+        make_option(
+                c("-r", "--rawDir"),
+                type = "character",
+                help = "Path to directory containing all and only raw clone count files for a batch."
+        ),
+	make_option(
+		c("-n", "--normDir"),
+		type = "character",
+		help = "Path to directory containing all and only normalized clone count files for a batch."
+	),
+        make_option(
+                c("-o", "--outDir"),
+                type = "character",
+                help = "Path to directory where results will be written."
+        )
+)
+
+##################
+### PARSE ARGS ###
+##################
+
+p <- OptionParser(usage = "%prog -r rawDir -n normDir -o outDir",
+                option_list = optlist)
+args <- parse_args(p)
+opt <- args$options
+
+rawDir_v <- args$rawDir
+normDir_v <- args$normDir
+outDir_v <- args$outDir
+
+###############
+### ACTIONS ###
+###############
 arguments <- commandArgs(trailingOnly=TRUE);
 path.to.raw.clone.counts <- arguments[1];
 path.to.normalized.clone.counts <- arguments[2];
 out.dir <- arguments[3]
 
+### Get files
+rawFiles_v <- list.files(rawDir_v)
+normFiles_v <- list.files(normDir_v)
 
-raw.clone.counts <- list.files(path.to.raw.clone.counts);
-processed.clone.counts <- list.files(path.to.normalized.clone.counts);
+### Sort
+rawFiles_v <- rawFiles_v[order(as.numeric(gsub("^.*_S|_[a-z]+|.txt", "", rawFiles_v)))]
+normFiles_v <- normFiles_v[order(as.numeric(gsub("^.*_S|_[a-z]+|.txt", "", normFiles_v)))]
 
-###   check for parallelism of samples
-sample.id.raw.clone.counts <- character(length(raw.clone.counts));
-sample.id.processed.clone.counts <- character(length(processed.clone.counts));
+### Get IDs
+rawID_v <- gsub("^.*_S|_[a-z]+|.txt", "", rawFiles_v)
+normID_v <- gsub("^.*_S|_[a-z]+|.txt", "", normFiles_v)
 
-###	TODO:  fix this, it relies on file naming convention
-sample.id.raw.clone.counts <- sapply(raw.clone.counts, function(x) strsplit(x, "_")[[1]][2], USE.NAMES = F)
-sample.id.processed.clone.counts <- sapply(processed.clone.counts, function(x) strsplit(x, "_")[[1]][2], USE.NAMES = F)
+### Check parallelism
+notMatched_v <- which(rawID_v != normID_v)
+if (length(notMatched_v) > 0) stop("Mismatch between raw counts and norm counts")
 
-###   Check for parallelism of files
-sample.comparison <- sample.id.raw.clone.counts == sample.id.processed.clone.counts;
-sample.comparison <- which(sample.comparison == FALSE);
-if(length(sample.comparison) > 0)   {
-    stop("Mismatch between raw.clone.counts and processed.clone.counts\n");
-}   #   fi
+### Create final output
+output_df <- data.frame()
 
-for(i in 1:length(raw.clone.counts))  {
+### Iterate over each sample
+for(i in 1:length(rawFiles_v))  {
+
+    ## Get files
+    currRaw_v <- rawFiles_v[i]
+    currNorm_v <- normFiles_v[i]
+
     ## Read files
-    curr.raw <- fread(file.path(path.to.raw.clone.counts, raw.clone.counts[i]))
-    curr.normalized <- fread(file.path(path.to.normalized.clone.counts, processed.clone.counts[i]))
+    currRaw_dt <- fread(file.path(rawDir_v, currRaw_v))
+    currNorm_dt <- fread(file.path(normDir_v, currNorm_v))
 
-    ##   Basic QC
-    curr.raw.CDR3 <- curr.raw$"AA. seq. CDR3";
-    curr.normalized.CDR3 <- curr.normalized$"AA. seq. CDR3";
+    ## Get column names
+    cdr3Col_v <- grep("AA. Seq. CDR3|aaSeqCDR3", colnames(currRaw_dt), value = T)
+    rawCountCol_v <- grep("Clone count|cloneCount", colnames(currRaw_dt), value = T)
+    rawFreqCol_v <- grep("Clone fraction|cloneFraction", colnames(currRaw_dt), value = T)
+    normCountCol_v <- grep("Normalized clone count", colnames(currNorm_dt), value = T)
+    normFreqCol_v <- grep("Normalized clone fraction", colnames(currNorm_dt), value = T)
+    nbCountCol_v <- grep("nb.clone.count", colnames(currNorm_dt), value = T)
+    nbFreqCol_v <- grep("nb.clone.fraction", colnames(currNorm_dt), value = T)
+
+    ## Basic QC - check that CDR3 sequences are teh same
+    currRaw_CDR3 <- currRaw_dt[[cdr3Col_v]]
+    currNorm_CDR3 <- currNorm_dt[[cdr3Col_v]]
     
-    if(!identical(curr.raw.CDR3, curr.normalized.CDR3)) {
+    if(!identical(currRaw_CDR3, currNorm_CDR3)) {
         stop("Mistmatch between amino acid CDR3 region, raw and normalized");
     }   #   fi
 
-    combined.table <- data.frame(raw.clone.count=curr.raw$"Clone count");
-    combined.table$normalized.clone.count <- curr.normalized$"Normalized clone count";
-    combined.table$raw.clone.percent <- curr.raw$"Clone fraction";
-    combined.table$normalized.clone.percent <- curr.normalized$"Normalized clone fraction";
-    combined.table$raw.file.name <- raw.clone.counts[i];
-    combined.table$normalized.file.name <- processed.clone.counts[i];
-    combined.table$normalization.factor <- round((combined.table$normalized.clone.count / combined.table$raw.clone.count), digits=1);
+    ## Get raw count and freq
+    combinedTable_df <- data.frame(raw.clone.count = currRaw_dt[[rawCountCol_v]])
+    combinedTable_df$raw.clone.percent <- currRaw_dt[[rawFreqCol_v]]
 
-    output.file.name <- paste(sample.id.raw.clone.counts[i], "_normalization_QC.txt", sep="");
-#    output.file.name <- file.path(path.to.normalized.clone.counts, output.file.name);
-    cat("Writing output to: ", file.path(out.dir,output.file.name), "\n", sep="");
+    ## Create variable to hold norm factor
+    normFactorSummary_v <- NULL
 
-    write.table(combined.table,
-                file=file.path(out.dir, output.file.name),
-                quote=FALSE,
-                sep="\t",
-                row.names=FALSE);
+    ## Get original norm method count and freq (if exists) also norm factor
+    if (length(normCountCol_v) > 0) {
+	combinedTable_df$medianNorm.count <- currNorm_dt[[normCountCol_v]]
+	combinedTable_df$medianNorm.freq <- currNorm_dt[[normFreqCol_v]]
+	medianNormFactor_v <- round((combinedTable_df$medianNorm.count / 
+							combinedTable_df$raw.clone.count), digits = 1)
+	medianFactorSummary_v <- as.vector(summary(medianNormFactor_v))[c(1,3,6)]
+	names(medianFactorSummary_v) <- c("medianNorm.factor.min", "medianNorm.factor.median", "medianNorm.factor.max")
+	normFactorSummary_v <- c(normFactorSummary_v, medianFactorSummary_v)
+    }
 
-    #   reset value
-    rm(combined.table);
+    ## Get nb norm method count and freq (if exists) also norm factor
+    if (length(nbCountCol_v) > 0){
+        combinedTable_df$nbNorm.count <- currNorm_dt[[nbCountCol_v]]
+        combinedTable_df$nbNorm.freq <- currNorm_dt[[nbFreqCol_v]]
+        nbNormFactor_v <- round((combinedTable_df$nbNorm.count /
+                                                        combinedTable_df$raw.clone.count), digits = 1)
+	nbFactorSummary_v <- as.vector(summary(nbNormFactor_v))[c(1,3,6)]
+	names(nbFactorSummary_v) <- c("nbNorm.factor.min", "nbNorm.factor.median", "nbNorm.factor.max")
+	normFactorSummary_v <- c(normFactorSummary_v, nbFactorSummary_v)
+    }
+
+    ## Re-order
+    if ((length(normCountCol_v) > 0) & (length(nbCountCol_v) > 0)) {
+	combinedTable_df <- combinedTable_df[,c(1,3,5,2,4,6)]
+    } else if ( ((length(normCountCol_v) > 0) & (length(nbCountCol_v) == 0))  |
+		((length(normCountCol_v) == 0) & (length(nbCountCol_v) > 0)) ) {
+	combinedTable_df <- combinedTable_df[,c(1,3,2,4)]
+    } else if ((length(normCountCol_v) == 0) & (length(nbCountCol_v) == 0)) {
+	stop("Neither 'Median Norm' nor 'NB Norm' columns are set. Please run normalization before using this QC tool.")
+    } # fi
+
+    ## Summarize
+    combinedTable_v <- apply(combinedTable_df, 2, mean)
+    combinedTable_v <- c(combinedTable_v, normFactorSummary_v)
+
+    ## Extract column names
+    colNames_v <- names(combinedTable_v)
+
+    ## Add to final output
+    output_df <- rbind(output_df, combinedTable_v)
+    colnames(output_df) <- colNames_v
+
 }   #   for i
 
+### Add sample numbers
+output_df <- cbind(rawID_v, output_df)
+
+write.table(output_df,
+	file = file.path(outDir_v, "normFactorQC.txt"),
+	quote = F, row.names = F, sep = '\t')

@@ -5,7 +5,7 @@
 ### MiXCR can align to regions that we do not specifically amplify for. We would like to summarize the amounts of different regions.
 
 ### Dependencies
-require(data.table)
+suppressMessages(require(data.table))
 
 ### Arguments
 arguments <- commandArgs(trailingOnly = T)

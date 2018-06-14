@@ -1,118 +1,119 @@
-#	RScript that aggregates reports from MiXCR's assembly tool
-#   
-#   At this point the script simply accumulates results, but it'd be easy to add
-#       some visualization, analysis, etc. once the data is aggregated
+#!/usr/bin/Rscript
+### RScript that aggregates reports from MiXCR's assembly tool
+### Basically turn their report files into a single text file that can be easily manipulated.
 
-#   Load required libraries
-#library(stringr);
+####################
+### DEPENDENCIES ###
+####################
 
-#	Get command-line arguments
-arguments <- commandArgs(trailingOnly=TRUE);
-#   Directory should contain all and only MiXCR alignment reports for a given "batch"
-working.dir <- arguments[1]; # $data/mixcr/reports/assemble
-out.dir <- arguments[2]
+library(optparse)
+source(file.path(Sys.getenv("tool"), "misc/helperFxn.R"))
+options(warn=1)
 
-#   for debugging purposes
-#working.dir <- "/Users/leyshock/Desktop/TCRseq/tools/temp/QC/";
+####################
+### COMMAND ARGS ###
+####################
 
-#	Examine the current directory for the files to process
-files.in.dir <- list.files(working.dir);
+optlist <- list(
+        make_option(
+                c("-i", "--inputDir"),
+                type = "character",
+                help = "Path to directory containing all and only MiXCR alignment reports for a batch."
+        ),
+        make_option(
+                c("-o", "--outDir"),
+                type = "character",
+                help = "Path to directory where aggregated results will be written. File is mixcr.alignment.QC.summary.txt"
+        )
+)
 
-output.df <- data.frame(analysis.date=character(),  #   1
-                        inputs=character(),
-                        output=character(),
-                        version=character(),
-			time=character(),	# 5
-			command=character(),
-                        clonotype.count=integer(),  
-			avg.reads.per.clonotype=integer(),
-                        num.reads.used=numeric(), pct.used.of.total=numeric(),
-			num.reads.used.b4.clust=numeric(), pct.of.total=numeric(),	# 10
-                        num.reads.used.as.core=numeric(), pct.of.used=numeric(),
-                        num.reads.mapped.low.quality=numeric(), pct.mapped.of.used=numeric(),
-                        num.PCR.error.clust=numeric(), pct.PCR.clust.of.used=numeric(),
-			num.VJC.clust=numeric(), pct.VJC.clust.of.used=numeric(),
-                        num.dropped.no.clonal.seq=numeric(), pct.dropped.no.clonal=numeric(),	# 15
-                        num.reads.dropped.low.qual=numeric(), pct.dropped.low.quality=numeric(),
-                        num.reads.dropped.fail.map=numeric(), pct.dropped.fail.map=numeric(),
-			num.reads.drop.low.qual.clone=numeric(), pct.dropped.low.qual.clone=numeric(),
-			clonotypes.elim.error.corr=numeric(),
-			clonotypes.dropped.low.qual=numeric(),	# 20
-			clonotypes.pre.clust.similar.VJC=numeric(),
-                        stringsAsFactors=FALSE);
+##################
+### PARSE ARGS ###
+##################
 
-for(i in 1:length(files.in.dir))	{
-    #   get a QC file to process
-    curr.file <- file.path(working.dir, files.in.dir[i]);
+p <- OptionParser(usage = "%prog -i inputDir -o outDir",
+                option_list = optlist)
+args <- parse_args(p)
+opt <- args$options
 
-    curr.record <- readLines(curr.file);
+inputDir_v <- args$inputDir
+outDir_v <- args$outDir
 
-    #   misc QC
-    if(length(curr.record) != 22)   {
-        stop("Unexpected length of report for file: ", curr.file, "\n", sep="");
-    }   #   fi
+###############
+### ACTIONS ###
+###############
 
-    curr.date <- strsplit(curr.record[1], ":")[[1]];
-    curr.date <- curr.date[-1];
-    curr.date <- paste(curr.date, collapse="");
-    output.df[i,]$analysis.date <- curr.date;
+### Get files
+inputFiles_v <- list.files(inputDir_v)
+
+### Sort files
+inputFiles_v <- inputFiles_v[order(as.numeric(gsub("^S|_assemble.*", "", inputFiles_v)))]
+
+### Create empty data.frame
+output_df <- data.frame()
+
+### Summarize info from each report file
+for (i in 1:length(inputFiles_v)){
+
+    ## Get Record
+    currFile_v <- inputFiles_v[i]
+    curr.record <- readLines(file.path(inputDir_v, currFile_v))
     
-    curr.input <- strsplit(curr.record[2], ":")[[1]][2];
-    curr.input <- trimws(curr.input);
-    curr.input <- basename(curr.input);
-    output.df[i,]$inputs <- curr.input;
+    ## Update user
+    if (length(curr.record) != 22){
+	print(sprintf("Sample %s has %d lines. The norm is 22.", currFile_v, length(curr.record)))
+    }
 
-    curr.output <- strsplit(curr.record[3], ":")[[1]][2];
-    curr.output <- trimws(curr.output);
-    curr.output <- basename(curr.output);
-    output.df[i,]$output <- curr.output;
-
-    curr.version <- strsplit(curr.record[4], ":|;")[[1]][2];
-    curr.version <- trimws(curr.version);
-    output.df[i,]$version <- curr.version;
-
-    curr.time <- strsplit(curr.record[5], ":")[[1]][2]
-    curr.time <- trimws(curr.time)
-    output.df[i,]$time <- curr.time
-
-    curr.command <- strsplit(curr.record[6], ":")[[1]][2]
-    curr.command <- trimws(curr.command)
-    output.df[i,]$command <- curr.command
+    ## Date
+    curr.date <- grep("Analysis Date", curr.record, value = T)
+    curr.date <- trimws(gsub("[A-z ]+:|[0-9]+:.*PDT ", "", curr.date))
+    names(curr.date) <- "analysis.date"
     
-    curr.count <- strsplit(curr.record[7], ":")[[1]][2];
-    output.df[i,]$clonotype.count <- curr.count;
-
-    curr.avg.per.clone <- strsplit(curr.record[8], ":")[[1]][2];
-    output.df[i,]$avg.reads.per.clonotype <- curr.avg.per.clone;
+    ## I/0
+    curr.input <- basename(trimws(strsplit(grep("Input file", curr.record, value = T), ':')[[1]][2]))
+    curr.output <- basename(trimws(strsplit(grep("Output file", curr.record, value = T), ':')[[1]][2]))
+    names(curr.input) <- "inputs"; names(curr.output) <- "output"
     
-#    curr.total <- strsplit(curr.record[7], ":")[[1]][2];
-#    output.df[i,]$total.reads.used <- curr.total;
+    ## Version
+    curr.version <- trimws(strsplit(grep("Version", curr.record, value = T), ":")[[1]][2])
+    names(curr.version) <- "version"
+    
+    ## Count
+    curr.count <- trimws(strsplit(grep("Final clonotype count", curr.record, value = T), ":")[[1]][2])
+    curr.avg.per.clone <- trimws(strsplit(grep("Average number", curr.record, value = T), ":")[[1]][2])
+    names(curr.count) <- "clonotype.count"; names(curr.avg.per.clone) <- "avg.reads.per.clonotype"
+    
+    curr.reads.used <- extractRecord("clonotypes, percent", curr.record, c("num.reads.used", "pct.used.of.total"))
+    curr.reads.cluster <- extractRecord("clonotypes before", curr.record, c("num.reads.used.b4.clust", "pct.of.total"))
+    curr.core <- extractRecord("used as a core", curr.record, c("num.reads.used.as.core", "pct.of.used"))
+    curr.low <- extractRecord("quality reads", curr.record, c("num.reads.mapped.lowq", "pct.mapped.of.used"))
+    curr.clust <- extractRecord("Reads clustered", curr.record, c("num.PCR.error.clust", "pct.PCR.clust.of.used"))
+    curr.pre.clust <- extractRecord("pre-clustered", curr.record, c("num.VJC.clust", "pct.VJC.clust.of.used"))
+    curr.dropped.lack <- extractRecord("lack of a clone", curr.record, c("num.drop.no.clonal.seq", "pct.dropped.no.clonal"))
+    curr.dropped.low <- extractRecord("dropped due to low", curr.record, c("num.drop.lowq", "pct.dropped.lowq"))
+    curr.dropped.fail <- extractRecord("failed mapping", curr.record, c("num.drop.fail.map", "pct.dropped.fail.map"))
+    curr.dropped.low.clone <- extractRecord("low quality clones", curr.record, c("num.drop.lowq.clone", "pct.dropped.lowq.clone"))
+    curr.pcr.correct <-  extractRecord("eliminated by", curr.record, "clonotypes.elim.PCR.error")
+    curr.clone.dropped.lowq <- extractRecord("Clonotypes dropped", curr.record, "clonotypes.drop.lowq")
+    curr.clone.preclust <- extractRecord("Clonotypes pre-clustered", curr.record, "clonotypes.pre.clust.similar.VJC")
+    
 
-    counter <- 0
-    for(j in 9:18)  {
-        curr.temp <- trimws(strsplit(curr.record[j], ":")[[1]][2]);
-	curr.temp <- unlist(strsplit(curr.temp, " "))
-	curr.num <- as.numeric(curr.temp[1])
-	curr.pct <- curr.temp[2]
-        curr.pct <- as.numeric(gsub("\\(|%|\\)", "", curr.pct));
-        output.df[i,(j+counter)]<- curr.num;
-	output.df[i,(j+counter+1)] <- curr.pct
-	counter <- counter + 1
-    }   #   for j
+  # Combine into a row to add to data frame
+    row_v <- c(curr.date, curr.input, curr.output, curr.version, curr.count, curr.avg.per.clone, 
+               curr.reads.used, curr.reads.cluster, curr.core, curr.low, curr.clust, curr.pre.clust,
+               curr.dropped.lack, curr.dropped.low, curr.dropped.fail, curr.dropped.low.clone,
+               curr.pcr.correct, curr.clone.dropped.lowq, curr.clone.preclust)
+    colNames_v <- names(row_v)
 
-    for (j in 19:21) {
-    	curr.temp <- strsplit(curr.record[j], ":")[[1]][2];
-	curr.temp <- as.numeric(trimws(curr.temp));
-	output.df[i,(j+counter)] <- curr.temp;
-    } # for j
-     
-}	#	for i
+  # Populate data frame
+  output_df <- rbind(output_df, row_v, stringsAsFactors = F)
+  colnames(output_df) <- colNames_v
 
-#   order table to make results more intuitive
-output.df <- output.df[order(output.df$pct.used.of.total, decreasing=TRUE),];
+}  #  for
 
-write.table(output.df, 
-            file=file.path(out.dir, "mixcr.assemble.QC.summary.txt"),
+### Write
+write.table(output_df, 
+            file=file.path(outDir_v, "mixcr.assemble.QC.summary.txt"),
             quote=FALSE,
             sep="\t",
             row.names=FALSE)
