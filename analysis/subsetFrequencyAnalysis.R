@@ -2,6 +2,7 @@
 
 ### Calculate a variety of summary and diversity statistics for all of the normalized clonotype files
 ### Run the calculations on various subsets of the top clones
+### NOTE - this is not 'frequency groups' in terms of Small, Medium, Large, Hyper, but just different subsets of the top clones
 ### Calculate Shannon Entropy, normalized Shannon Entropy, clonality, adaptive's clonality, unique clones, max clone count, gini index, true diversity
 
 ### Arguments

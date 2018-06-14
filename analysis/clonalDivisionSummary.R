@@ -5,6 +5,18 @@
 ### Find the average frequency of each clone in a certain frequency group (Rare, Small, medium, etc.)
 ### Also find the total frequency of all clones in that group (this is what the homeostatic analysis does)
 
+### Output results for both mean frequency as well as cumulative frequency
+
+    ### Mean Freq - take the average frequency of all of the clones in a particular division
+	### For example, a sample may have 10k "Rare" clones, all with frequencies between 0 and 0.00001
+	### This means their average frequency will also be somewhere within that range and gives an idea
+	### of what the "typical" Rare clone looks like. These results are not often used.
+
+    ### Cumulative Freq - take the sum of all of the frequencies of all of the clones in a particular division
+	### For example, that same sample of 10k "Rare" clones, when all of their frequencies are summed,
+	### will almost certainly have a value greater than 0.00001. The 'cumulative freq' is the 'homeostatic' result.
+	### This result tells us what proportion of all of the clones are considered Rare clones.
+
 ### Requires
 	### directory to normalized clone count files
 	### metadata file with sample names and treatments
@@ -86,13 +98,25 @@ cloneNames_v <- sapply(cloneFiles_v, function(x) {
         temp <- unlist(strsplit(x, split = "_"))
         name_v <- grep("S[0-9]+", temp, value = T)
         return(name_v)}, USE.NAMES = F)
+names(cloneFiles_v) <- cloneNames_v
 batchName_v <- strsplit(cloneFiles_v[1], split = "_")[[1]][1]
+
+### Read in metadata
+metadata_dt <- fread(metadata_v)
+
+### Extract samples from metadata
+sampleCol_v <- grep("[Ss]ample", colnames(metadata_dt), value = T)[1]
+samples_v <- paste0("S", gsub("^S", "", metadata_dt[[sampleCol_v]]))
+
+### Subset cloneFiles_v and cloneNames_v for these samples
+cloneNames_v <- intersect(samples_v, cloneNames_v)
+cloneFiles_v <- cloneFiles_v[cloneNames_v]
+
+### Read in metadata
+metadata_dt <- fread(metadata_v)
 
 ### Read in data
 cloneData_lsdt <- sapply(cloneFiles_v, function(x) fread(file.path(cloneDir_v, x)), simplify = F)
-names(cloneData_lsdt) <- cloneNames_v
-
-metadata_dt <- fread(metadata_v)
 
 ### Get fraction/count columns
 ## Get fraction column
@@ -111,9 +135,7 @@ if (!column_v %in% colnames(cloneData_lsdt[[1]])){
 } # fi
 
 ### Get appropriate columns and subset
-
 tissueCol_v <- grep("issue", colnames(metadata_dt), value = T)
-sampleCol_v <- grep("ample", colnames(metadata_dt), value = T)[1]
 
 if (!is.null(tissue_v)) {
     ## Subset metadata
@@ -127,17 +149,24 @@ if (!is.null(tissue_v)) {
 if (!is.null(type_v)){
     treatCol_v <- type_v
 } else {
-    treatCol_v <- grep("eatment", colnames(metadata_dt), value = T)
+    treatCol_v <- grep("[Tt]reatment", colnames(metadata_dt), value = T)
 } # fi
 
 treatments_v <- unique(metadata_dt[, get(treatCol_v)])
 
-
+### Create divisions and empty data.tables to hold results.
 divisions_v <- c("Blank" = 0, "Rare" = 0.00001, "Small" = 0.0001, "Medium" = 0.001, "Large" = 0.01, "Hyperexpanded" = 1)
 
+### Per-Sample Summary tables
+    ### One entry for each table recording meanFreq, cumFreq, or # clones per freqGroup
+    ### Simply concatenating the individual treatment tables together, for easier comparison.
 perSampleMeanFreq_dt <- NULL
 perSampleCumFreq_dt <- NULL
 perSampleGrpCount_dt <- NULL
+
+### Per-Treatment Summary tables
+    ### One entry for each treatment. Takes the mean of the per-sample results.
+    ### end up with mean(meanFreq); mean(cumFreq), mean(# clones/group)
 perTreatMeanFreq_dt <- NULL
 perTreatCumFreq_dt <- NULL
 perTreatGrpCount_dt <- NULL
@@ -162,14 +191,20 @@ for (i in 1:length(treatments_v)){
     ## Make empty matrix
     meanFreq_mat <- matrix(ncol = (length(divisions_v)-1), nrow = length(currData_lsdt))
     cumFreq_mat <- meanFreq_mat
-    groupCount_mat <- meanFreq_mat
+    groupCount_mat <- meanFreq_mat     # Record number of clones in each freq group for each treatment
 
-    ## Print nrow
+    ## Print nrow (n clones) of each sample
     nrow_v <- sapply(currData_lsdt, nrow)
     print(c("Treatment" = currTreat_v, nrow_v))
 
     ## Remove zero-count clones
     currData_lsdt <- lapply(currData_lsdt, function(x) x[get(column_v) > 0,])
+
+    ## Compare
+    newNrow_v <- sapply(currData_lsdt, nrow)
+    diff_v <- nrow_v - newNrow_v
+    print("Removed the following empty clones from each sample:")
+    print(c("Treatment" = currTreat_v, diff_v))
 
     ## For each sample, get all of the clones in that
     for (j in 2:length(divisions_v)){
@@ -182,13 +217,11 @@ for (i in 1:length(treatments_v)){
             currData_dt <- currData_lsdt[[k]]
             ## Subset
             currSub_dt <- currData_dt[(get(column_v) > currMin_v & get(column_v) <= currMax_v),]
-            ## get mean Freq
+            ## get mean Freq and cumulative freq
             currMeanFreq_v <- mean(currSub_dt[,get(column_v)])
-            ## Update matrix
-            meanFreq_mat[k,(j-1)] <- currMeanFreq_v
-            ## get cumulative freq
             currCumFreq_v <- sum(currSub_dt[,get(column_v)])
-            ## Update matrix
+            ## Update matrices
+            meanFreq_mat[k,(j-1)] <- currMeanFreq_v
             cumFreq_mat[k,(j-1)] <- currCumFreq_v
             ## Get number of clones and add to matrix
             groupCount_mat[k,(j-1)] <- currSub_dt[,.N]
