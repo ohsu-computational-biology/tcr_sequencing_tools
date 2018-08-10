@@ -47,11 +47,13 @@ pseudo=c("V22","V8","V10","V11","V123","V18","V21","V27","V28","V25")
 pseudo_reads_v <- unique(count_data$`V segments`[count_data$`V segments` %in% pseudo])
 count_data <- count_data[!(count_data$`V segments` %in% pseudo),]
 print(c("remove-pseudo row count:", count_data[,.N]))
-print(c("removed pseudo genes: ", pseudo_reads_v))
-
+print(c("removed pseudo genes test: ", pseudo_reads_v))
+print("TEst")
 ### Read in scaling factor file
 scaling.factor_dt <- fread(scaling.factor.file)
 nb.scaling.factor_dt <- fread(nb.scaling.factor.file)
+
+print("Read in scaling factor files")
 
 ### Handle legacy code
 if (ncol(scaling.factor_dt) == 1) {
@@ -79,7 +81,7 @@ if (ncol(scaling.factor_dt) == 1) {
 ### TODO: elsewhere - need to update calculate scaling factor code to write out V/J columns as well
 
     
-
+print("Done with merge")
 
 ### Legacy - assign scaling.factor to spiked_reads
 #spiked_reads$multiples <- scaling.factor;
@@ -109,10 +111,14 @@ count_data$"Normalized clone fraction" <- 0;
 count_data$"nb.clone.count" <- 0
 count_data$"nb.clone.fraction" <- 0
 
+print("Added empty columns")
+
 ### Change clone count to numeric rather than integer
 countCol_v <- grep("Clone count|cloneCount", colnames(count_data), value = T)
 fracCol_v <- grep("Clone fraction|cloneFraction", colnames(count_data), value = T)
 changeCols_v <- c(countCol_v, fracCol_v, "Normalized clone count", "Normalized clone fraction", "nb.clone.count", "nb.clone.fraction")
+print("change cols:")
+print(changeCols_v)
 count_data[, (changeCols_v) := lapply(.SD, as.numeric), .SDcols=changeCols_v]
 
 ### Go through every spike in the spike file
