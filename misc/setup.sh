@@ -133,6 +133,7 @@ mkdir slurm_logs/normalize
 mkdir slurm_logs/qc
 mkdir slurm_logs/remove
 mkdir slurm_logs/setup
+mkdir slurm_logs/pear
 
 mkdir slurm_logs/mixcr
 mkdir slurm_logs/mixcr/align

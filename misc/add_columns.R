@@ -13,7 +13,10 @@ arguments <- commandArgs(trailingOnly = T)
 
 clone.dir <- arguments[1]        # #data/mixcr/export_clones
 out.dir <- arguments[2]
-rename_v <- arguments[3]
+rename_v <- arguments[3]         # logical indicating whether to add new file extension
+
+### Handle rename
+if (is.na(rename_v)) {rename_v <- F}
 
 ### Sort files
 clone.files <- list.files(clone.dir)
