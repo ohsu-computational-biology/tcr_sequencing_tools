@@ -4,9 +4,13 @@
   <xml name="requirements">
     <requirements>
       <requirement type="package" version="1.28.0">bioconductor-shortread</requirement>
-      <requirement type="package" version="1.10.4">r-data.table</requirement>
       <requirement type="package" version="1.2.0">r-stringr</requirement>
     </requirements>
+  </xml>
+
+  <xml name="citations">
+    <citations>
+    </citations>
   </xml>
 
 </macros>

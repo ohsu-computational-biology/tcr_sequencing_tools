@@ -1,10 +1,23 @@
 <tool id="aggregate.qc" name="Output QC/Analysis in Excel" version="0.1.0">
   <description>Aggregate QC and Analysis files into excel sheet.</description>
 
-  <command>
-    <!-- /usr/bin/Rscript /home/exacloud/lustre1/users/letaw/galaxy-dist/tools/tcrseq/qc/aggregate.qc.R -->
-      /usr/bin/Rscript /home/exacloud/lustre1/GalaxyinstalledTest/galaxy-dist/tools/tcr_seq/galaxy_tools/qc/aggregate.qc.R 
-  $count_spikes $align $assemble $decontam $norm $analysis; mv temp.xlsx $output
+  <macros>
+    <import>macros.xml</import>
+  </macros>
+
+  <expand macro="requirements"/>
+
+  <command detect_errors="exit_code">
+    <![CDATA[
+             Rscript $__tool_directory__/aggregate.qc.R
+             $count_spikes
+             $align
+             $assemble
+             $decontam
+             $norm
+             $analysis &&
+             mv temp.xlsx $output
+    ]]>
   </command>
   
   <inputs>

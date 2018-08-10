@@ -4,6 +4,8 @@
   <macros>
     <import>macros.xml</import>
   </macros>
+
+  <expand macro="requirements"/>
   
   <command detect_errors="exit_code">
     <![CDATA[
@@ -59,45 +61,6 @@
 
              $debug
     ]]>
-
-    <!--
-	This holds the other input for loops
-		     #for $align in $align_reports#
-	     echo '$align.element_identifier' >> $align_names;
-	     #end for#
-	     
-	     #for $assemble in $assemble_reports#
-	     echo '$assemble.element_identifier' >> $assemble_names;
-	     #end for#
-	     
-	     #for $d_qc in $decontam_qc#
-	     echo '$d_qc.element_identifier' >> $decontam_qc_names;
-	     #end for#
-	     
-	     #for $d_clones in $decontam_clones#
-	     echo '$d_clones.element_identifier' >> $decontam_clones_names;
-	     #end for#
-	     
-	     #for $norm in $norm_clones#
-	     echo '$norm.element_identifier' >> $norm_names;
-	     #end for#
-
-    -->
-
-    <!-- This holds the Rscript commands
-		     $align_reports $align_names
-	     $align_output
-	     
-	     $assemble_reports $assemble_names
-	     $assemble_output
-	     
-	     $decontam_qc $decontam_qc_names $decontam_qc_output
-	     
-	     $decontam_clones $decontam_clones_names
-	     $norm_clones $norm_names
-	     $norm_output 
-	 -->
-
   </command>
     
   <inputs>

@@ -12,9 +12,11 @@
 
 ### disable scientific notation
 options(scipen=999);
-suppressMessages(library(data.table))
+#suppressMessages(library(data.table))
+#suppressMessages(suppressWarnings(source("https://bioconductor.org/biocLite.R")))
+#biocLite("GenomeInfoDb")
 suppressWarnings(suppressMessages(library(ShortRead)))
-suppressWarnings(suppressMessages(library(Biostrings)))
+#suppressWarnings(suppressMessages(library(Biostrings)))
 
 #################
 ### Arguments ###
@@ -93,11 +95,12 @@ debug_v <- arguments[22]
 # normCountNames_v <- "~/galaxy/test-data/qc/temp/normNames.txt"
 # 
 # normOut_v <- "testNormOut.txt"
+# debug_v <- T
 
 #################
 ### Functions ###
 #################
-dsName_v <- function(dataSetName_v){
+dsName <- function(dataSetName_v){
   # Return last directory from file path and file name of galaxy dataset.dat path
   # dataSetName_v - single element of a galaxy dataset path (e.g. /database/files/000/dataset123.dat)
   splitName_v <- strsplit(dataSetName_v, split = "/")[[1]]
@@ -136,23 +139,23 @@ despikedFiles_v <- unlist(strsplit(despikedFiles_v, ','))
 spikeCountFiles_v <- unlist(strsplit(spikeCountFiles_v, ','))
 
 ### Read in names
-fastqNames_dt <- fread(fastqNames_v, header = F);
-spikeCountNames_dt <- fread(spikeCountNames_v, header = F);
-despikedNames_dt <- fread(despikedNames_v, header = F); 
+fastqNames_df <- read.table(fastqNames_v, header = F, sep = '\t', stringsAsFactors = F)
+spikeCountNames_df <- read.table(spikeCountNames_v, header = F, sep = '\t', stringsAsFactors = F)
+despikedNames_df <- read.table(despikedNames_v, header = F, sep = '\t', stringsAsFactors = F)
 
 ### Check Names
 if (debug_v){
   print("Fastq Names: ")
-  print(fastqNames_dt)
+  print(fastqNames_df)
   print("Spike Count Names: ")
-  print(spikeCountNames_dt)
+  print(spikeCountNames_df)
   print("Despiked Fastq Names: ")
-  print(despikedNames_dt)
+  print(despikedNames_df)
 }
 
 ### Compare
-fastqToSpikeCompare_v <- which(fastqNames_dt$V1 != spikeCountNames_dt$V1)
-spikeToDespikeCompare_v <- which(spikeCountNames_dt$V1 != despikedNames_dt$V1)
+fastqToSpikeCompare_v <- which(fastqNames_df$V1 != spikeCountNames_df$V1)
+spikeToDespikeCompare_v <- which(spikeCountNames_df$V1 != despikedNames_df$V1)
 
 if (length(fastqToSpikeCompare_v) > 0 | length(spikeToDespikeCompare_v) > 0){
   stop("PEAR fastq, spike count, and despiked fastq files do not match")
@@ -167,21 +170,21 @@ for (i in 1:length(fastqFiles_v)){
     ## Read in data
     fastqReads_srq <- readFastq(fastqFiles_v[i])
     despikedReads_srq <- readFastq(despikedFiles_v[i])
-    spikeTable_dt <- fread(spikeCountFiles_v[i])
-    if (debug_v) {print("Spike Table: "); print(head(spikeTable_dt))}
+    spikeTable_df <- read.table(spikeCountFiles_v[i], sep = '\t', stringsAsFactors = F, header = T)
+    if (debug_v) {print("Spike Table: "); print(head(spikeTable_df))}
 
     ## Get File information
-    currFastqDatasetName_v <- dsName_v(fastqFiles_v[i])
-    currDespikedDatasetName_v <- dsName_v(despikedFiles_v[i])
-    currSpikeCountDatasetName_v <- dsName_v(spikeCountFiles_v[i])
+    currFastqDatasetName_v <- dsName(fastqFiles_v[i])
+    currDespikedDatasetName_v <- dsName(despikedFiles_v[i])
+    currSpikeCountDatasetName_v <- dsName(spikeCountFiles_v[i])
     
     ## Get sample names
-    currFastqSampleName_v <- fastqNames_dt$V1[i]
+    currFastqSampleName_v <- fastqNames_df$V1[i]
         
     ## Calculate number of reads of each type
     numFastqs_v <- length(fastqReads_srq)
     numDespiked_v <- length(despikedReads_srq)
-    spikedReads_v <- sum(spikeTable_dt$spike.count)
+    spikedReads_v <- sum(spikeTable_df$spike.count)
 
     ##
     ## Calculate various QC statistics
@@ -216,8 +219,8 @@ for (i in 1:length(fastqFiles_v)){
     if (debug_v) print("end summary df")
     
     ## Extract spike counts and turn into single row data frame
-    spikeOut_df <- as.data.frame(spikeTable_dt$spike.count)
-    rownames(spikeOut_df) <- spikeTable_dt$SPIKE_ID
+    spikeOut_df <- as.data.frame(spikeTable_df$spike.count)
+    rownames(spikeOut_df) <- spikeTable_df$SPIKE_ID
     spikeOut_df <- t(spikeOut_df)
     
     ## Combine into one data frame
@@ -366,16 +369,16 @@ if (debug_v) print("Begin Decontam")
 ### Get files
 decontam_qc_files_v <- unlist(strsplit(decontamQCFiles_v, ','))
 
-decontam_output_matrix <- matrix(nrow = length(decontam_qc_files_v), ncol = ncol(fread(decontam_qc_files_v[1], nrows = 0)))
+decontam_output_matrix <- matrix(nrow = length(decontam_qc_files_v), ncol = ncol(read.table(decontam_qc_files_v[1], nrows = 1, header = F, sep = '\t')))
 
 for (i in 1:length(decontam_qc_files_v)){
     ## Read data
-    curr_data_dt <- fread(decontam_qc_files_v[i])
+    curr_data_df <- read.table(decontam_qc_files_v[i], sep = '\t', header = T, stringsAsFactors = F)
     ## Add to matrix
-    decontam_output_matrix[i,] <- unlist(curr_data_dt[1,], use.names = F)
+    decontam_output_matrix[i,] <- unlist(curr_data_df[1,], use.names = F)
 } # for
 
-colnames(decontam_output_matrix) <- colnames(curr_data_dt)
+colnames(decontam_output_matrix) <- colnames(curr_data_df)
 
 #####################
 ### Normalization ###
@@ -392,8 +395,8 @@ output.data <- NULL
 
 for(i in 1:length(raw.clonotype.count.files))  {
   ## Read in raw and norm
-  curr.raw <- fread(raw.clonotype.count.files[i])
-  curr.normalized <- fread(normCountFiles_v[i])
+  curr.raw <- read.table(raw.clonotype.count.files[i], sep = '\t', stringsAsFactors = F, header = T)
+  curr.normalized <- read.table(raw.clonotype.count.files[i], sep = '\t', stringsAsFactors = F, header = T)
 
   ## Get column names
   cdr3Col_v <- grep("AA. Seq. CDR3|aaSeqCDR3", colnames(curr.raw), value = T)

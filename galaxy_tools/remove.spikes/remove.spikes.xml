@@ -3,8 +3,9 @@
 
   <macros>
     <import>macros.xml</import>
-    <import>../macros.xml</import>
   </macros>
+
+  <expand macro="requirements"/>
 
   <command detect_errors="exit_code">
     <![CDATA[
@@ -13,7 +14,7 @@
 	     $reads_to_remove
 	     $output_fastq
 	     $output_removed
-    ]]>
+             ]]>
   </command>
 
   <inputs>
@@ -27,22 +28,11 @@
     <data name="output_removed" format="fastq" label="Spike Reads"/>
   </outputs>
 
-  <tests>
-    <test>
-      <param name="input_fastq" value="/Users/hortowe/newGalaxy/test-data/remove.spikes/pear_S10_data.fastq"/>
-      <param name="reads_to_remove" value="/Users/hortowe/newGalaxy/test-data/remove.spikes/9bp_S10_rtr.txt"/>
-      <output name="output_fastq" value="/Users/hortowe/newGalaxy/test-data/remove.spikes/reads_S10_data.fastq"/>
-      <output name="output_removed" value="/Users/hortowe/newGalaxy/test-data/remove.spikes/spikes_S10_data.fastq"/>
-    </test>
-  </tests>
-
   <help>
     <![CDATA[
 	     This tool takes an input file containing all of the fastq read ids for the synthetic templates from a particular sample and removes the read from the corresponding fastq file.
 	     It outputs the new fastq sample file w/o these template reads, as well as a fastq file containing the template reads.
     ]]>
   </help>
-
-  <expand macro="citations"/>
 
 </tool>

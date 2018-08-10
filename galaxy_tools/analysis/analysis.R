@@ -1,105 +1,151 @@
 #	RScript that calculates number of unique clonotypes, Shannon entropy, and clonality for multiple clonotype files
-#
-#   Input is a directory containing one or more files with MiXCR output format
-#   
-#   Load necessary libraries
-#source("https://cran.r-project.org/web/packages/entropy/index.html", echo=F, verbose=F)
-suppressMessages(install.packages("entropy", repos = "http://cran.us.r-project.org", quiet = TRUE))
-suppressMessages(library(entropy))
+
+####################
+### DEPENDENCIES ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+####################
+
 suppressMessages(library(data.table))
+suppressMessages(library(tcR))
 
-#	Get command-line arguments
+#################
+### FUNCTIONS ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#################
+
+dsName <- function(dataSetName_v){
+  # Return last directory from file path and file name of galaxy dataset.dat path
+  # dataSetName_v - single element of a galaxy dataset path (e.g. /database/files/000/dataset123.dat)
+  splitName_v <- strsplit(dataSetName_v, split = "/")[[1]]
+  x_v <- length(splitName_v)
+  newName_v <- paste(splitName_v[c((x_v-1),x_v)], collapse = "/")
+  return(newName_v)
+}
+
+my.entropy.plugin <- function (freqs, unit = c("log", "log2", "log10")) {
+  ### Taken from 'entropy' package. Can't install package because of dependency issues in conda
+  unit = match.arg(unit)
+  freqs = freqs/sum(freqs)
+  H = -sum(ifelse(freqs > 0, freqs * log(freqs), 0))
+  if (unit == "log2") 
+    H = H/log(2)
+  if (unit == "log10") 
+    H = H/log(10)
+  return(H)
+}
+
+####################
+### COMMAND LINE ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+####################
+
+###	Get command-line arguments
 arguments <- commandArgs(trailingOnly=TRUE);
-#   Directory should contain all and only .txt files from exportClones, post-normalization with the following
-#   format:
-#     Clone count   Clone fraction    Clonal sequence(s)    AA. Seq. CDR3   Best V Hit    Best J Hit    V segments
-#     J segments    Normalized clone count    Normalized clone fraction
 
-clone.dir <- arguments[1];    # Typically .../dhaarini/DNAXXXXLC/normalization/normalized_clones/
-print(clone.dir)
-clone.files.in.dir <- unlist(strsplit(clone.dir, ','))
-print(clone.files.in.dir)
+cloneFiles_v <- arguments[1];
+cloneNames_v <- arguments[2]
+outFile_v <- arguments[3];
+old_v <- arguments[4]          # TRUE for old column names. Also set TRUE if you want to use un-normalized data
 
-count.dir <- arguments[2];    # Typically .../dhaarini/DNAXXXXLC/spike_counts/9bp/counts/
-print(count.dir)
-count.files.in.dir <- unlist(strsplit(count.dir, ','))
-print(count.files.in.dir)
+### For testing
+# cloneFiles_v <- "~/galaxy/test-data/normalization/normalize_S10_clones.txt"
+# cloneNames_v <- "~/galaxy/test-data/qc/temp/normNames.txt"
+# outFile_v <- "~/galaxy/test-data/qc/temp/analysis.txt"
+# old_v <- F
 
-output <- arguments[3];
+### Split command-line arguments
+cloneFiles_v <- unlist(strsplit(cloneFiles_v, ','))
 
+### Read in names
+cloneNames_dt <- fread(cloneNames_v, header = F)
+
+#############
+### SETUP ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#############
 
 # Create empty arrays
-calculated.entropies <- NULL
-unique.clones <- NULL
-clonality <- NULL
-max.clonal.freq <- NULL
-norm.entropy <- NULL
-adaptive.clonality <- NULL
-max.clone.count <- NULL
-top.10 <- data.frame(matrix(nrow = 10, ncol = length(clone.files.in.dir)))
-top.25 <- data.frame(matrix(nrow = 25, ncol = length(clone.files.in.dir)))
-top.50 <- data.frame(matrix(nrow = 50, ncol = length(clone.files.in.dir)))
+cloneFileNames_v <- character(length(cloneFiles_v))
+sampleNames_v <- character(length(cloneFiles_v))
+calculated.entropies <- numeric(length(cloneFiles_v));
+unique.clones <- numeric(length(cloneFiles_v))
+clonality <- numeric(length(cloneFiles_v))
+max.clonal.freq <- numeric(length(cloneFiles_v));
+norm.entropy <- numeric(length(cloneFiles_v));
+adaptive.clonality <- numeric(length(cloneFiles_v));
+adaptive.clonality <- numeric(length(cloneFiles_v))
+max.clone.count <- numeric(length(cloneFiles_v))
+gini <- numeric(length(cloneFiles_v))
+true <- numeric(length(cloneFiles_v))
 
-for(i in 1:length(clone.files.in.dir))	{
-    ##   get a clone file to process
-    clone.curr.file <- clone.files.in.dir[i];
+############
+### BODY ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+############
 
-    clone.curr.record <- fread(clone.curr.file)
-    
-    ##   get a count file to process
-    count.curr.file <- count.files.in.dir[i];
+for(i in 1:length(cloneFiles_v))	{
+  ##
+  ## DATA ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ##
+  
+  ## Get a file, the sample name, and the database name
+  currClone_v <- cloneFiles_v[i];
+  sampleNames_v[i] <- cloneNames_dt$V1[i]
+  cloneFileNames_v[i] <- dsName(currClone_v)
+  
+  ## Read in data
+  currData_dt <- fread(currClone_v)
 
-    count.curr.record <- fread(count.curr.file)
-
-    ## Depending on if original or data_subset, we need a norm fraction column
-    if ("New.norm.fraction" %in% colnames(clone.curr.record)){
-        column <- "New.norm.fraction"
+  ## Skip if empty
+  if (nrow(currData_dt) == 0) next
+  
+  ## Get column names
+  if (old_v) {
+    hasNorm_v <- grep("Normalized", colnames(currData_dt), value = T)
+    if (length(hasNorm_v) > 0){
+      column_v <- "Normalized clone fraction"
+      count_v <- "Normalized clone count"
     } else {
-        column <- "Normalized clone fraction"
-    } # if
+      column_v <- grep("Clone fraction|cloneFraction", colnames(currData_dt), value = T)
+      count_v <- grep("Clone count|cloneCount", colnames(currData_dt), value = T)
+    } # fi
+  } else {
+    column_v <- "nb.clone.fraction"
+    count_v <- "nb.clone.count"
+  } # fi
+  
+  ##
+  ## CALCULATIONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ##
+  
+  ## UNIQUE CLONES
+  unique.clones[i] <- currData_dt[,.N]
 
-    ##
-    ## Calculations
-    ##
-    
-    unique.clones[i] <- clone.curr.record[,.N]
+  ## ENTROPY
+  #calculated.entropies[i] <- entropy(currData_dt[[column_v]], method="ML", unit="log");
+  calculated.entropies[i] <- my.entropy.plugin(freqs = currData_dt[[column_v]], unit = "log")
 
-    ##   calculate entropy
-    calculated.entropies[i] <- entropy(clone.curr.record[[column]], method="ML", unit="log");
+  ## CLONALITY
+  clonality[i] <- 1 - (calculated.entropies[i] / log(unique.clones[i]))
 
-    ##   calculate clonality
-    clonality[i] <- 1 - (calculated.entropies[i] / log(unique.clones[i]))
+  ## NORMALIZED SHANNON ENTROPY
+  norm.entropy[i] <- calculated.entropies[i] / log(unique.clones[i])
+  
+  ## ADAPTIVE CLONALITY (inverse of normalized entropy)
+  adaptive.clonality[i] <- 1 / norm.entropy[i]
+  
+  ## GINI
+  gini[i] <- gini(.data = currData_dt[[column_v]], .do.norm = F)
+  true[i] <- diversity(.data = currData_dt[[column_v]], .do.norm = T)
 
-    ## Calculate clonality as inverse of "normalized" shannon entropy
-    ## Normalized shannon entropy
-    norm.entropy[i] <- calculated.entropies[i] / log(unique.clones[i])
-    ## Adaptive clonality
-    adaptive.clonality[i] <- 1 / norm.entropy[i]
+  ## Change clone freq column to a percentage
+  currData_dt[[column_v]] <- currData_dt[[column_v]] * 100
 
-    ## Change clone freq column to a percentage
-    clone.curr.record[[column]] <- clone.curr.record[[column]] * 100
+  ## MAX CLONAL FREQ
+  max.clonal.freq[i] <- round(max(currData_dt[[column_v]]), digits = 4)
 
-    ##	Calculate Max. clonotype frequency
-    max.clonal.freq[i] <- round(max(clone.curr.record[[column]]), digits = 4)
-
-    ## Mac lone count
-    max.clone.count[i] <- max(clone.curr.record$`Normalized clone count`)
-
-    ##  Record frequencies for top 10 and top 25 clones
-    clone.curr.record <- clone.curr.record[order(clone.curr.record[[column]], decreasing = T),]
-    top.10[,i] <- clone.curr.record[[column]][1:10]
-    top.25[,i] <- clone.curr.record[[column]][1:25]
-    top.50[,i] <- clone.curr.record[[column]][1:50]
+  ## MAX CLONE COUNT
+  max.clone.count[i] <- max(currData_dt[[count_v]])
 
 } # for i
 
-### Summarize top10 and top25 data
-top.10.summary <- round(t(apply(top.10, 2, function(x) c(mean(x), median(x), sum(x)))), digits = 4)
-top.25.summary <- round(t(apply(top.25, 2, function(x) c(mean(x), median(x), sum(x)))), digits = 4)
-top.50.summary <- round(t(apply(top.50, 2, function(x) c(mean(x), median(x), sum(x)))), digits = 4)
-
 ## For debug
-## cat("Clone Files\n", length(clone.files.in.dir)); cat("\n")
+## cat("Clone Files\n", length(cloneFiles_v)); cat("\n")
 ## cat("Entropies\n", length(calculated.entropies)); cat("\n")
 ## cat("Norm.Entropy\n", length(norm.entropy)); cat("\n")
 ## cat("unique.clones\n", length(unique.clones)); cat("\n")
@@ -115,17 +161,15 @@ top.50.summary <- round(t(apply(top.50, 2, function(x) c(mean(x), median(x), sum
 ## cat(length(top.50.summary)); cat("\n")
 
 ###   create output data.frame
-output.df <- data.frame(clone.files.in.dir, calculated.entropies, norm.entropy, unique.clones, clonality,
-                        adaptive.clonality, max.clonal.freq, max.clone.count,
-                        top.10.summary, top.25.summary, top.50.summary);
+output.df <- data.frame(cloneFileNames_v, sampleNames_v, calculated.entropies, norm.entropy, unique.clones, clonality,
+                        adaptive.clonality, max.clonal.freq, max.clone.count, gini, true);
 
-colnames(output.df) <- c("File", "Shannon Entropy", "Normalized Entropy", "Unique Clonotypes", "Clonality",
-                         "Adaptive Clonality", "Max Clonal Freq", "Max Clone Count", "top10.mean", "top10.median",
-                                                  "top10.sum", "top25.mean", "top25.median", "top25.sum", "top50.mean", "top50.median", "top50.sum");
+colnames(output.df) <- c("File", "Sample", "Shannon Entropy", "Normalized Entropy", "Unique Clonotypes", "Clonality",
+                         "Adaptive Clonality", "Max Clonal Freq", "Max Clone Count", "Gini_Index", "True_Diversity")
 
 ###   write output
 write.table(output.df, 
-            file=output,
+            file=outFile_v,
             quote=FALSE,
             sep="\t",
             row.names=FALSE)

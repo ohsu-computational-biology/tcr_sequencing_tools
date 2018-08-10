@@ -1,19 +1,34 @@
-<tool id="analysis" name="Clonotype Analysis">
+<tool id="analysis" name="Clonotype Analysis" version="0.1.0">
   <description>Calculate unique clonotypes, Shannon Entropy, and Clonality for samples.</description>
 
+  <macros>
+    <import>macros.xml</import>
+  </macros>
 
-<command>/usr/bin/Rscript /home/exacloud/lustre1/GalaxyinstalledTest/galaxy-dist/tools/tcr_seq/galaxy_tools/analysis/analysis.R
-<!-- <command>/usr/bin/Rscript /home/exacloud/lustre1/users/letaw/galaxy_intel/galaxy/tools/tcrseq/galaxy_tools/analysis/analysis.R -->
-   $clone_input $count_input $output
+  <expand macro="requirements"/>
+
+  <command detect_errors="exit_code">
+    <![CDATA[
+           #for $clone in $clone_input#
+           echo '$clone.element_identifier' >> $clone_names;
+           #end for#
+
+           Rscript $__tool_directory__/analysis.R
+           $clone_input 
+           $clone_names
+           $output
+           $old
+           ]]>
   </command>
   
   <inputs>
-    <param name="clone_input" type="data" multiple="True" label="MiXCR Clone File" help="Normalized Clonotype File"/>
-    <param name="count_input" type="data" multiple="True" label="Spike Count File" help="Count file from 9bp count.spikes run"/>
+    <param name="clone_input" type="data" format="tabular" multiple="True" label="MiXCR Clone File" help="Normalized Clonotype File"/>
+    <param name="old" type="boolean" checked="false" label="Old column names?" help="Only check if using an older version of MiXCR."/>
   </inputs>
 
   <outputs>
-    <data name="output" type="data" format="tabular" label="Analysis Metrics"/>
+    <data name="clone_names" hidden="true" format="tabular" label="Clone Names"/>
+    <data name="output" format="tabular" label="Analysis Metrics"/>
   </outputs>
 
   <help>

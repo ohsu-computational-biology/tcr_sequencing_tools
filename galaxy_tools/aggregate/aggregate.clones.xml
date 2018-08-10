@@ -1,0 +1,29 @@
+<tool id="aggregate.clones" name="Aggregate Clones">
+  <description>Combine all normalized and decontaminated clone files into a single matrix. Add optional metadata as new columns.</description>
+
+  <command>
+    /usr/bin/Rscript /home/exacloud/lustre1/GalaxyinstalledTest/galaxy-dist/tools/tcr_seq/galaxy_tools/aggregate/aggregate.clones.R
+    $clone_files $aggregated_clones $metadata_file
+  </command>
+
+  <inputs>
+    <param name="clone_files" type="data"  label="MiXCR Clone Files" help="Tab-separated file produced by MiXCR.
+							      Contains counts, fractions, and identifying
+							      information about each clonotype. Should be final versions
+							      (i.e. normalized and decontaminated)."/>
+    <param name="metadata_file" type="data" optional="True" label="Metadata File" help="Tab-separated file containing information
+											about the batch/experiment. Must have a column
+											called 'sample' with numeric sample numbers."/>
+
+  </inputs>
+
+  <outputs>
+    <data name="aggregated_clones" format="tabular" label="Aggregated Clones"/>
+  </outputs>
+
+  <help>
+    This tool combines all of the single-sample clone files exported by MiXCR into one large matrix so that the data may be used for downstream analysis.
+  </help>
+
+</tool>
+

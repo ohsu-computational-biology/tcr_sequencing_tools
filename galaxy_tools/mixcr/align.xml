@@ -7,7 +7,7 @@
 
   <expand macro="requirements"/>
 
- <!--  @VERSION_CMD@ -->
+  @VERSION_CMD@
   
   <command detect_errors="exit_code">
     <![CDATA[

@@ -17,8 +17,6 @@
 #   2.  A text file reporting the work done by this script
 
 #   load depdencies
-#.libPaths("/mnt/lustre1/CompBio/lib/R/library")
-#suppressMessages(source("https://bioconductor.org/biocLite.R", echo = FALSE, verbose = FALSE))
 suppressWarnings(suppressMessages(library(ShortRead)))
 suppressWarnings(suppressMessages(library(stringr)))
 suppressWarnings(suppressMessages(library(data.table)))

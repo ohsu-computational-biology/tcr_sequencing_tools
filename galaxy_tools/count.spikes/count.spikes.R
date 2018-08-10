@@ -13,8 +13,6 @@
 
 #   load depdencies
 suppressWarnings(suppressMessages(library(ShortRead)))
-suppressMessages(library(data.table))
-
 
 input.fastq <- commandArgs(trailingOnly=T)[1]
 input.name <- commandArgs(trailingOnly=T)[2]
@@ -46,7 +44,7 @@ num.fastqs <- length(fastq.reads);
 cat(num.fastqs, " fastq reads to process\n", sep="");
 
 ###   open spike file
-spike.table <- fread(spike.file)
+spike.table <- read.table(spike.file, sep = '\t', header = T, stringsAsFactors = F)
 
 ###   extract spike sequences into a vector.
 spikes <- spike.table$SPIKE;
@@ -131,8 +129,8 @@ rownames(qc.spike) <- NULL;
 qc.summary <- cbind(qc.summary, qc.spike);
 
 ### Change read vector to data.table
-records.to.remove.ids.dt <- as.data.table(records.to.remove.ids)
-colnames(records.to.remove.ids.dt) <- "Reads"
+records.to.remove.ids.df <- as.data.frame(records.to.remove.ids)
+colnames(records.to.remove.ids.df) <- "Reads"
     
 
 ###   write outputs
@@ -142,7 +140,7 @@ write.table(output.table,
             sep="\t",
             row.names=F);
   
-write.table(records.to.remove.ids,
+write.table(records.to.remove.ids.df,
             file=output.remove,
             quote=FALSE,
             row.names=FALSE);
