@@ -1,0 +1,59 @@
+<tool id="groupClonesByFreq" name="Clonal Division - Frequency Grouping" version="0.1.0">
+      <description>Classify clones based on their frequency groups.</description>
+
+      <command detect_errors="exit_code">
+	<![CDATA[
+                 #for $clone in $clone_input#
+                 echo '$clone.element_identifier' >> $clone_names;
+                 #end for#
+
+                 Rscript $__tool_directory__/groupClonesByFreq.R
+                 $clone_input
+                 $clone_names
+                 '$columns'
+                 $meta
+                 $rare
+                 $small
+                 $medium
+                 $large
+                 $hyper
+                 $full
+                 $summary
+        ]]>
+      </command>
+
+      <inputs>
+	<param name="clone_input" type="data" format="tabular" multiple="True" label="MiXCR Clone Files" help="Normalized Clonotype File."/>
+	<param name="columns" type="text" value="nb.clone.count,nb.clone.fraction,clonalSequence,aaSeqCDR3,V segments,J segments" label="Columns" help="Comma-separated list of columns to read in. Count and fraction are required (and may change based on normalization used), but all default columns are recommended."/>
+	<param name="meta" type="data" format="tabular" label="Metadata file" help="File containing metadata information. Must contain 'Sample' column listing the sample numbers and at least 'Treatment' column listing the treatment assignments."/>
+      </inputs>
+
+      <outputs>
+	<data name="clone_names" hidden="true" format="tabular" label="Clone Names"/>
+	<data name="rare" format="tabular" label="Rare Clones"/>
+	<data name="small" format="tabular" label="Small Clones"/>
+	<data name="medium" format="tabular" label="Medium Clones"/>
+	<data name="large" format="tabular" label="Large Clones"/>
+        <data name="hyper" format="tabular" label="Hyperexpanded Clones"/>
+        <data name="full" format="tabular" label="Clones with Freq Groups"/>
+        <data name="summary" format="tabular" label="Freq Group Summary"/>
+      </outputs>
+
+      <help>
+	<![CDATA[
+       This tool classifies clones based on their frequency groups. Frequency groups are:  
+
+       **Rare**: less than 0.00001  
+
+       **Small**: greater than 0.00001, less than 0.0001
+
+       **Medium**: greater than 0.0001, less than 0.001
+
+       **Large**: greater than 0.001, less than 0.01
+
+       **Hyperexpanded**: greater than 0.01, less than 1
+
+       There will be one file output for each frequency group containing all of the clones from the input files that are in that group. A 'full' file will also be created that contains all clones from all groups. Finally, a summary file that lists the counts of each group for each file is also output.
+]]>
+      </help>
+</tool>

@@ -1,0 +1,38 @@
+<tool id="multiBatchAnalysis" name="Multi-Batch Clonotype Diversity Analysis" version="0.1.0">
+  <description>Calculate unique clonotypes, Shannon Entropy, and Clonality for samples from multiple batches.</description>
+
+  <macros>
+    <import>macros.xml</import>
+  </macros>
+
+  <expand macro="requirements"/>
+
+  <command detect_errors="exit_code">
+    <![CDATA[
+           #for $clone in $clone_input#
+           echo '$clone.element_identifier' >> $clone_names;
+           #end for#
+
+           Rscript $__tool_directory__/multiBatchDiversityAnalysis.R
+           $clone_input 
+           $clone_names
+           $batchIndex
+           $output
+           ]]>
+  </command>
+  
+  <inputs>
+    <param name="clone_input" type="data" format="tabular" multiple="True" label="MiXCR Clone File" help="Normalized Clonotype File. If specifying the frequency divisions argument, this file must have a column which specifies those divisions! The standard normalized clonotype file does not have these columns; they are added by the Group Clones tool."/>
+    <param name="batchIndex" type="text" format="integer" label="Batch Identifier Index" value="1" help="Index of batch ID from sample name, when split by '_'."/>
+  </inputs>
+
+  <outputs>
+    <data name="clone_names" hidden="true" format="tabular" label="Clone Names"/>
+    <data name="output" format="tabular" label="Analysis Metrics"/>
+  </outputs>
+
+  <help>
+    This tool calculates a variety of analysis metrics for each sample from multiple different input batches.
+  </help>
+
+</tool>
