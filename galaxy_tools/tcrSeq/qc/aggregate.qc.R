@@ -1,3 +1,5 @@
+#!/usr/bin/Rscript
+
 ###
 ### Combine all of the QC files into an excel workbook
 ###

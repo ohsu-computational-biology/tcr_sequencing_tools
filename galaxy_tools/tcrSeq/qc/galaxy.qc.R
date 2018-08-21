@@ -1,3 +1,5 @@
+#!/usr/bin/Rscript
+
 ###
 ### QC Summary Script
 ###

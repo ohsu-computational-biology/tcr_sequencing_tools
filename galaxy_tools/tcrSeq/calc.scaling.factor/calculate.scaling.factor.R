@@ -1,3 +1,5 @@
+#!/usr/bin/Rscript
+
 #   This function calculates a "global" scaling factor
 #   The factor is calculated using counts of EACH spike for ALL samples
 #   The calculated scaling factor should be applied to each sample's spike count

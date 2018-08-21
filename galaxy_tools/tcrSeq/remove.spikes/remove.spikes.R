@@ -1,3 +1,5 @@
+#!/usr/bin/Rscript
+
 ##  This script removes spiked records from a fastq file
 
 #   Inputs:

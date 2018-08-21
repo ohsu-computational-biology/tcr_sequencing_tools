@@ -1,3 +1,5 @@
+#!/usr/bin/Rscript
+
 # Designed and developed by Jacob Bieker (jacob@bieker.tech)
 
 # Script reads in a csv file containing spiked read counts from TCR sequencing, and calculates the 

@@ -1,3 +1,5 @@
+#!/usr/bin/Rscript
+
 #' Count Spikes
 #'
 #' This function takes a fastq file and counts ocurrences of spike sequences from spike file. Generates three types of output:
