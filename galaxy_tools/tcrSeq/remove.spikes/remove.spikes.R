@@ -51,7 +51,7 @@ optlist <- list(
   )
 )
 
-p <- optionParser(usage = "%prog -f inputFastq -r readsToRemove -o outputFastq -s outputSpikes",
+p <- OptionParser(usage = "%prog -f inputFastq -r readsToRemove -o outputFastq -s outputSpikes",
                   option_list = optlist)
 args <- parse_args(p)
 opt <- args$options
