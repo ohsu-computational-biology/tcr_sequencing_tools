@@ -22,17 +22,44 @@
 suppressWarnings(suppressMessages(library(ShortRead)))
 suppressWarnings(suppressMessages(library(stringr)))
 suppressWarnings(suppressMessages(library(data.table)))
+suppressMessages(library(optparse))
 
 #   TODO: handle warnings more better.  At least read.delim() is generating warnings
 # Setting warn to negative value ignores all warnings
 options(warn=-1);   
 
-arguments <- commandArgs(trailingOnly=TRUE);
-input.fastq <- arguments[1];
-reads.to.remove <- arguments[2];
-output.fastq <- arguments[3]
-output.spikes <- arguments[4]
+optlist <- list(
+  make_option(
+    c("-f", "--inputFastq"),
+    type = "character",
+    help = "Fastq file output by PEAR."
+  ),
+  make_option(
+    c("-r", "--readsToRemove"),
+    type = "character",
+    help = "Fastq read ids of synthetic templates. Produced by count spikes with 9-bp spike."
+  ),
+  make_option(
+    c("-o", "--outputFastq"),
+    type = "character",
+    help = "Fastq file with 9-bp spike reads removed."
+  ),
+  make_option(
+    c("-s", "--outputSpikes"),
+    type = "character",
+    help = "Fastq file with 9-bp spike reads only."
+  )
+)
 
+p <- optionParser(usage = "%prog -f inputFastq -r readsToRemove -o outputFastq -s outputSpikes",
+                  option_list = optlist)
+args <- parse_args(p)
+opt <- args$options
+
+input.fastq <- args$inputFastq
+reads.to.remove <- args$readsToRemove
+output.fastq <- args$outputFastq
+output.spikes <- args$outputSpikes
 
 #   Read in fastq file
 fastq.records <- readFastq(input.fastq);
