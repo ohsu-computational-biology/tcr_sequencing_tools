@@ -1,4 +1,4 @@
-#!/usr/bin/Rscript
+#!/usr/bin/env Rscript
 
 #' Count Spikes
 #'
@@ -15,15 +15,64 @@
 
 #   load depdencies
 suppressWarnings(suppressMessages(library(ShortRead)))
+suppressWarnings(suppressMessages(library(optparse)))
 
-input.fastq <- commandArgs(trailingOnly=T)[1]
-input.name <- commandArgs(trailingOnly=T)[2]
-sample.id <- commandArgs(trailingOnly=T)[3]
-spike.file <- commandArgs(trailingOnly=T)[4]
-spike.length <- commandArgs(trailingOnly=T)[5]
-output.count <- commandArgs(trailingOnly=T)[6]
-output.remove <- commandArgs(trailingOnly=T)[7]
-output.qc <- commandArgs(trailingOnly=T)[8]
+optlist <- list(
+  make_option(
+    c("-f", "--inputFastq"),
+    type = "character",
+    help = "PEARed fastq file"
+  ),
+  make_option(
+    c("-n", "--inputName"),
+    type = "character",
+    help = "Name of PEARed fastq file"
+  ),
+  make_option(
+    c("-i", "--id"),
+    type = "integer",
+    help = "Sample identifier index - index of sample number from sample name, when split by '_'."
+  ),
+  make_option(
+    c("-s", "--spikeFile"),
+    type = "character",
+    help = "Reference list of spike barcodes"
+  ),
+  make_option(
+    c("-l", "--spikeLength"),
+    type = "numeric",
+    help = "9 for spike removal and 25 for normalization."
+  ),
+  make_option(
+    c("-c", "--outputCount"),
+    type = "character",
+    help = "Output file for spike counts"
+  ),
+  make_option(
+    c("-r", "--outputRemove"),
+    type = "character",
+    help = "Output file for ids to remove"
+  ),
+  make_option(
+    c("-q", "--outputQC"),
+    type = "character",
+    help = "Output file for qc"
+  )
+)
+
+p <- OptionParser(usage = "%prog -f inputFastq -n inputName -i id -s spikeFile -l spikeLength -c outputCount -r outputRemove -q outputQC",
+                  option_list = optlist)
+args <- parse_args(p)
+opt <- args$options
+
+input.fastq <- args$inputFastq
+input.name <- args$inputName
+sample.id <- args$id
+spike.file <- args$spikeFile
+spike.length <- args$spikeLength
+output.count <- args$outputCount
+output.remove <- args$outputRemove
+output.qc <- args$outputQC
 
 ### For debugging
 print(sprintf("Input Fastq File: %s", input.fastq))

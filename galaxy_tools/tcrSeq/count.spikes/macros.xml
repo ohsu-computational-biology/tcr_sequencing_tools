@@ -3,7 +3,7 @@
 
   <xml name="requirements">
     <requirements>
-      <requirement type="package" version="1.36.0">bioconductor-shortread</requirement>
+      <requirement type="package" version="1.0.0">count.spikes</requirement>
     </requirements>
   </xml>
 
