@@ -9,11 +9,11 @@
 
   <command detect_errors="exit_code">
     <![CDATA[
-	     Rscript $__tool_directory__/remove.spikes.R
-	     $input_fastq
-	     $reads_to_remove
-	     $output_fastq
-	     $output_removed
+	     remove.spikes.R
+	     -f $input_fastq
+	     -r $reads_to_remove
+	     -o $output_fastq
+	     -s $output_removed
              ]]>
   </command>
 
