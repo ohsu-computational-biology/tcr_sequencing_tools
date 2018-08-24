@@ -9,7 +9,7 @@
 
   <command detect_errors="exit_code">
     <![CDATA[
-	     Rscript $__tool_directory__/count.spikes.R
+	     count.spikes.R
 	     $input_fastq
 	     ${input_fastq.element_identifier}
 	     $sample_id
