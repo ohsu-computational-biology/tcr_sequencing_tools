@@ -5,7 +5,7 @@
 ###
 
 suppressMessages(library(data.table))
-suppressMessages(library(xlsx))
+library(xlsx)
 suppressMessages(library(optparse))
 
 ####################
