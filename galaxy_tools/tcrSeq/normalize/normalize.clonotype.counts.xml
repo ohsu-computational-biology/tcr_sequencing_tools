@@ -1,20 +1,20 @@
 <tool id="normalize.clonotype.counts" name="Normalize Clonotype Counts" version="0.1.0">
   <description>Use scaling factor to create normalized counts for clonotypes.</description>
 
-  <!--
   <macros>
     <import>macros.xml</import>
     </macros>
-    -->
+
+  <expand macro="requirements"/>
   
   <command detect_errors="exit_code">
     <![CDATA[
-	     Rscript $__tool_directory__/normalize.clonotype.counts.R
-	     $clone
-	     $count
-	     $naive_scaling
-	     $nb_scaling
-	     $out
+	     normalize.clonotype.counts.R
+	     --cloneInputs $clone
+	     --spikeInputs $count
+	     --meanSF $naive_scaling
+	     --nbSF $nb_scaling
+	     --output $out
     ]]>
   </command>
 

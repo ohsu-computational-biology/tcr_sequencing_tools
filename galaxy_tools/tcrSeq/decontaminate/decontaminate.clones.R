@@ -1,10 +1,11 @@
-#!/usr/bin/Rscript
+#!/usr/bin/env Rscript
 
 ####################################################
 ### Remove monoclonal contamination from samples ###
 ####################################################
 
 suppressMessages(library(data.table))
+suppressMessages(library(optparse))
 
 # We have three monoclonal sequences that have been used at various points throughout the project. After their introduction,
 # we have noticed an overabundance of their presence in later samples. This script searches through clone files exported by
@@ -19,17 +20,50 @@ contam_lsv <- list("p14" = c("V133", "J2-4", "CASSDAGGRNTLYF"),
                    "ot1" = c("V121", "J2-7", "CASSRANYEQYF"),
                    "el4" = c("V15", "J2-3", "CASSTGTETLYF"))
 
-##############
-### SET UP ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-##############
+####################
+### COMMAND LINE ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+####################
 
-arguments <- commandArgs(trailingOnly = T)
+optlist <- list(
+  make_option(
+    c("-c", "--cloneInputs"),
+    type = "character",
+    help = "MiXCR export clone files. Commonly un-normalized, but can be normalized."
+  ),
+  make_option(
+    c("-n", "--cloneNames"),
+    type = "character",
+    help = "Actual file names of inputs (rather than dataset_000.dat"
+  ),
+  make_option(
+    c("-s", "--sampleID"),
+    type = "integer",
+    help = "Index of sample number to extract from sample name, when name is split by '_'."
+  ),
+  make_option(
+    c("-o", "--cloneOutput"),
+    type = "character",
+    help = "MiXCR clone file of same format as cloneInputs, but with contaminated clones removed."
+  ),
+  make_option(
+    c("-q", "--qcOutput"),
+    type = "character",
+    help = "Tab-separated QC file detailing which clones were removed in each file and their abundances (both absolute and relative)."
+  )
+)
 
-clone_inputs <- arguments[1]
-clone_name <- arguments[2]
-sample_id <- arguments[3]
-clone_outputs <- arguments[4]
-qc_output <- arguments[5]
+### Parse Command Line
+p <- OptionParser(usage = "%prog -c cloneInputs -n cloneNames -s sampleID -o cloneOutput -q qcOutput",
+                  option_list = optlist)
+args <- parse_args(p)
+opt <- args$options
+
+### Get command-line arguments
+clone_inputs <- args$cloneInputs
+clone_name <- args$cloneNames
+sample_id <- args$sampleID
+clone_outputs <- args$cloneOutput
+qc_output <- args$qcOutput
 
 ### Empty QC Matrix
 contamination.qc <- matrix(nrow = 1, ncol = 11)

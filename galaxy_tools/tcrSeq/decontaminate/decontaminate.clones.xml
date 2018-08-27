@@ -1,14 +1,20 @@
 <tool id="decontaminate.clones" name="Decontaminate Clones" version="0.1.0">
   <description>Search for sequences belonging to the 3 standard monoclonal contaminants and remove them from the files.</description>
 
+  <macros>
+    <import>macros.xml</import>
+  </macros>
+
+  <expand macro="requirements"/>
+  
   <command detect_errors="exit_code">
     <![CDATA[
-	     Rscript $__tool_directory__/decontaminate.clones.R
-	     $clone_inputs
-	     ${clone_inputs.element_identifier}
-	     $sample_id
-	     $clone_outputs
-	     $qc_output
+	     decontaminate.clones.R
+	     --cloneInputs $clone_inputs
+	     --cloneNames ${clone_inputs.element_identifier}
+	     --sampleID $sample_id
+	     --cloneOutput $clone_outputs
+	     --qcOutput $qc_output
     ]]>
   </command>
 

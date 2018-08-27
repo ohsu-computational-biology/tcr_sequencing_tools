@@ -1,12 +1,18 @@
 <tool id="calculate.scaling.factor" name="Calculate Scaling Factor" version="0.1.0">
   <description>for normalization step</description>
 
+  <macros>
+    <import>macros.xml</import>
+  </macros>
+
+  <expand macro="requirements"/>
+
   <command detect_errors="exit_code">
     <![CDATA[
-	     Rscript $__tool_directory__/calculate.scaling.factor.R
-	     $inputs
-	     $ref
-	     $output
+	     calculate.scaling.factor.R
+	     --inputFiles $inputs
+	     --reference $ref
+	     --output $output
     ]]>
   </command>
   

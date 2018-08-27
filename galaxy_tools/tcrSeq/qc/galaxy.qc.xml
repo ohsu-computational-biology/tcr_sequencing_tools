@@ -41,25 +41,25 @@
 	     echo '$norm.element_identifier' >> $norm_names;
 	     #end for#
 
-	     Rscript $__tool_directory__/galaxy.qc.R
-	     $input_fastq $fastq_names
-	     $spike_counts $spike_names
-	     $despiked_fastq $despiked_names
-	     $count_output
+	     galaxy.qc.R
+	     --fastqFiles $input_fastq --fastqNames $fastq_names
+	     --spikeCountFiles $spike_counts --spikeCountNames $spike_names
+	     --despikedFiles $despiked_fastq --despikedNames $despiked_names
+	     --spikeCountOutput $count_output
 
-	     $align_reports $align_names
-	     $align_output
+	     --alignReports $align_reports --alignNames $align_names
+	     --alignOutput $align_output
 	     
-	     $assemble_reports $assemble_names
-	     $assemble_output
+	     --assembleReports $assemble_reports --assembleNames $assemble_names
+	     --assembleOutput $assemble_output
 	     
-	     $decontam_qc $decontam_qc_names $decontam_qc_output
+	     --decontamQCFiles $decontam_qc --decontamQCNames $decontam_qc_names --decontamOutput $decontam_qc_output
 	     
-	     $decontam_clones $decontam_clones_names
-	     $norm_clones $norm_names
-	     $norm_output 
+	     --decontamCloneFiles $decontam_clones --decontamCloneNames $decontam_clones_names
+	     --normCloneFiles $norm_clones --normCloneNames $norm_names
+	     --normOutput $norm_output 
 
-             $debug
+             --debug $debug
     ]]>
   </command>
     

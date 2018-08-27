@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<macros>
+
+  <xml name="requirements">
+    <requirements>
+      <requirement type="package" version="1.0.0">calc.scaling.factor</requirement>
+    </requirements>
+  </xml>
+
+  <xml name="citations">
+    <citations>
+    </citations>
+  </xml>
+
+</macros>
+

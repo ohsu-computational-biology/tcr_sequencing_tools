@@ -3,7 +3,7 @@
 
   <xml name="requirements">
     <requirements>
-      <requirement type="package" version="1.0.0">tcr.qc</requirement>
+      <requirement type="package" version="1.0.0">normalize.clonotype.counts</requirement>
     </requirements>
   </xml>
 

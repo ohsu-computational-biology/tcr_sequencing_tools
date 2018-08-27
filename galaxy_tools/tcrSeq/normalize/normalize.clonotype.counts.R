@@ -1,4 +1,4 @@
-#!/usr/bin/Rscript
+#!/usr/bin/env Rscript
 
 # Designed and developed by Jacob Bieker (jacob@bieker.tech)
 
@@ -17,15 +17,53 @@
 #	Ensure that numeric outputs are not expressed in scientific notation
 options(scipen=999);
 suppressMessages(require(data.table))
+suppressMessages(require(optparse))
 
 
-### Galaxy Argument Test
-arguments <- commandArgs(trailingOnly = TRUE)
-exported.clone.file <- arguments[1]
-spike.count.file <- arguments[2]
-scaling.factor.file <- arguments[3]
-nb.scaling.factor.file <- arguments[4]
-output.file <- arguments[5]
+####################
+### COMMAND LINE ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+####################
+
+optlist <- list(
+  make_option(
+    c("-c", "--cloneInputs"),
+    type = "character",
+    help = "MiXCR export clone files. Commonly un-normalized, but can be normalized."
+  ),
+  make_option(
+    c("-s", "--spikeInputs"),
+    type = "character",
+    help = "List of tab-separated files produced by Count Spikes (25bp)."
+  ),
+  make_option(
+    c("-m", "--meanSF"),
+    type = "character",
+    help = "Original, mean-center scaling factor file. 3-column table: V identity, J identity, scaling factor."
+  ),
+  make_option(
+    c("-n", "--nbSF"),
+    type = "character",
+    help = "New, negative-binomial scaling factor file. 3-column table: V identity, J identity, scaling factor"
+  ),
+  make_option(
+    c("-o", "--output"),
+    type = "character",
+    help = "Normalized MiXCR file. Same as input file, but 2 new column with normalized count and frequency."
+  )
+)
+
+### Parse Command Line
+p <- OptionParser(usage = "%prog -c cloneInputs -s spikeInputs -m meanSF -n nbSF -o output",
+                  option_list = optlist)
+args <- parse_args(p)
+opt <- args$options
+
+### Get command-line arguments
+exported.clone.file <- args$cloneInputs
+spike.count.file <- args$spikeInputs
+scaling.factor.file <- args$meanSF
+nb.scaling.factor.file <- args$nbSF
+output.file <- args$output
 
 ### Get spikes
 spiked_reads <- fread(spike.count.file)

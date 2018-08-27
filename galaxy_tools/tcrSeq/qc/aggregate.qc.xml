@@ -9,13 +9,13 @@
 
   <command detect_errors="exit_code">
     <![CDATA[
-             Rscript $__tool_directory__/aggregate.qc.R
-             $count_spikes
-             $align
-             $assemble
-             $decontam
-             $norm
-             $analysis &&
+             aggregate.qc.R
+             --countSpikes $count_spikes
+             --align $align
+             --assemble $assemble
+             --decontam $decontam
+             --normalize $norm
+             --analysis $analysis &&
              mv temp.xlsx $output
     ]]>
   </command>
