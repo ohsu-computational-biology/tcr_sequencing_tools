@@ -1,11 +1,9 @@
 <tool id="aggregate.qc" name="Output QC/Analysis in Excel" version="0.1.0">
   <description>Aggregate QC and Analysis files into excel sheet.</description>
 
-  <macros>
-    <import>macros.xml</import>
-  </macros>
-
-  <expand macro="requirements"/>
+  <requirements>
+    <requirement type="package" version="1.0.0">tcr.aggregate.qc</requirement>
+  </requirements>
 
   <command detect_errors="exit_code">
     <![CDATA[
