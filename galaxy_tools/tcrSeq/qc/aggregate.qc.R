@@ -43,6 +43,11 @@ optlist <- list(
     c("-a", "--analysis"),
     type = "character",
     help = "Output of diversity analysis metrics from analysis step."
+  ),
+  make_option(
+    c("-o", "--output"),
+    type = "character",
+    help = "Excel file containing all of the QC information"
   )
 )
 
@@ -59,6 +64,7 @@ assemble_qc <- args$assemble
 decontam_qc <- args$decontam
 norm_qc <- args$normalize
 analysis <- args$analysis
+output <- args$output
 
 input_files <- c("Spikes" = count_spikes_qc, "Align" = align_qc, "Assemble" = assemble_qc,
                  "Decontam" = decontam_qc, "Normalization" = norm_qc, "Analysis" = analysis)
@@ -89,4 +95,4 @@ for (i in 1:length(input_files)){
     writeData(qcWB, curr_name, curr_dt)
 } # for
 
-saveWorkbook(qcWB, file = "./temp.xlsx")
+saveWorkbook(qcWB, file = output)
