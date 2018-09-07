@@ -13,8 +13,8 @@
              --assemble $assemble
              --decontam $decontam
              --normalize $norm
-             --analysis $analysis &&
-             mv temp.xlsx $output
+             --analysis $analysis
+	     --output $output
     ]]>
   </command>
   

@@ -6,7 +6,8 @@
 
 suppressMessages(library(data.table))
 #library(xlsx)
-suppressMessages(library(openxlsx))
+#suppressMessages(library(openxlsx))
+library(writexl)
 suppressMessages(library(optparse))
 
 ####################
@@ -69,8 +70,8 @@ output <- args$output
 input_files <- c("Spikes" = count_spikes_qc, "Align" = align_qc, "Assemble" = assemble_qc,
                  "Decontam" = decontam_qc, "Normalization" = norm_qc, "Analysis" = analysis)
 
-### Create workbook
-qcWB <- createWorkbook()
+### Create list of named data.tables
+data_lsdt <- list()
 
 ### Read files and add to excel workbook
 for (i in 1:length(input_files)){
@@ -78,21 +79,9 @@ for (i in 1:length(input_files)){
     curr_dt <- fread(input_files[i])
     curr_name <- names(input_files)[i]
 
-    ## Determine if create or append 
-    # if (i == 1){
-    #     append.log = F
-    # } else {
-    #     append.log = T
-    # } # fi
-
-    ## Write Sheet
-    # write.xlsx(curr_dt,
-    #            file = "./temp.xlsx",
-    #            sheetName = curr_name,
-    #            row.names = FALSE,
-    #            append = append.log)
-    addWorksheet(qcWB, curr_name)
-    writeData(qcWB, curr_name, curr_dt)
+    ## Add to list
+    data_lsdt[[curr_name]] <- curr_dt
 } # for
 
-saveWorkbook(qcWB, file = output)
+### Write workbook
+writexl::write_xlsx(x = data_lsdt, path = output, col_names = T)
