@@ -14,7 +14,7 @@
              --decontam $decontam
              --normalize $norm
              --analysis $analysis
-	     --output $output
+             --output $output
     ]]>
   </command>
   

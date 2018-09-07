@@ -53,7 +53,7 @@ optlist <- list(
 )
 
 ### Parse Command Line
-p <- OptionParser(usage = "%prog -c countSpikes -l align -s assemble -d decontam -n normalize -a analysis",
+p <- OptionParser(usage = "%prog -c countSpikes -l align -s assemble -d decontam -n normalize -a analysis -o output",
                   option_list = optlist)
 args <- parse_args(p)
 opt <- args$options
