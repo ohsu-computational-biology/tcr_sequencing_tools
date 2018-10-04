@@ -25,7 +25,7 @@
 suppressMessages(library(data.table))
 suppressMessages(library(tcR))
 suppressMessages(library(ggplot2))
-suppressMessages(library(xlsx))
+suppressMessages(library(writexl))
 suppressMessages(library(optparse))
 
 ####################
@@ -76,14 +76,24 @@ optlist <- list(
     help = "Name of homeostasis output plot."
   ),
   make_option(
+    c("-c", "--cumOut"),
+    type = "character",
+    help = "Excel file containing output for cumulative values."
+  ),
+  make_option(
+    c("-e", "--meanOut"),
+    type = "character",
+    help = "Excel file containing output for mean values."
+  ),
+  make_option(
     c("-b", "--batchIndex"),
     type = "numeric",
     help = "Index of batch in sample name, if split by '_'."
   )
-  )
+)
 
 ### Parse Command Line
-p <- OptionParser(usage = "%prog -f files -n names -s sampleID -m metadata -l old -t tissue -y type -p plot -b batchIndex",
+p <- OptionParser(usage = "%prog -f files -n names -s sampleID -m metadata -l old -t tissue -y type -p plot -c cumOut -e meanOut -b batchIndex",
                   option_list = optlist)
 args <- parse_args(p)
 opt <- args$options
@@ -97,6 +107,8 @@ old_v <- args$old
 tissue_v <- args$tissue
 type_v <- args$type
 plot_v <- args$plot
+cumOut_v <- args$cumOut
+meanOut_v <- args$meanOut
 batchIndex_v <- args$batchIndex
 
 #############
@@ -343,11 +355,14 @@ for (i in 1:length(cumFreqOut_lsdt)) {
   ## Determine if create or append
   append_v <- ifelse(i == 1, F, T)
   ## Write
-  write.xlsx(currData_dt,
-             file = "./tempCum.xlsx",
-             sheetName = currName_v,
-             row.names = F,
-             append = append_v)
+  writexl::write_xlsx(x = currData_dt,
+                      path = cumOut_v,
+                      col_names = T)
+  #write.xlsx(currData_dt,
+  #           file = "./tempCum.xlsx",
+  #           sheetName = currName_v,
+  #           row.names = F,
+  #           append = append_v)
 } # for i
 
 for (i in 1:length(meanFreqOut_lsdt)) {
@@ -357,11 +372,14 @@ for (i in 1:length(meanFreqOut_lsdt)) {
   ## Determine if create or append
   append_v <- ifelse(i == 1, F, T)
   ## Write
-  write.xlsx(currData_dt,
-             file = "./tempMean.xlsx",
-             sheetName = currName_v,
-             row.names = F,
-             append = append_v)
+  writexl::write_xlsx(x = currData_dt,
+                      path = meanOut_v,
+                      col_names = T)
+  #write.xlsx(currData_dt,
+  #           file = "./tempMean.xlsx",
+  #           sheetName = currName_v,
+  #           row.names = F,
+  #           append = append_v)
 } # for i 
 
 ## Final Plot
