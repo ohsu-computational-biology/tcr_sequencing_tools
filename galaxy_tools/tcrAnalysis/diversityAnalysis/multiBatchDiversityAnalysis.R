@@ -1,3 +1,5 @@
+#!/usr/bin/env Rscript
+
 ### Analysis Script
 
 ### Calculate a variety of summary and diversity statistics for all of the normalized clonotype files
