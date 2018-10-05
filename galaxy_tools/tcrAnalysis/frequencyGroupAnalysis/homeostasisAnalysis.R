@@ -38,7 +38,7 @@ suppressMessages(library(data.table))
 suppressMessages(library(tcR))
 suppressMessages(library(ggplot2))
 suppressMessages(library(optparse))
-suppressMessages(library(xlsx))
+suppressMessages(library(writexl))
 #source("/home/exacloud/lustre1/CompBio/users/hortowe/2016_11_27_stable_repos/WesPersonal/utilityFxns.R")
 
 ####################
@@ -48,9 +48,9 @@ suppressMessages(library(xlsx))
 ### Command LIne
 optlist <- list(
 	make_option(
-		c("-f", "--files"),
-		type = "character",
-		help = "Normalized clone files"
+	  c("-f", "--files"),
+	  type = "character",
+	  help = "Normalized clone files"
 	),
 	make_option(
 	  c("-n", "--names"),
@@ -63,30 +63,40 @@ optlist <- list(
 	  help = "Index of sample number from sample name, when split by '_'."
 	),
 	make_option(
-		c("-m", "--metadata"),
-		type = "character",
-		help = "Path to metadata file."
+	  c("-m", "--metadata"),
+	  type = "character",
+	  help = "Path to metadata file."
 	),
 	make_option(
-		c("-l", "--old"),
-		type = "logical",
-		help = "TRUE - old column names; FALSE - new column names"
+	  c("-l", "--old"),
+	  type = "logical",
+	  help = "TRUE - old column names; FALSE - new column names"
 	),
 	make_option(
-		c("-t", "--tissue"),
-		type = "character",
-		help = "Specific tissue to subset by. If blank, will use all tissues"
+	  c("-t", "--tissue"),
+	  type = "character",
+	  help = "Specific tissue to subset by. If blank, will use all tissues"
 	),
 	make_option(
-		c("-y", "--type"),
-		type = "character",
-		help = "Character vector for a specific category of treatments to divide by, rather than each treatment individually.
-			If blank, will not divide."
+	  c("-y", "--type"),
+	  type = "character",
+	  help = "Character vector for a specific category of treatments to divide by, rather than each treatment individually.
+		If blank, will not divide."
 	),
 	make_option(
 	  c("-b", "--barPlot"),
 	  type = "character",
 	  help = "Name of homeostasis output plot."
+	),
+	make_option(
+	  c("-c", "--cumOut"),
+	  type = "character",
+	  help = "Excel file containing output for cumulative values."
+	),
+	make_option(
+	  c("-e", "--meanOut"),
+	  type = "character",
+	  help = "Excel file containing output for mean values."
 	),
 	make_option(
 	  c("-v", "--verbose"),
@@ -96,7 +106,7 @@ optlist <- list(
 )
 
 ### Parse Command Line
-p <- OptionParser(usage = "%prog -f files -n names -s sampleID -m metadata -l old -t tissue -y type -b barPlot -v verbose",
+p <- OptionParser(usage = "%prog -f files -n names -s sampleID -m metadata -l old -t tissue -y type -b barPlot -c cumOut -e meanOut -v verbose",
 		option_list = optlist)
 args <- parse_args(p)
 opt <- args$options
@@ -110,6 +120,8 @@ old_v <- args$old
 tissue_v <- args$tissue
 type_v <- args$type
 plot_v <- args$barPlot
+cumOut_v <- args$cumOut
+meanOut_v <- args$meanOut
 verbose_v <- args$verbose
 
 #############
@@ -348,11 +360,14 @@ for (i in 1:length(cumFreqOut_lsdt)) {
   ## Determine if create or append
   append_v <- ifelse(i == 1, F, T)
   ## Write
-  write.xlsx(currData_dt,
-             file = "./tempCum.xlsx",
-             sheetName = currName_v,
-             row.names = F,
-             append = append_v)
+  writexl::write_xlsx(x = currData_dt,
+		      path = cumOut_v,
+                      col_names = T)
+  #write.xlsx(currData_dt,
+  #           file = "./tempCum.xlsx",
+  #           sheetName = currName_v,
+  #           row.names = F,
+  #           append = append_v)
 } # for i
 
 for (i in 1:length(meanFreqOut_lsdt)) {
@@ -362,11 +377,14 @@ for (i in 1:length(meanFreqOut_lsdt)) {
   ## Determine if create or append
   append_v <- ifelse(i == 1, F, T)
   ## Write
-  write.xlsx(currData_dt,
-             file = "./tempMean.xlsx",
-             sheetName = currName_v,
-             row.names = F,
-             append = append_v)
+  writexl::write_xlsx(x = currData_dt,
+		      path = meanOut_v,
+		      col_names = T)
+  #write.xlsx(currData_dt,
+  #           file = "./tempMean.xlsx",
+  #           sheetName = currName_v,
+  #           row.names = F,
+  #           append = append_v)
 } # for i 
 
 ## Final Plot
