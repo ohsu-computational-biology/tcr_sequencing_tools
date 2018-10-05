@@ -12,6 +12,7 @@
 
 suppressMessages(library(data.table))
 suppressMessages(library(tcR))
+suppressMessages(library(optparse))
 
 #################
 ### FUNCTIONS ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
