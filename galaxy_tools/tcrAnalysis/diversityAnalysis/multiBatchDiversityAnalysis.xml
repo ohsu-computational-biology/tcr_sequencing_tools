@@ -13,11 +13,11 @@
            echo '$clone.element_identifier' >> $clone_names;
            #end for#
 
-           Rscript $__tool_directory__/multiBatchDiversityAnalysis.R
-           $clone_input 
-           $clone_names
-           $batchIndex
-           $output
+           multiBatchDiversityAnalysis.R
+           --files $clone_input 
+           --names $clone_names
+           --batch $batchIndex
+           --out $output
            ]]>
   </command>
   

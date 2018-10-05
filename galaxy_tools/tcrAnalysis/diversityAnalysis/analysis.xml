@@ -13,12 +13,12 @@
            echo '$clone.element_identifier' >> $clone_names;
            #end for#
 
-           Rscript $__tool_directory__/analysis.R
-           $clone_input 
-           $clone_names
-           $output
-           $old
-           $div
+           analysis.R
+           --files $clone_input 
+           --names $clone_names
+           --out $output
+           --old $old
+           --divisions $div
            ]]>
   </command>
   

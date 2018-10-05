@@ -1,3 +1,5 @@
+#!/usr/bin/env Rscript
+
 ### DIVERSITY ANALYSIS
 
 ###	RScript that calculates number of unique clonotypes, Shannon entropy, and clonality for multiple clonotype files
@@ -9,6 +11,7 @@
 
 suppressMessages(library(data.table))
 suppressMessages(library(tcR))
+suppressMessages(library(optparse))
 
 #################
 ### FUNCTIONS ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -39,21 +42,47 @@ my.entropy.plugin <- function (freqs, unit = c("log", "log2", "log10")) {
 ### COMMAND LINE ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ####################
 
-###	Get command-line arguments
-arguments <- commandArgs(trailingOnly=TRUE);
+optlist <- list(
+  make_option(
+    c("-f", "--files"),
+    type = "character",
+    help = "Normalized clonotype files. If specifying the freq divisions argument (--divisions), this file must have a column
+    which specifies those divisions. Standard normalized clone files don't have this, must be added by Group Clones tool."
+  ),
+  make_option(
+    c("-n", "--names"),
+    type = "character",
+    help = "Names of normalized clonotype files"
+  ),
+  make_option(
+    c("-o", "--out"),
+    type = "character",
+    help = "Name of output file"
+  ),
+  make_option(
+    c("-l", "--old"),
+    type = "logical",
+    help = "TRUE - input has hold column names (or have un-normalized data). FALSE - use updated names."
+  ),
+  make_option(
+    c("-d", "--divisions"),
+    type = "character",
+    help = "Comma-separated list of either integers or frequency divisions, with no spaces. Determines which subsets of the clonotype repertoire will be analyzed.
+    If blank, the entire reperotire will be analyzed. List of integers will do 'top set', so '10,25,50' will run analysis on top10, top25, and top50 clones.
+    list of frequency divisions will do 'freq group', so 'Small,Medium,Large' will analyzed clones in the small, medium, and large clonal frequency groups."
+  )
+)
 
-cloneFiles_v <- arguments[1];
-cloneNames_v <- arguments[2]
-outFile_v <- arguments[3];
-old_v <- arguments[4]          # TRUE for old column names. Also set TRUE if you want to use un-normalized data
-divisions_v <- arguments[5]    # How many divisions to calculate metrics on? comma-separated list of integers with no quotes or spaces (10,25,50,100)
-                               # OR a set of frequency divisions (Small,Medium,Large)
+p <- OptionParser(usage = "%prog -f files -n names -o out -l old -d divisions",
+                  option_list = optlist)
+args <- parse_args(p)
+opt <- args$options
 
-### For testing
-# cloneFiles_v <- "~/galaxy/test-data/normalization/normalize_S10_clones.txt"
-# cloneNames_v <- "~/galaxy/test-data/qc/temp/normNames.txt"
-# outFile_v <- "~/galaxy/test-data/qc/temp/analysis.txt"
-# old_v <- F
+cloneFiles_v <- args$files
+cloneNames_v <- args$names
+outFile_v <- args$out
+old_v <- args$old
+divisions_v <- args$divisions
 
 ### Split command-line arguments
 cloneFiles_v <- unlist(strsplit(cloneFiles_v, ','))
@@ -65,7 +94,7 @@ cloneNames_dt <- fread(cloneNames_v, header = F)
 print("Raw divisions")
 print(divisions_v)
 
-if (!is.na(divisions_v)){
+if (!is.null(divisions_v)){ # 2018-10-05 changed is.na to is.null because switched from commandArgs() to optparse.
   ## Split
   divisions_v <- strsplit(divisions_v, split = ',')[[1]]
   ## Check for numeric

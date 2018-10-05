@@ -40,13 +40,40 @@ my.entropy.plugin <- function (freqs, unit = c("log", "log2", "log10")) {
 ### COMMAND LINE ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ####################
 
-### Get command-line arguments
-arguments <- commandArgs(trailingOnly=TRUE);
+optlist <- list(
+  make_option(
+    c("-f", "--files"),
+    type = "character",
+    help = "Normalized clonotype files. If specifying the freq divisions argument (--divisions), this file must have a column
+    which specifies those divisions. Standard normalized clone files don't have this, must be added by Group Clones tool."
+  ),
+  make_option(
+    c("-n", "--names"),
+    type = "character",
+    help = "Names of normalized clonotype files"
+  ),
+  make_option(
+    c("-o", "--out"),
+    type = "character",
+    help = "Name of output file"
+  ),
+  make_option(
+    c("-b", "--batch"),
+    type = "integer",
+    default = 1,
+    help = "Index of batch ID from sample name, when split by '_'."
+  )
+)
 
-cloneFiles_v <- arguments[1]    # Typically .../dhaarini/DNAXXXXLC/normalization/normalized_clones/
-cloneNames_v <- arguments[2]
-batchIndex_v <- as.numeric(arguments[3])
-outFile_v <- arguments[4]
+p <- OptionParser(usage = "%prog -f files -n names -o out -l old -d divisions",
+                  option_list = optlist)
+args <- parse_args(p)
+opt <- args$options
+
+cloneFiles_v <- args$files
+cloneNames_v <- args$names
+batchIndex_v <- args$batch
+outFile_v <- args$out
 
 ### Get all of the files and name them
 cloneFiles_v <- unlist(strsplit(cloneFiles_v, ','))
