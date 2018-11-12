@@ -1,11 +1,9 @@
 <tool id="multiBatchAnalysis" name="Multi-Batch Clonotype Diversity Analysis" version="0.1.0">
   <description>Calculate unique clonotypes, Shannon Entropy, and Clonality for samples from multiple batches.</description>
 
-  <macros>
-    <import>macros.xml</import>
-  </macros>
-
-  <expand macro="requirements"/>
+  <requirements>
+    <requirement type="package" version="1.0.0">tcr.diversity.analysis</requirement>
+  </requirements>
 
   <command detect_errors="exit_code">
     <![CDATA[
@@ -13,11 +11,11 @@
            echo '$clone.element_identifier' >> $clone_names;
            #end for#
 
-           Rscript $__tool_directory__/multiBatchDiversityAnalysis.R
-           $clone_input 
-           $clone_names
-           $batchIndex
-           $output
+           multiBatchDiversityAnalysis.R
+           --files $clone_input 
+           --names $clone_names
+           --batch $batchIndex
+           --out $output
            ]]>
   </command>
   
