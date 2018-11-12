@@ -1,0 +1,38 @@
+-cloneId
+-count
+-fraction
+-vHit
+-dHit
+-jHit
+-vGene
+-dGene
+-jGene
+-vHitScore
+-dHitScore
+-jHitScore
+-vAlignment
+-dAlignment
+-jAlignment
+-vBestIdentityPercent
+-dBestIdentityPercent
+-jBestIdentityPercent
+-nFeature CDR3
+-aaFeature CDR3
+-qFeature CDR3
+-minFeatureQuality CDR3
+-avrgFeatureQuality CDR3
+-vHits
+-dHits
+-jHits
+-vGenes
+-dGenes
+-jGenes
+-vHitsWithScore
+-dHitsWithScore
+-jHitsWithScore
+-vAlignments
+-dAlignments
+-jAlignments
+-vIdentityPercents
+-dIdentityPercents
+-jIdentityPercents

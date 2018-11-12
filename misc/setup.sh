@@ -17,13 +17,10 @@ mkdir fastqs_from_core/QC_recopy
 
 # Directories to hold mixcr output
 mkdir mixcr
-mkdir mixcr/alignments
-mkdir mixcr/assemblies
+mkdir mixcr/clna
+mkdir mixcr/vdjca
 mkdir mixcr/export_clones
-mkdir mixcr/indexes
 mkdir mixcr/reports
-mkdir mixcr/reports/align
-mkdir mixcr/reports/assemble
 
 # Different depending on if RNAseq or normal TCRseq
 if [ $RNA == "RNA" ]; then
