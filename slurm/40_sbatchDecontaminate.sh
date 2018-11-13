@@ -13,14 +13,16 @@
 ##SBATCH --mem-per-cpu        8000                    # Memory required per allocated CPU (mutually exclusive with mem)
 #SBATCH --mem                16000                  # memory pool for each node
 #SBATCH --time               0-24:00                 # time (D-HH:MM)
-#SBATCH --output             md5_%j.out        # Standard output
-#SBATCH --error              md5_%j.err        # Standard error
+#SBATCH --output             decontaminate_%j.out        # Standard output
+#SBATCH --error              decontaminate_%j.err        # Standard error
 
 
 ### SET I/O VARIABLES
 
-IN=$data/fastqs_from_core/fastqs/             # Directory containing all input files. Should be one job per file
-MYBIN=$tool/10_preProcess/00_process.md5.R          # Path to shell script or command-line executable that will be used
+IN=$data/mixcr/export_clones/             # Directory containing all input files. Should be one job per file
+OUT=$data/normalization/decontam/           # Directory where output files should be written
+QC=$data/QC/std/
+MYBIN=$tool/40_postProcess/decontaminateClones.R          # Path to shell script or command-line executable that will be used
 
 ### Record slurm info
 
@@ -40,8 +42,9 @@ echo "SLURM_NTASKS_PER_NODE " $SLURM_NTASKS_PER_NODE
 echo "SLURM_TASKS_PER_NODE " $SLURM_TASKS_PER_NODE
 printf "\n\n"
 
+mkdir -p $QC
 
-cmd="/usr/bin/Rscript $MYBIN $IN" 
+cmd="/usr/bin/Rscript $MYBIN $IN $OUT $QC both NULL" 
 
 echo $cmd
 eval $cmd

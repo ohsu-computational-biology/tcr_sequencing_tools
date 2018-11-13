@@ -13,14 +13,17 @@
 ##SBATCH --mem-per-cpu        8000                    # Memory required per allocated CPU (mutually exclusive with mem)
 #SBATCH --mem                16000                  # memory pool for each node
 #SBATCH --time               0-24:00                 # time (D-HH:MM)
-#SBATCH --output             md5_%j.out        # Standard output
-#SBATCH --error              md5_%j.err        # Standard error
+#SBATCH --output             subDivAnalysis_%j.out        # Standard output
+#SBATCH --error              subDivAnalysis_%j.err        # Standard error
 
 
 ### SET I/O VARIABLES
 
-IN=$data/fastqs_from_core/fastqs/             # Directory containing all input files. Should be one job per file
-MYBIN=$tool/10_preProcess/00_process.md5.R          # Path to shell script or command-line executable that will be used
+IN=$data/normalization/normalized_clones/             # Directory containing all input files. Should be one job per file
+OUT=$data/QC/std/
+MYBIN=$tool/60_analysis/subsetDiversityAnalysis.R          # Path to shell script or command-line executable that will be used
+
+mkdir -p $OUT
 
 ### Record slurm info
 
@@ -40,8 +43,9 @@ echo "SLURM_NTASKS_PER_NODE " $SLURM_NTASKS_PER_NODE
 echo "SLURM_TASKS_PER_NODE " $SLURM_TASKS_PER_NODE
 printf "\n\n"
 
+DIV="10,25,50,100"
 
-cmd="/usr/bin/Rscript $MYBIN $IN" 
+cmd="/usr/bin/Rscript $MYBIN $IN $OUT FALSE $DIV" 
 
 echo $cmd
 eval $cmd

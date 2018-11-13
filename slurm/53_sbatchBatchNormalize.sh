@@ -13,14 +13,17 @@
 ##SBATCH --mem-per-cpu        8000                    # Memory required per allocated CPU (mutually exclusive with mem)
 #SBATCH --mem                16000                  # memory pool for each node
 #SBATCH --time               0-24:00                 # time (D-HH:MM)
-#SBATCH --output             md5_%j.out        # Standard output
-#SBATCH --error              md5_%j.err        # Standard error
+#SBATCH --output             batchNorm_%j.out        # Standard output
+#SBATCH --error              batchNorm_%j.err        # Standard error
 
 
 ### SET I/O VARIABLES
 
-IN=$data/fastqs_from_core/fastqs/             # Directory containing all input files. Should be one job per file
-MYBIN=$tool/10_preProcess/00_process.md5.R          # Path to shell script or command-line executable that will be used
+### Names are relative to $data
+IN=clones            
+OUT=normClones
+META=metadata/allMeta.txt
+MYBIN=$tool/40_postProcess/batchNorm/batchNormalize.R          # Path to shell script or command-line executable that will be used
 
 ### Record slurm info
 
@@ -41,7 +44,7 @@ echo "SLURM_TASKS_PER_NODE " $SLURM_TASKS_PER_NODE
 printf "\n\n"
 
 
-cmd="/usr/bin/Rscript $MYBIN $IN" 
+cmd="/usr/bin/Rscript $MYBIN -b $data -d $IN -m $data/$META -n nb -o $OUT -p DNA,LC -f F -l F" 
 
 echo $cmd
 eval $cmd

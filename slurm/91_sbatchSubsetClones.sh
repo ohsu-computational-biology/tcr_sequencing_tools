@@ -13,14 +13,20 @@
 ##SBATCH --mem-per-cpu        8000                    # Memory required per allocated CPU (mutually exclusive with mem)
 #SBATCH --mem                16000                  # memory pool for each node
 #SBATCH --time               0-24:00                 # time (D-HH:MM)
-#SBATCH --output             md5_%j.out        # Standard output
-#SBATCH --error              md5_%j.err        # Standard error
+#SBATCH --output             subsetClones_%j.out        # Standard output
+#SBATCH --error              subsetClones_%j.err        # Standard error
 
 
 ### SET I/O VARIABLES
 
-IN=$data/fastqs_from_core/fastqs/             # Directory containing all input files. Should be one job per file
-MYBIN=$tool/10_preProcess/00_process.md5.R          # Path to shell script or command-line executable that will be used
+IN1=$data/normalization/collapsed_clones/             # Directory containing all input files. Should be one job per file
+IN2=$data/freqGroups/collapse_groupData/newNorm/LIB170920LC_full_clones.txt
+GRP=
+OUT=$data/vdjtools/           # Directory where output files should be written
+QC=$data/QC/
+MYBIN=$tool/60_analysis/subsetByGroup.R          # Path to shell script or command-line executable that will be used
+
+mkdir -p $OUT
 
 ### Record slurm info
 
@@ -40,9 +46,21 @@ echo "SLURM_NTASKS_PER_NODE " $SLURM_NTASKS_PER_NODE
 echo "SLURM_TASKS_PER_NODE " $SLURM_TASKS_PER_NODE
 printf "\n\n"
 
+GRPS=('Hyperexpanded,Large' 'Hyperexpanded,Large,Medium' 'Medium' 'Rare,Small' 'Rare' 'Hyperexpanded,Large,Medium,Small,Rare')
+DIRS=('hyperLarge' 'hyperLargeMedium' 'medium' 'rareSmall' 'rare' 'all')
 
-cmd="/usr/bin/Rscript $MYBIN $IN" 
+for i in {0..6}; do
 
-echo $cmd
-eval $cmd
+    ## Get variables
+    CURRGRP=${GRPS[$i]}
+    CURRDIR=${DIRS[$i]}
 
+    ## Update
+    echo "Current group designation: " $CURRGRP
+    echo "Current output directory: " $OUT/$CURRDIR/
+
+    cmd="/usr/bin/Rscript $MYBIN -i $IN1 -f $IN2 -d $CURRGRP -o $OUT/$CURRDIR/ -l F" 
+
+    echo $cmd
+    eval $cmd
+done

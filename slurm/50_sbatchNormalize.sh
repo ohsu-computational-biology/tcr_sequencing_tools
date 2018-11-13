@@ -13,14 +13,16 @@
 ##SBATCH --mem-per-cpu        8000                    # Memory required per allocated CPU (mutually exclusive with mem)
 #SBATCH --mem                16000                  # memory pool for each node
 #SBATCH --time               0-24:00                 # time (D-HH:MM)
-#SBATCH --output             md5_%j.out        # Standard output
-#SBATCH --error              md5_%j.err        # Standard error
+#SBATCH --output             normalize_%A_%a.out        # Standard output
+#SBATCH --error              normalize_%A_%a.err        # Standard error
+#SBATCH --array              1-1                    # sets number of jobs in array
 
 
 ### SET I/O VARIABLES
 
-IN=$data/fastqs_from_core/fastqs/             # Directory containing all input files. Should be one job per file
-MYBIN=$tool/10_preProcess/00_process.md5.R          # Path to shell script or command-line executable that will be used
+IN=$data/normalization             # Directory containing all input files. Should be one job per file
+REF=$tool/40_postProcess/nb_counts/
+MYBIN=$tool/40_postProcess/normalizeClones.R          # Path to shell script or command-line executable that will be used
 
 ### Record slurm info
 
@@ -40,8 +42,37 @@ echo "SLURM_NTASKS_PER_NODE " $SLURM_NTASKS_PER_NODE
 echo "SLURM_TASKS_PER_NODE " $SLURM_TASKS_PER_NODE
 printf "\n\n"
 
+### create array of file names in this location (input files)
+### Extract file name information as well
 
-cmd="/usr/bin/Rscript $MYBIN $IN" 
+TODO=$data/tools/todo/normalize.txt
+CURRFILE=`awk -v line=$SLURM_ARRAY_TASK_ID '{if (NR == line) print $0}' $TODO`
+#CURRFILE=`ls -v $IN/decontam | awk -v line=$SLURM_ARRAY_TASK_ID '{if (NR == line) print $0}'`
+BASE="${CURRFILE%%S[0-9]*}"
+SNUM="${CURRFILE%%_alignment_clones_exported_decontam.txt}"; SNUM="${SNUM##*S}"
+
+echo "Clone File: " $CURRFILE
+echo "Base name: " $BASE
+echo "Sample number: " $SNUM
+printf "\n\n"
+
+### Set I/O files/paths
+RAWCLONE=$IN/decontam/$CURRFILE
+SPIKECOUNTS=$IN/counts/$BASE\S$SNUM\.assembled.spike.counts.25bp.txt
+NORMDIR=$IN/normalized_clones/
+ORIGSCALE=$IN/scaling_factor.txt
+NBSCALE=$REF/nb.scaling.factors.txt
+
+echo "Raw Count input: " $RAWCLONE
+echo "Spike Count input: " $SPIKECOUNTS
+echo "Normalized Count Output Directory: " $NORMDIR
+echo "Original method scaling factors " $ORIGSCALE
+echo "NB method scaling factors " $NBSCALE
+printf "\n\n"
+
+### Execute
+
+cmd="/usr/bin/Rscript $MYBIN $RAWCLONE $SPIKECOUNTS $NORMDIR $ORIGSCALE $NBSCALE"
 
 echo $cmd
 eval $cmd

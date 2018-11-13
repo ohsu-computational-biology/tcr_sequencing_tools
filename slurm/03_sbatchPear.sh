@@ -13,14 +13,19 @@
 ##SBATCH --mem-per-cpu        8000                    # Memory required per allocated CPU (mutually exclusive with mem)
 #SBATCH --mem                16000                  # memory pool for each node
 #SBATCH --time               0-24:00                 # time (D-HH:MM)
-#SBATCH --output             md5_%j.out        # Standard output
-#SBATCH --error              md5_%j.err        # Standard error
+#SBATCH --output             pear_%A_%a.out        # Standard output
+#SBATCH --error              pear_%A_%a.err        # Standard error
+#SBATCH --array              1-1                    # sets number of jobs in array
 
 
 ### SET I/O VARIABLES
 
-IN=$data/fastqs_from_core/fastqs/             # Directory containing all input files. Should be one job per file
-MYBIN=$tool/10_preProcess/00_process.md5.R          # Path to shell script or command-line executable that will be used
+IN=$data/fastqs_from_core/fastqs             # Directory containing all input files. Should be one job per file
+OUT=$data/peared_fastqs/           # Directory where output files should be written
+QC=$data/QC/pear/
+MYBIN=$tool/10_preProcess/03_pear.pl          # Path to shell script or command-line executable that will be used
+
+mkdir -p $QC
 
 ### Record slurm info
 
@@ -40,8 +45,32 @@ echo "SLURM_NTASKS_PER_NODE " $SLURM_NTASKS_PER_NODE
 echo "SLURM_TASKS_PER_NODE " $SLURM_TASKS_PER_NODE
 printf "\n\n"
 
+### create array of file names in this location (input files)
+### Extract file name information as well
 
-cmd="/usr/bin/Rscript $MYBIN $IN" 
+#TODO=$data/tools/todo/pear.txt
+#FWDFILE=`awk -v line=$SLURM_ARRAY_TASK_ID '{if (NR == line) print $0}' $TODO`
+
+FWDFILE=`ls -v $IN/*_R1_001.fastq | awk -v line=$SLURM_ARRAY_TASK_ID '{if (NR == line) print $0}'`
+BASE="${FWDFILE%%S[0-9]*}"
+SNUM="${FWDFILE%%_R1_001.fastq}"; SNUM="${SNUM##*S}"
+
+REVFILE=$BASE\S$SNUM\_R2_001.fastq
+
+### Check file assignments
+echo "Forward File: " $FWDFILE
+echo "Base name: " $BASE
+echo "Sample number: " $SNUM
+echo "Reverse File: " $REVFILE
+printf "\n\n"
+
+### Set QC assignments
+QC1=$QC/pear_full_log.txt
+QC2=$QC/pear_summary_log.txt
+
+### Execute
+
+cmd="/usr/bin/perl $MYBIN $FWDFILE $REVFILE -o $OUT -f $QC1 -s $QC2"
 
 echo $cmd
 eval $cmd

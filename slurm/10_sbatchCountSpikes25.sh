@@ -22,8 +22,8 @@
 
 IN=$data/peared_fastqs/assembled             # Directory containing all input files. Should be one job per file
 OUT=$data/spike_counts/25bp/           # Directory where output files should be written
-REF=$tool/reference
-MYBIN=$tool/process_spikes/count.spikes.R          # Path to shell script or command-line executable that will be used
+REF=$tool/00_reference
+MYBIN=$tool/20_processSpikes/count.spikes.R          # Path to shell script or command-line executable that will be used
 
 ### Record slurm info
 

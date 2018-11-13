@@ -24,7 +24,7 @@ IN=$data/peared_fastqs/assembled             # Directory containing all input fi
 TOREM=$data/spike_counts/9bp/reads_to_remove
 OUT=$data/mixcr/despiked_fastqs           # Directory where output files should be written
 REMOUT=$data/spike_counts/9bp/spikes
-MYBIN=$tool/process_spikes/remove.spikes.R          # Path to shell script or command-line executable that will be used
+MYBIN=$tool/20_processSpikes/remove.spikes.R          # Path to shell script or command-line executable that will be used
 
 ### Record slurm info
 
