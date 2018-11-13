@@ -188,7 +188,7 @@ The Core places the files on their IGL server, nix (formerly mpssr). You will ne
      ~$  pwd
      /path/to/DNAXXXXLC/fastqs\_from\_core/FastQC/
      ~$ condor_submit -interactive -append "request_memory = 32 GB"
-     ~$ /home/exacloud/lustre1/BioCoders/Applications/miniconda3/bin/multiqc .
+     ~$ /home/exacloud/lustre1/BioCoders/Applications/miniconda3/bin/multiqc --interactive --export .
      ```
 
 2. A new file called `multiqc_report.html` will be created in the FastQC directory. You can either copy this to your local, and then view it in a web browser:

@@ -35,7 +35,8 @@ mono.dir <- arguments[7]
 
 ### Sort files
 clone.files <- list.files(clone.dir)
-clone.files <- clone.files[order(as.numeric(gsub(".*_S|\\.clonotypes.TRB.txt", '', clone.files)))]
+clone.files <- clone.files[order(as.numeric(gsub(".*_S|_align.*|_clones.txt", '', clone.files)))]
+
 ### Empty matrix for output summary
 contam_reads_mat <- matrix(nrow = length(clone.files), ncol = 2)
 
@@ -43,7 +44,7 @@ contam_reads_mat <- matrix(nrow = length(clone.files), ncol = 2)
 batch_v <- unlist(strsplit(clone.files[1], split = "_"))[1]
 
 ### Empty QC Matrix
-contamination.qc <- matrix(nrow = length(clone.files), ncol = 11)
+contamination.qc <- matrix(nrow = length(clone.files), ncol = 14)
 
 ### Read in metadata
 if (metadata.file == "NULL") {
@@ -63,7 +64,7 @@ for (i in 1:length(clone.files)){
     curr_contam_count_v <- 0
     
     ## Sample name
-    temp <- unlist(strsplit(clone.files[i], split = "\\.|_"))
+    temp <- unlist(strsplit(clone.files[i], split = "_"))
     currName_v <- grep("S[0-9]+", temp, value = T)
     #currName_v <- unlist(strsplit(clone.files[i], split = "_"))[2]
 
@@ -77,12 +78,14 @@ for (i in 1:length(clone.files)){
     curr.clone <- fread(paste(clone.dir, clone.files[i], sep = ''))
 
     ## Get column names
-    idCol_v <- "cloneId"
-    rawCountCol_v <- "cloneCount"
-    vCol_v <- "bestVGene"
-    jCol_v <- "bestJGene"
-    seqCol_v <- "aaSeqCDR3"
-    fracCol_v <- "cloneFraction"
+    idCol_v <- grep("Clone ID|cloneId", colnames(curr.clone), value = T)[1]
+    rawCountCol_v <- grep("Clone count|cloneCount", colnames(curr.clone), value = T)
+    vCol_v <- grep("Best V hit|bestVHit", colnames(curr.clone), value = T)
+    jCol_v <- grep("Best J hit|bestJHit", colnames(curr.clone), value = T)
+    readCol_v <- grep("Reads|reads", colnames(curr.clone), value = T)
+    seqCol_v <- grep("aa.*CDR3|AA.*CDR3", colnames(curr.clone), value = T)
+    fracCol_v <- grep("Clone fraction|cloneFraction", colnames(curr.clone), value = T)
+    print(c(idCol_v, rawCountCol_v, vCol_v, jCol_v, readCol_v, seqCol_v, fracCol_v))
 
     ## Add index for ranking
     curr.clone$index <- seq(1, length(curr.clone[[idCol_v]]))
@@ -109,12 +112,12 @@ for (i in 1:length(clone.files)){
         offending.clone.1 <- offending.clone.1[1,] # subset for first only
 
         ## Update count of contaminated sequences
-        if (is.na(offending.clone.1[[rawCountCol_v]][1])) {
+        if (is.na(offending.clone.1[[readCol_v]][1])) {
             count.clone.1 <- 0
-	    #read.count.clone.1 <- 0
+	    read.count.clone.1 <- 0
         } else {
             count.clone.1 <- offending.clone.1[[rawCountCol_v]]
-            #read.count.clone.1 <- length(unlist(strsplit(as.character(offending.clone.1[[readCol_v]]), split = ',')))
+            read.count.clone.1 <- length(unlist(strsplit(as.character(offending.clone.1[[readCol_v]]), split = ',')))
         }
         curr_contam_count_v <- curr_contam_count_v + count.clone.1
     
@@ -127,7 +130,7 @@ for (i in 1:length(clone.files)){
         p14.rank <- NA
         p14.count <- NA
         count.clone.1 <- NA
-        #read.count.clone.1 <- NA
+        read.count.clone.1 <- NA
     }
     
 
@@ -140,12 +143,12 @@ for (i in 1:length(clone.files)){
 
 
         ## Update count of contaminated sequences
-        if (is.na(offending.clone.2[[rawCountCol_v]][1])) {
+        if (is.na(offending.clone.2[[readCol_v]][1])) {
             count.clone.2 <- 0
-	    #read.count.clone.2 <- 0
+	    read.count.clone.2 <- 0
         } else {
             count.clone.2 <- offending.clone.2[[rawCountCol_v]]
-            #read.count.clone.2 <- length(unlist(strsplit(as.character(offending.clone.2[[readCol_v]]), split = ',')))
+            read.count.clone.2 <- length(unlist(strsplit(as.character(offending.clone.2[[readCol_v]]), split = ',')))
         }
         curr_contam_count_v <- curr_contam_count_v + count.clone.2
     
@@ -157,7 +160,7 @@ for (i in 1:length(clone.files)){
         ot1.rank <- NA
         ot1.count <- NA
         count.clone.2 <- NA
-        #read.count.clone.2 <- NA
+        read.count.clone.2 <- NA
     }
 
 
@@ -168,12 +171,12 @@ for (i in 1:length(clone.files)){
               curr.clone[[seqCol_v]] == "CASSTGTETLYF"),]
         offending.clone.3 <- offending.clone.3[1,] # subset for first only
   
-        if (is.na(offending.clone.3[[rawCountCol_v]][1])) {
+        if (is.na(offending.clone.3[[readCol_v]][1])) {
             count.clone.3 <- 0
-            #read.count.clone.3 <- 0
+            read.count.clone.3 <- 0
         } else {
             count.clone.3 <- offending.clone.3[[rawCountCol_v]]
-            #read.count.clone.3 <- length(unlist(strsplit(as.character(offending.clone.3[[readCol_v]]), split = ',')))
+            read.count.clone.3 <- length(unlist(strsplit(as.character(offending.clone.3[[readCol_v]]), split = ',')))
         }
         curr_contam_count_v <- curr_contam_count_v + count.clone.3
     
@@ -185,7 +188,7 @@ for (i in 1:length(clone.files)){
         el4.rank <- NA
         el4.count <- NA
         count.clone.3 <- NA
-        #read.count.clone.3 <- NA
+        read.count.clone.3 <- NA
     }
     
 
@@ -210,9 +213,9 @@ for (i in 1:length(clone.files)){
     remaining.count <- orig.total.count - p14.count - ot1.count - el4.count
     qc.row <- c("Sample" = currName_v, "Orig.Unique.Clones" = orig.unique.count, "Orig.total.Clones" = orig.total.count,
                 "Remaining.Clones" = remaining.count, "Contam.clones" = curr_contam_count_v,
-                "p14.rank" = p14.rank, "p14.count" = p14.count, 
-                "ot1.rank" = ot1.rank, "ot1.count" = ot1.count, 
-                "el4.rank" = el4.rank, "el4.count" = el4.count) 
+                "p14.rank" = p14.rank, "p14.count" = p14.count, "p14.reads" = read.count.clone.1,
+                "ot1.rank" = ot1.rank, "ot1.count" = ot1.count, "ot1.reads" = read.count.clone.2,
+                "el4.rank" = el4.rank, "el4.count" = el4.count, "el4.reads" = read.count.clone.3)
     contamination.qc[i,] <- qc.row
   
     ##
@@ -247,7 +250,7 @@ for (i in 1:length(clone.files)){
 } # for
 
 colnames(contamination.qc) <- c("Sample", "Orig.Unique.Clones", "Orig.Total.Clones", "Remaining.Clones", "Contam.clones",
-                                "p14.rank", "p14.count", "ot1.rank", "ot1.count", "el4.rank", "el4.count") 
+                                "p14.rank", "p14.count", "p14.reads", "ot1.rank", "ot1.count", "ot1.reads", "el4.rank", "el4.count", "el4.reads")
 
 cat(clean.counter, "clone files were uncontaminated!\n")
 
