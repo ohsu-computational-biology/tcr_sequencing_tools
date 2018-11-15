@@ -1,5 +1,9 @@
 #!/usr/bin/Rscript
 
+###################
+### DESCRIPTION ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+###################
+
 ### Script to perform a homeostatic analysis based off of the anlaysis in the tcR package.
 ### For a given treatment group, take all of the samples and for each sample:
 ### Find the average frequency of each clone in a certain frequency group (Rare, Small, medium, etc.)
@@ -26,14 +30,21 @@
 	### TRUE/FALSE if pdf and text output should be written
 ### Note, this does everything that the homeoAnalysis.R does, plus more.
 
-###   Load necessary libraries
-print("Start")
+####################
+### DEPENDENCIES ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+####################
+
 suppressMessages(library(entropy))
 suppressMessages(library(data.table))
 suppressMessages(library(tcR))
 suppressMessages(library(ggplot2))
 suppressMessages(library(optparse))
+suppressMessages(library(writexl))
 source("/home/exacloud/lustre1/CompBio/users/hortowe/2016_11_27_stable_repos/WesPersonal/utilityFxns.R")
+
+####################
+### COMMAND LINE ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+####################
 
 ### Command LIne
 optlist <- list(
@@ -70,13 +81,39 @@ optlist <- list(
 	make_option(
 		c("-y", "--type"),
 		type = "character",
-		help = "Character vector for a specific category of treatments to divide by, rather than each treatment individually.
-			If blank, will not divide."
+		help = "Character vector for a specific category of treatments to divide by, rather than each treatment individually. If blank, will not divide."
+	),
+	make_option(
+		c("-b", "--barPlot"),
+		type = "character",
+		default = NULL,
+		help = "Name of homeostasis output plot. If NULL (default), will be '<batch>_<tissue>_<type>_cumFreqHomeo.pdf'
+		with tissue and type only included if those arguments are supplied."
+	),
+	make_option(
+		c("-u", "--cumOut"),
+		type = "character",
+		default = NULL,
+		help = "Name of excel file containing output for cumulative values. If NULL (default), will be '<batch>_<tissue>_<type>_cumHomeo.xlsx'.
+		with tissue and type only included if those  arguments are supplied."
+	),
+	make_option(
+		c("-e", "--meanOut"),
+		type = "character",
+		default = NULL,
+		help = "Name of excel file containing output for mean values. If NULL (default), will be '<batch>_<tissue>_<type>_meanHomeo.xlsx'
+		with tissue and type only included if those arguments are supplied."
+	),
+	make_option(
+		c("-v", "--verbose"),
+		type = "logical",
+		default = F,
+		help = "TRUE - output various check statements. FALSE - silent."
 	)
 )
 
 ### Parse Command Line
-p <- OptionParser(usage = "%prog -c cloneDir -m metadata -o outDir -w write -l old -t tissue -y type",
+p <- OptionParser(usage = "%prog -c cloneDir -m metadata -o outDir -w write -l old -t tissue -y type -b barPlot -u cumOut -e meanOut -v verbose",
 		option_list = optlist)
 args <- parse_args(p)
 opt <- args$options
@@ -89,13 +126,22 @@ toWrite_v <- args$write
 old_v <- args$old
 tissue_v <- args$tissue
 type_v <- args$type
+plot_v <- args$barPlot
+cumOut_v <- args$cumOut
+meanOut_v <- args$meanOut
+verbose_v <- args$verbose
 
-print("After assign args")
+#############
+### INPUT ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#############
+
+if (verbose_v) print("After assign args")
+
 ### Get files and names
 cloneFiles_v <- list.files(cloneDir_v)
-cloneFiles_v <- cloneFiles_v[order(as.numeric(gsub("^.*_S|_.*$", "", cloneFiles_v)))]
+cloneFiles_v <- cloneFiles_v[order(as.numeric(gsub("^.*_S|_.*$|\\..*$", "", cloneFiles_v)))]
 cloneNames_v <- sapply(cloneFiles_v, function(x) {
-        temp <- unlist(strsplit(x, split = "_"))
+        temp <- unlist(strsplit(x, split = "_|\\."))
         name_v <- grep("S[0-9]+", temp, value = T)
         return(name_v)}, USE.NAMES = F)
 names(cloneFiles_v) <- cloneNames_v
@@ -157,6 +203,10 @@ treatments_v <- unique(metadata_dt[, get(treatCol_v)])
 ### Create divisions and empty data.tables to hold results.
 divisions_v <- c("Blank" = 0, "Rare" = 0.00001, "Small" = 0.0001, "Medium" = 0.001, "Large" = 0.01, "Hyperexpanded" = 1)
 
+###################
+### PREP OUTPUT ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+###################
+
 ### Per-Sample Summary tables
     ### One entry for each table recording meanFreq, cumFreq, or # clones per freqGroup
     ### Simply concatenating the individual treatment tables together, for easier comparison.
@@ -171,13 +221,20 @@ perTreatMeanFreq_dt <- NULL
 perTreatCumFreq_dt <- NULL
 perTreatGrpCount_dt <- NULL
 
-if (toWrite_v){
-    ## file for graphs
-    pdf(file = paste0(outDir_v, batchName_v, "_cumFreqHomeo.pdf"))
-    ## Directories
-    meanDir_v <- mkdir(outDir_v, "meanFreq")
-    cumDir_v <- mkdir(outDir_v, "cumFreq")
-} # fi
+### List of individual treatment results
+cumFreqOut_lsdt <- meanFreqOut_lsdt <- NULL
+
+### List for plots
+plotList_lsgg <- list()
+
+### Output names
+if (is.null(plot_v)) plot_v <- gsub("__|___", "_", paste(batchName_v, tissue_v, type_v, "cumFreqHomeo.pdf", sep = "_"))
+if (is.null(cumOut_v)) cumOut_v <- gsub("__|___", "_", paste0(batchName_v, tissue_v, type_v, "cumHomeo.xlsx", sep = "_"))
+if (is.null(meanOut_v)) meanOut_v <- gsub("__|___", "_", paste0(batchName_v, tissue_v, type_v, "meanHomeo.xlsx", sep = "_"))
+
+################
+### ANALYSIS ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+################
 
 for (i in 1:length(treatments_v)){
 
@@ -195,7 +252,7 @@ for (i in 1:length(treatments_v)){
 
     ## Print nrow (n clones) of each sample
     nrow_v <- sapply(currData_lsdt, nrow)
-    print(c("Treatment" = currTreat_v, nrow_v))
+    if (verbose_v) print(c("Treatment" = currTreat_v, nrow_v))
 
     ## Remove zero-count clones
     currData_lsdt <- lapply(currData_lsdt, function(x) x[get(column_v) > 0,])
@@ -203,8 +260,11 @@ for (i in 1:length(treatments_v)){
     ## Compare
     newNrow_v <- sapply(currData_lsdt, nrow)
     diff_v <- nrow_v - newNrow_v
-    print("Removed the following empty clones from each sample:")
-    print(c("Treatment" = currTreat_v, diff_v))
+    if (verbose_v) {
+	cat(sprintf("\nRemoved the following empty clones from each sample of Treatment: %s\n", currTreat_v))
+	print(diff_v)
+	cat("\n")
+    } # fi
 
     ## For each sample, get all of the clones in that
     for (j in 2:length(divisions_v)){
@@ -249,22 +309,19 @@ for (i in 1:length(treatments_v)){
     cumFreq_dt <- cumFreq_dt[,c(ncol(cumFreq_dt),1:(ncol(cumFreq_dt)-1)), with = F]
     groupCount_dt <- groupCount_dt[,c(ncol(groupCount_dt),1:(ncol(groupCount_dt)-1)), with = F]
 
-    ## Write out treatment table and make plot
-    if (toWrite_v) {
-        ## Write mean freq
-        write.table(meanFreq_dt, file = file.path(meanDir_v, paste0(currTreat_v, "_meanClonalFreqs.txt")),
-                    sep = '\t', quote = F, row.names = F)
-        ## Write cum freq
-        write.table(cumFreq_dt, file = file.path(cumDir_v, paste0(currTreat_v, "_cumClonalFreqs.txt")),
-                    sep = '\t', quote = F, row.names = F)
-        ## Make plot
-        colnames(cumFreq_mat) <- names(divisions_v)[2:length(divisions_v)]
-        rownames(cumFreq_mat) <- samples_v
-        currHomeo_gg <- vis.clonal.space(cumFreq_mat) +
-            ggtitle(paste0(currTreat_v, " Clonal Space Homeostasis (Cum. Freq.)")) +
-            theme(plot.title = element_text(hjust = 0.5))
-        print(currHomeo_gg)
-    } # fi
+    ## Add to lists
+    cumFreqOut_lsdt[[currTreat_v]] <- cumFreq_dt
+    meanFreqOut_lsdt[[currTreat_v]] <- meanFreq_dt
+
+    ## Make plot
+    colnames(cumFreq_mat) <- names(divisions_v)[2:length(divisions_v)]
+    rownames(cumFreq_mat) <- samples_v
+    currHomeo_gg <- vis.clonal.space(cumFreq_mat) +
+        ggtitle(paste0(currTreat_v, " Clonal Space Homeostasis (Cum. Freq.)")) +
+        theme(plot.title = element_text(hjust = 0.5))
+    
+    ## Add to list
+    plotList_lsgg[[i]] <- currHomeo_gg
 
     ## Combine with overall table
     perSampleMeanFreq_dt <- rbind(perSampleMeanFreq_dt, meanFreq_dt)
@@ -283,10 +340,25 @@ for (i in 1:length(treatments_v)){
     
 } # for i
 
+######################
+### WRANGLE OUTPUT ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+######################
+
 ### Finish construction
 colnames(perTreatMeanFreq_dt) <- c("Treatment", names(divisions_v)[2:length(divisions_v)])
 colnames(perTreatCumFreq_dt) <- colnames(perTreatMeanFreq_dt)
 colnames(perTreatGrpCount_dt) <- colnames(perTreatMeanFreq_dt)
+
+### Prepare data common to both excel sheets
+preList_lsdt <- list("perSampleGroupCount" = perSampleGrpCount_dt, "treatWiseGroupCount" = as.data.table(perTreatGrpCount_dt))
+
+### Prepare specific data
+cumFreqSummary_lsdt <- list("perSampleFreq" = perSampleCumFreq_dt, "treatWiseFreq" = as.data.table(perTreatCumFreq_dt))
+meanFreqSummary_lsdt <- list("perSampleFreq" = perSampleMeanFreq_dt, "treatWiseFreq" = as.data.table(perTreatMeanFreq_dt))
+
+### Combine
+cumFreqOut_lsdt <- c(preList_lsdt, cumFreqSummary_lsdt, cumFreqOut_lsdt)
+meanFreqOut_lsdt <- c(preList_lsdt, meanFreqSummary_lsdt, meanFreqOut_lsdt)
 
 ### Revert cumulative freq back to matrix for ggplot
 if (nrow(perTreatCumFreq_dt) == 1) {
@@ -297,30 +369,33 @@ if (nrow(perTreatCumFreq_dt) == 1) {
 rownames(perTreatCumFreq_mat) <- perTreatCumFreq_dt[,1]
 perTreatCumFreq_mat <- apply(perTreatCumFreq_mat, c(1,2), as.numeric)
 
-### Write out
+##############
+### OUTPUT ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##############
+
+### Write
 if (toWrite_v) {
-    ## Mean Freq
-    write.table(perSampleMeanFreq_dt, file = file.path(meanDir_v, paste0(batchName_v, "_meanClonalFreqs.txt")),
-                sep = '\t', quote = F, row.names = F)
-    write.table(perTreatMeanFreq_dt, file = file.path(meanDir_v, paste0(batchName_v, "_treatWiseMeanClonalFreqs.txt")),
-                sep = '\t', quote = F, row.names = F)
 
-    ## Cum Freq
-    write.table(perSampleCumFreq_dt, file = file.path(cumDir_v, paste0(batchName_v, "_cumClonalFreqs.txt")),
-                sep = '\t', quote = F, row.names = F)
-    write.table(perTreatCumFreq_dt, file = file.path(cumDir_v, paste0(batchName_v, "_treatWiseCumClonalFreqs.txt")),
-                sep = '\t', quote = F, row.names = F)
+    writexl::write_xlsx(x = cumFreqOut_lsdt,
+			path = file.path(outDir_v, cumOut_v),
+			col_names = T)
 
-    ## Group Counts
-    write.table(perSampleGrpCount_dt, file = file.path(outDir_v, paste0(batchName_v, "_groupCounts.txt")),
-                sep = '\t', quote = F, row.names = F)
-    write.table(perTreatGrpCount_dt, file = file.path(outDir_v, paste0(batchName_v, "_treatWiseGroupCounts.txt")),
-                sep = '\t', quote = F, row.names = F)
+    writexl::write_xlsx(x = meanFreqOut_lsdt,
+			path = file.path(outDir_v, meanOut_v),
+			col_names = T)
 
-    ## Plot
+    ## Final Plot
     finalHomeo_gg <- vis.clonal.space(perTreatCumFreq_mat) +
         ggtitle(paste0("Treat-wise Clonal Space Homeostasis (Cum. Freq.)")) +
         theme(plot.title = element_text(hjust = 0.5))
-    print(finalHomeo_gg)
-    dev.off()
-} # fi
+    
+    plotList_lsgg[[(length(plotList_lsgg)+1)]] <- finalHomeo_gg
+    
+    ## Output plot
+    pdf(file.path(outDir_v, plot_v))
+    for (i in 1:length(plotList_lsgg)) {
+      print(plotList_lsgg[[i]])
+    }
+    graphics.off()
+} # fi toWrite_v
+
