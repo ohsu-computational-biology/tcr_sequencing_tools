@@ -65,7 +65,7 @@ echo "Reverse File: " $REVFILE
 printf "\n\n"
 
 ### Set QC assignments
-QC1=$QC/pear_full_log.txt
+QC1=$QC/pear_full_log_$SNUM\.txt
 QC2=$QC/pear_summary_log.txt
 
 ### Execute
