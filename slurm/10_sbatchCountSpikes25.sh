@@ -46,9 +46,9 @@ printf "\n\n"
 ### create array of file names in this location (input files)
 ### Extract file name information as well
 
-TODO=$data/tools/todo/count25.txt
-CURRFILE=`awk -v line=$SLURM_ARRAY_TASK_ID '{if (NR == line) print $0}' $TODO`
-#CURRFILE=`ls -v $IN | awk -v line=$SLURM_ARRAY_TASK_ID '{if (NR == line) print $0}'`
+#TODO=$data/tools/todo/count25.txt
+#CURRFILE=`awk -v line=$SLURM_ARRAY_TASK_ID '{if (NR == line) print $0}' $TODO`
+CURRFILE=`ls -v $IN | awk -v line=$SLURM_ARRAY_TASK_ID '{if (NR == line) print $0}'`
 BASE="${CURRFILE%%S[0-9]*}"
 SNUM="${CURRFILE%%.assembled.fastq}"; SNUM="${SNUM##*S}"
 

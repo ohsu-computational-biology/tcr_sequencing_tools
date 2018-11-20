@@ -22,10 +22,7 @@ echo "Current file: " $CURRFILE
 mkdir -p $OUT
 
 ### Additional Arguments
-#COLUMNS="Normalized clone count,Normalized clone fraction,Clonal sequence(s),AA. Seq. CDR3,V segments,J segments" # Old norm, old mixcr column names
-#COLUMNS="Normalized clone count,Normalized clone fraction,clonalSequence,aaSeqCDR3,V segments,J segments"         # Old norm, new mixcr column names
-#COLUMNS="nb.clone.count,nb.clone.fraction,Clonal sequence(s),AA. Seq. CDR3,V segments,J segments"                 # New norm, old mixcr column names
-COLUMNS="'nb.clone.count,nb.clone.fraction,clonalSequence,aaSeqCDR3,V segments,J segments'"                         # New norm, new mixcr column names
+COLUMNS="'nb.clone.count,nb.clone.fraction,nSeqCDR3,aaSeqCDR3,V segments,J segments'"                         # New norm, new mixcr column names
 
 DIVISIONS="'Rare = 0.00001,Small = 0.0001,Medium = 0.001,Large = 0.01,Hyperexpanded = 1'"
 

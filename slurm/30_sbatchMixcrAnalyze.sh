@@ -34,8 +34,9 @@ printf "\n\n"
 #################
 
 ### todo file
-TODO=$data/tools/todo/analyze.txt
-CURRFILE=`awk -v line=$SLURM_ARRAY_TASK_ID '{if (NR == line) print $0}' $TODO`
+#TODO=$data/tools/todo/analyze.txt
+#CURRFILE=`awk -v line=$SLURM_ARRAY_TASK_ID '{if (NR == line) print $0}' $TODO`
+CURRFILE=`ls -v $IN | awk -v line=$SLURM_ARRAY_TASK_ID '{if (NR == line) print $0}'`
 BASE="${CURRFILE%%S[0-9]*}"
 SNUM="${CURRFILE%%.assembled.removed.fastq}"; SNUM="${SNUM##*S}"
 
