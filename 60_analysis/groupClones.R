@@ -59,8 +59,9 @@ outDir_v <- args$outDir
 log_v <- args$log
 
 ### Handle non-traditional arguments
-columns_v <- args$columns; columns_v <- unlist(strsplit(columns_v, split = ','))
+columns_v <- args$columns; columns_v <- gsub("\\'", "", unlist(strsplit(columns_v, split = ',')))
 divisions_v <- args$divisions; divisions_v <- unlist(strsplit(divisions_v, split = ','))
+divisions_v <- gsub("\\'", "", divisions_v)
 divNames_v <- sapply(divisions_v, function(x) trimws(strsplit(x, split = '=')[[1]][1]), USE.NAMES = F)
 divNums_v <- sapply(divisions_v, function(x) trimws(strsplit(x, split = '=')[[1]][2]), USE.NAMES = F)
 divisions_v <- as.numeric(divNums_v); names(divisions_v) <- divNames_v
@@ -72,7 +73,7 @@ if (log_v){
 
 ### Get files and names
 inputFiles_v <- list.files(inputDir_v)
-inputFiles_v <- inputFiles_v[order(as.numeric(gsub("^.*_S|_.*", "", inputFiles_v)))]
+inputFiles_v <- inputFiles_v[order(as.numeric(gsub("^.*_S|_.*|\\..*$", "", inputFiles_v)))]
 
 ### Get metadata
 meta_dt <- fread(metaFile_v)
@@ -92,7 +93,7 @@ baseFile_v <- strsplit(inputFiles_v[1], split = "S[0-9]+")[[1]]
 toKeep_v <- paste0(baseFile_v[1], "S", unlist(meta_dt[,get(sampleCol_v)]), baseFile_v[2])
 inputFiles_v <- inputFiles_v[inputFiles_v %in% toKeep_v]
 #inputNames_v <- sapply(inputFiles_v, function(x) strsplit(x, split = "_")[[1]][2], USE.NAMES = F)
-inputNames_v <- sapply(inputFiles_v, function(x) grep("S[0-9]+", unlist(strsplit(x, split = "_")), value = T), USE.NAMES=F)
+inputNames_v <- sapply(inputFiles_v, function(x) grep("S[0-9]+", unlist(strsplit(x, split = "_|\\.")), value = T), USE.NAMES=F)
 
 ### Get batch name
 batchName_v <- strsplit(inputFiles_v[1], split = "_")[[1]][1]
@@ -108,7 +109,7 @@ clones_lsdt <- sapply(inputFiles_v, function(x) {
     ## Get data
     y <- fread(file.path(inputDir_v, x), select = columns_v)
     ## Get sample character
-    sample_v <- grep("S[0-9]+", unlist(strsplit(x, split = "_")), value = T)
+    sample_v <- grep("S[0-9]+", unlist(strsplit(x, split = "_|\\.")), value = T)
     #sample_v <- strsplit(x, split = "_")[[1]][2]
     ## Get sample number
     sampNum_v <- as.numeric(gsub("S", "", sample_v))
