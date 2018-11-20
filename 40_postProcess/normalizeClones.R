@@ -48,7 +48,7 @@ pseudo_reads_v <- unique(count_data$`V segments`[count_data$`V segments` %in% ps
 count_data <- count_data[!(count_data$`V segments` %in% pseudo),]
 print(c("remove-pseudo row count:", count_data[,.N]))
 print(c("removed pseudo genes test: ", pseudo_reads_v))
-print("TEst")
+
 ### Read in scaling factor file
 scaling.factor_dt <- fread(scaling.factor.file)
 nb.scaling.factor_dt <- fread(nb.scaling.factor.file)
@@ -75,35 +75,7 @@ if (ncol(scaling.factor_dt) == 1) {
     colnames(spiked_reads) <- c("V", "J", "spike.count", "naive", "nb")
 } # fi
 
-### TODO: need to replace all instances of "multiples" to naive.
-### TODO: update normalization calculation to include nb-normalized counts. Reminder that these counts are
-###       independent of the individual spike counts, so don't multiply them by the spike counts or anything the way the naive is.
-### TODO: elsewhere - need to update calculate scaling factor code to write out V/J columns as well
-
-    
 print("Done with merge")
-
-### Legacy - assign scaling.factor to spiked_reads
-#spiked_reads$multiples <- scaling.factor;
-
-
-  # Opens the matching MiTCR file, if such file exists
-#   Original commented out below
-#  MiTCR_file_data <- read.csv(exported.clone.file, stringsAsFactors = FALSE)
-                                        #   End original
-### Read in MiXCR count data
-##count_data <- fread(exported.clone.file)
-
-### THIS SHOULD BE OBSOLETE WITH ADDITION OF DECONTAM SCRIPT (DOES IT THERE INSTEAD)
-### Leaving here as a reminder, in case something changes and we get weird behavior.
-### Get rid of the TRB that is before every V and J segment name, so it can be matched later
-###  MiTCR_file_data$"V segments" <- sub("TRB", "", MiTCR_file_data$"Best V hit");
-###  MiTCR_file_data$"J segments" <- sub("TRB", "", MiTCR_file_data$"Best J hit");
-###  MiTCR_file_data$"V segments" <- sub("\\*00", "", MiTCR_file_data$"V segments");
-###  MiTCR_file_data$"J segments" <- sub("\\*00", "", MiTCR_file_data$"J segments");
-  
-### Remove dashes from MiTCR data as well ALSO SHOULD BE OBSOLETE BY DECONTAM SCRIPT
-###  MiTCR_file_data$`V segments` <- gsub("-", "", MiTCR_file_data$`V segments`)
 
 ### TODO:  are we right to set these to zero? 
 count_data$"Normalized clone count" <- 0;
@@ -134,7 +106,6 @@ for(index in 1:nrow(spiked_reads)) {
         ## Create naive norm count
         count_data[indices.to.modify, `Normalized clone count` := current.spike.info$naive * count_data[indices.to.modify,get(countCol_v)]]
         ## Create nb norm count
-        #count_data[indices.to.modify, `nb.clone.count` := count_data[indices.to.modify, `Clone count`] / current.spike.info$nb]
         count_data[indices.to.modify, `nb.clone.count` := current.spike.info$nb * count_data[indices.to.modify, get(countCol_v)]]
     }   #   fi
 }   #   for index
@@ -150,9 +121,6 @@ count_data$"Normalized clone fraction" <- count_data$"Normalized clone count" / 
 nb.clone.count.sum <- sum(count_data$"nb.clone.count")
 count_data$"nb.clone.fraction" <- count_data$"nb.clone.count" / nb.clone.count.sum
 	
-### TODO: do we still have this code? Makes VDJtools compatible
-###  MiTCR_file_data <- postprocess.normalization.output(MiTCR_file_data);
-
 ### Output Names
 output.file.name <- sub("[.][^.]*$", "", basename(exported.clone.file));
 output.file.name <- paste(output.path, output.file.name, "_normalized.txt", sep="");
