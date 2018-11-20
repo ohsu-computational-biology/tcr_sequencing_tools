@@ -93,30 +93,6 @@ mkdir QC/meta
 mkdir QC/std
 mkdir QC/homeo
 
-# Directory to hold condor's log outputs
-#mkdir condor_logs
-#mkdir condor_logs/spike_counts
-#mkdir condor_logs/spike_counts/25bp
-#mkdir condor_logs/spike_counts/9bp
-#mkdir condor_logs/mixcr
-#mkdir condor_logs/mixcr/align
-#mkdir condor_logs/mixcr/assemble
-#mkdir condor_logs/mixcr/despiked
-#mkdir condor_logs/mixcr/export_align
-#mkdir condor_logs/mixcr/export_clones
-#mkdir condor_logs/normalization
-#mkdir condor_logs/pear
-#mkdir condor_logs/decontaminate
-#mkdir condor_logs/QC
-#mkdir condor_logs/setup
-#mkdir condor_logs/setup/unzip
-#mkdir condor_logs/setup/md5
-#mkdir condor_logs/aggregate
-#mkdir condor_logs/gliph
-#mkdir condor_logs/gliph/run
-#mkdir condor_logs/gliph/convert
-#mkdir condor_logs/groups
-
 # Directory to hold slurm log output
 mkdir slurm_logs
 mkdir slurm_logs/analysis
@@ -131,11 +107,7 @@ mkdir slurm_logs/qc
 mkdir slurm_logs/remove
 mkdir slurm_logs/setup
 mkdir slurm_logs/pear
-
 mkdir slurm_logs/mixcr
-mkdir slurm_logs/mixcr/align
-mkdir slurm_logs/mixcr/assemble
-mkdir slurm_logs/mixcr/exportClones
 
 if [ $RNA == "RNA" ]; then
 	mkdir slurm_logs/mixcr/partial1
@@ -146,7 +118,5 @@ fi
 # Directory for tools
 mkdir tools
 mkdir tools/todo
-#cp -r $tool/condor_tools/condor_formats $data/tools/
-#cp -r $tool/condor_tools/submits $data/tools/
 cp -r $tool/slurm $data/tools/
 

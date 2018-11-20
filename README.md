@@ -8,7 +8,8 @@ GENERAL NOTES
 
 1. Remember to create an interactive job on ExaCloud when running interactive and computationally-intensive jobs.  For example:
 
-     `~% condor_submit -interactive -append 'request_memory = 10 GB' -append 'request_cpus = 4'`
+     `~% condor_submit -interactive -append 'request_memory = 10 GB' -append 'request_cpus = 4'`  
+
      `~% srun --mincpus 4 --mem 4G --time 1-00 --pty bash`
 
 The new servers (exahead1 and exahead2) use the slurm job scheduler, not condor, the first command will no longer work.  
@@ -187,7 +188,7 @@ The Core places the files on their IGL server, nix (formerly mpssr). You will ne
      ```
      ~$  pwd
      /path/to/DNAXXXXLC/fastqs\_from\_core/FastQC/
-     ~$ condor_submit -interactive -append "request_memory = 32 GB"
+     ~$ srun --mincpus 1 --mem 16G --time 0-12 --pty bash
      ~$ /home/exacloud/lustre1/BioCoders/Applications/miniconda3/bin/multiqc --interactive --export .
      ```
 
@@ -233,7 +234,7 @@ The naming conventions used by IGL introduce an extra sample tag that is unnesse
 Optionally, we can remove 1 other field, if there happens to be a treatment designation or something that is also included.
 
 ```
-~$ Rscript $tool/misc/rename_fastqs.R /path/to/fastqs/ /path/to/QC/
+~$ Rscript $tool/10_preProcess/01_rename_fastqs.R /path/to/fastqs/ /path/to/QC/
 ```
 
 UnZip
@@ -244,7 +245,7 @@ and an sbatch script that will submit the program to the job scheduler. A few mo
 
 ```
 ~$ cd $data/tools/slurm
-~$ vi 01_sbatchUnzip.sh
+~$ vi 02_sbatchUnzip.sh
 < change --array argument to be 0-X, where X is the largest tens place in your files. 130 files would be 0-13 >
 ~$ sbatch 01_sbatchUnzip.sh
 ~$ mv unzip\* $data/slurm_logs/setup/ 
@@ -262,9 +263,9 @@ We do this using PEAR.
 ~$ cd $data/fastqs_from_core/fastqs
 ~$ ls -v *_R1_* > $data/tools/todo/pear.txt
 ~$ cd $data/tools/slurm/
-~$ vi 02_sbatchPear.sh
+~$ vi 03_sbatchPear.sh
 < change --array argument to be 1-X, where X is the number of files. 130 files would be 1-130 >
-~$ sbatch 02_sbatchPear.sh
+~$ sbatch 03_sbatchPear.sh
 ```
 
 Sometimes the job scheduler is pretty busy and running an entire batch at once causes some of the jobs to fail.  
@@ -272,7 +273,7 @@ Instead of running them all at the same time, you can utilize the `runSbatch.sh`
 waiting for one set of 10 to finish before submitting another. If there were 130 samples in a batch, it would look like:
 
 ```
-~$ sbatch runSbatch.sh 02_sbatchPear.sh 130
+~$ sbatch runSbatch.sh 03_sbatchPear.sh 130
 ```
 
 The PEAR program produces fastq files of the assembled reads, but it also produces files containing all discarded reads, 
@@ -305,6 +306,9 @@ IDENTIFY CLONOTYPES
 Our reads are finally ready to be processed through the MiXCR analysis pipeline. This process differs depending on if the data are DNA or RNA. 
 
 ## DNA  
+Now with MiXCR version 3.0+, there is only one tool, `analyze`, which will run all of the old `align`, `assemble`, and `export` modules. Either create the `todo/analyze.txt` file using the `mixcr/despiked_fastqs` directory, or use the non-todo method. See below for the documentation for MiXCR version 2.x.  
+
+**Old version**  
 We use three tools from the MiXCR suite: `align`, `assemble`, and `export`. Generally use the output of the previous command to form the "todo" file of the next command. 
 So the files in `despiked` go into `todo/align.txt`, the files in `align` will go into `todo/assemble.txt`, and the files in `assemble` will go into `todo/exportClones.txt`.
 The tool `50_sbatchMixcrExportAlign.sh` is not used in the standard pipeline and only needs to be run when troubleshooting. For each tool, create the todo file, edit the array argument, submit the sbatch,
@@ -322,6 +326,7 @@ run: `sh $tool/misc/check_clones.sh /path/to/export_clones`. If any files are ou
 go to your submission file and re-run only those files by commenting out the rest.
 
 ## RNA
+**Note** this has not been updated for MiXCR 3.0+!!
 Due to the nature of randomly digested RNAseq data, a few extra steps need to be taken to reliably identify clones. The RNAseq-specific submission files are in
 `$data/tools/slurm/rnaseq`. The same principle applies, however, of creating a todo file from the previous step's output, editing the array argument for the appropriate
 number of samples, submitting, and moving the log files. The steps for this are:
@@ -343,7 +348,7 @@ any contamination.
 
 ```
 ~$ cd $data/tools/slurm
-~$ sbatch 70_sbatchDecontaminate.sh
+~$ sbatch 40_sbatchDecontaminate.sh
 ```
 
 NORMALIZE
@@ -354,13 +359,14 @@ We have to do some more pre-processing before we are ready to normalize.
 1. Calculate the scaling factor
      ```
      ~$ cd /path/to/normalization/dir/
-     ~$ Rscript $tool/normalize/calculate.scaling.factor.R /path/to/normalization/counts/ $tool/reference/text_barcodesvj.txt 
+     ~$ Rscript $tool/40_postProcess/calculate.scaling.factor.R /path/to/normalization/counts/ $tool/00_reference/text_barcodesvj.txt 
      ```
 1. Normalize the clones
      ```
-     ~$ cd /path/to/tools/submits
-     ~$ Rscript 80_format.normalize.R /path/to/normalization/decontam /path/to/normalization/counts/ ../submits
-     etc.
+     ~$ cd $data/tools/slurm
+     ~$ vi 50_sbatchNormalize.sh
+       < change --array argument to be 1-X >
+     ~$ sbatch 50_sbatchNormalize.sh
      ```
 
 POSTPROCESS
@@ -368,13 +374,23 @@ POSTPROCESS
 Now we need to run all of the QC scripts. Each script can be run individually, 
 but they have been placed inside of a bash script that will run them all simultaneously.
 ```
-~$ cd /path/to/tools/submits
-~$ condor_submit 90_runQC.submit
+~$ cd $data/tools/slurm
+~$ sbatch 60_sbatchQC.sh
 ```
 ANALYZE
 ========
-Calculate clonotype diversity statistics (clonality, shannon entropy, etc.) using the analysis.R script. 
-There is a submission file in the `condor_tools/submissions` directory.
+There are a few different standard analyses that can be run. 
+Some of these require a metadata file that contains treatment information.
+The one that is always run is `70_sbatchDiversityAnalysis.sh` 
+which generates a text file containing standard diversity statistics such as clonality, shannon entropy, etc. 
+There are also variations of this script that allow you to subset for clones 
+of certain frequency groups only or certain numbers of top clones.  
+
+There is also the clonotype homeostasis analysis, 
+`80_sbatchClonalDivisionSummary.sh` which creates a few excel workbooks and some homeostasis plots. 
+Finally you can group clones and subset them based on those groupings.  
+
+Run any of these scripts just like you have been for the other sbatch scripts.
 
 Summary Output
 ===============
