@@ -229,8 +229,8 @@ plotList_lsgg <- list()
 
 ### Output names
 if (is.null(plot_v)) plot_v <- gsub("__|___", "_", paste(batchName_v, tissue_v, type_v, "cumFreqHomeo.pdf", sep = "_"))
-if (is.null(cumOut_v)) cumOut_v <- gsub("__|___", "_", paste0(batchName_v, tissue_v, type_v, "cumHomeo.xlsx", sep = "_"))
-if (is.null(meanOut_v)) meanOut_v <- gsub("__|___", "_", paste0(batchName_v, tissue_v, type_v, "meanHomeo.xlsx", sep = "_"))
+if (is.null(cumOut_v)) cumOut_v <- gsub("__|___", "_", paste(batchName_v, tissue_v, type_v, "cumHomeo.xlsx", sep = "_"))
+if (is.null(meanOut_v)) meanOut_v <- gsub("__|___", "_", paste(batchName_v, tissue_v, type_v, "meanHomeo.xlsx", sep = "_"))
 
 ################
 ### ANALYSIS ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
