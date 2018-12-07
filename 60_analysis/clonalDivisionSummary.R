@@ -159,7 +159,7 @@ cloneNames_v <- intersect(samples_v, cloneNames_v)
 cloneFiles_v <- cloneFiles_v[cloneNames_v]
 
 ### Read in metadata
-metadata_dt <- fread(metadata_v)
+#metadata_dt <- fread(metadata_v)
 
 ### Read in data
 cloneData_lsdt <- sapply(cloneFiles_v, function(x) fread(file.path(cloneDir_v, x)), simplify = F)
