@@ -56,10 +56,6 @@ cutOff_v <- args$cutOff
 qcDir_v <- args$qcDir
 old_v <- args$old
 
-### For testing
-inputDir_v <- "~/OHSU/tcr_spike/data/LIB180515LC/data/normalized_clones/"
-cutOff_v <- 1
-
 ### Handle NULL
 if (is.null(qcDir_v)) qcDir_v <- outputDir_v
 
