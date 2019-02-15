@@ -20,7 +20,7 @@ if (is.na(rename_v)) {rename_v <- F}
 
 ### Sort files
 clone.files <- list.files(clone.dir)
-clone.files <- clone.files[order(as.numeric(gsub(".*_S|_align.*|_clones.*", '', clone.files)))]
+clone.files <- clone.files[order(as.numeric(gsub(".*_S|_align.*|_clones.*|\\.clonotypes.*", '', clone.files)))]
 
 
 ###################
