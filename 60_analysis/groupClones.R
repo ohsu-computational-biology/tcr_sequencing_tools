@@ -90,7 +90,7 @@ if (length(batchCol_v) == 1) {
 
 ### Subset to only contain samples in meta
 baseFile_v <- strsplit(inputFiles_v[1], split = "S[0-9]+")[[1]]
-toKeep_v <- paste0(baseFile_v[1], "S", unlist(meta_dt[,get(sampleCol_v)]), baseFile_v[2])
+toKeep_v <- paste0(baseFile_v[1], "S", gsub("S", "", unlist(meta_dt[,get(sampleCol_v)])), baseFile_v[2])
 inputFiles_v <- inputFiles_v[inputFiles_v %in% toKeep_v]
 #inputNames_v <- sapply(inputFiles_v, function(x) strsplit(x, split = "_")[[1]][2], USE.NAMES = F)
 inputNames_v <- sapply(inputFiles_v, function(x) grep("S[0-9]+", unlist(strsplit(x, split = "_|\\.")), value = T), USE.NAMES=F)
@@ -116,7 +116,7 @@ clones_lsdt <- sapply(inputFiles_v, function(x) {
     ## Add sample character to data
     y$Sample <- sample_v
     ## Add treatment to data
-    y$Treatment <- meta_dt[get(sampleCol_v) == sampNum_v, get(treatCol_v)]
+    y$Treatment <- meta_dt[get(sampleCol_v) %in% c(sampNum_v,sample_v), get(treatCol_v)]
     ## Add clone index column
     y$id <- 1:nrow(y)
     ## Add empty division column
