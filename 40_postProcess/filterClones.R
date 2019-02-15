@@ -97,9 +97,8 @@ cat(sprintf("Count - Frequency combinations that will be used. PLEASE DOUBLE CHE
             paste(paste(freqCols_v, countCols_v, sep = "_-_"), collapse = "\n\t")))
 
 ### Special case for raw data
-if (!column_v %in% colnames(inputData_lsdt[[1]])){
+if (!count_v %in% colnames(inputData_lsdt[[1]])){
   warning("Data are not normalized. Performing count filter on raw counts, which is not advisable.")
-  column_v <- grep("cloneFraction|Clone fraction", colnames(inputData_lsdt[[1]]), value = T)
   count_v <- grep("cloneCount|Clone count", colnames(inputData_lsdt[[1]]), value = T)
 } # fi
 
