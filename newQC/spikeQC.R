@@ -94,12 +94,12 @@ colorCol_v <- args$colorCol
 facetCol_v <- args$facetCol
 
 ### For testing
-#nineDir_v <- "~/OHSU/tcr_spike/data/LIB180920LC/qc_dev/spike/9bp/"
-#twentyFiveDir_v <- "~/OHSU/tcr_spike/data/LIB180920LC/qc_dev/spike/25bp/"
-#outDir_v <- "~/OHSU/tcr_spike/data/LIB180920LC/qc_dev/spike/out/"
-#metaFile_v <- "~/OHSU/tcr_spike/data/LIB180920LC/meta/meta.txt"
-#colorCol_v <- NULL
-#facetCol_v <- NULL
+nineDir_v <- "~/OHSU/tcr_spike/data/test_collab/spike_counts/9bp/qc/"
+twentyFiveDir_v <- "~/OHSU/tcr_spike/data/test_collab/spike_counts/25bp/qc/"
+outDir_v <- "~/OHSU/tcr_spike/data/test_collab/out/"
+metaFile_v <- "~/OHSU/tcr_spike/data/test_collab/meta.txt"
+colorCol_v <- "Treatment"
+facetCol_v <- "Source"
 
 ###################
 ### HANDLE NULL ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -75,11 +75,11 @@ colorCol_v <- args$colorCol
 facetCol_v <- args$facetCol
 
 ### For testing
-#inputDir_v <- "~/OHSU/tcr_spike/data/LIB180920LC/qc_dev/pear/"
-#outDir_v <- "~/OHSU/tcr_spike/data/LIB180920LC/qc_dev/pear/out/"
-#metaFile_v <- "~/OHSU/tcr_spike/data/LIB180920LC/meta/meta.txt"
-#colorCol_v <- NULL
-#facetCol_v <- NULL
+# inputDir_v <- "~/OHSU/tcr_spike/data/test_collab/pear/"
+# outDir_v <- "~/OHSU/tcr_spike/data/test_collab/out/"
+# metaFile_v <- "~/OHSU/tcr_spike/data/test_collab/meta.txt"
+# colorCol_v <- "Treatment"
+# facetCol_v <- "Source"
 
 ###################
 ### HANDLE NULL ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -177,7 +177,7 @@ write.table(out_df, outFile_v, sep = '\t', quote = F, row.names = F)
 ##############
 
 for (i in 1:nrow(out_df)) {
-  currAssemble_v <- out_df[i,"pctAssembled"]
+  currAssemble_v <- out_df[i,"pear_pctAssembled"]
   if (currAssemble_v < 90) {
     cat(sprintf("Sample %s only assembled %s%% of reads.\n", out_df[i,"Sample"], as.character(currAssemble_v)))
   } # fi
@@ -231,7 +231,7 @@ if (is.null(metaFile_v)) {
     
     ## Get info
     currCol_v <- cols_v[i]
-    currData_dt <- melt_dt[melt_df$variable == currCol_v, ]
+    currData_dt <- melt_dt[melt_dt$variable == currCol_v, ]
     currOutFile_v <- plotFiles_v[i]
     
     ## Determine if violin or box plot
