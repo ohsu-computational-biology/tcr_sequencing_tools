@@ -2,8 +2,8 @@
 
 # Run all of the QC scripts at one time
 
-SCRIPTS=$tool/QC/
-REF=$tool/reference/
+SCRIPTS=$tool/50_QC/
+REF=$tool/00_reference/
 DATA=$data/
 OUT=$data/QC/
 
@@ -18,17 +18,13 @@ echoerr Count spikes 9
 Rscript $SCRIPTS/count.spikes.QC.R $DATA/spike_counts/9bp/qc/ $OUT/
 mv $OUT/count.spikes.QC.summary.txt $OUT/count.spikes.9bp.QC.summary.txt
 
-echoerr Count spikes 25
+#echoerr Count spikes 25
 Rscript $SCRIPTS/count.spikes.QC.R $DATA/spike_counts/25bp/qc/ $OUT/
 mv $OUT/count.spikes.QC.summary.txt $OUT/count.spikes.25bp.QC.summary.txt
 
-# ALIGN
-echoerr align
-Rscript $SCRIPTS/mixcr.alignment.QC.R --inputDir $DATA/mixcr/reports/align/ --outDir $OUT/
-
-# ASSEMBLE
-echoerr assemble
-Rscript $SCRIPTS/mixcr.assemble.QC.R --inputDir $DATA/mixcr/reports/assemble/ --outDir $OUT/
+# MIXCR
+echoerr analyze
+Rscript $SCRIPTS/mixcr.analyze.QC.R --inputDir $DATA/mixcr/reports/ --outDir $OUT/
 
 # NON-STANDARD ALIGNMENTS
 echoerr non-standard alignments
@@ -36,6 +32,5 @@ Rscript $SCRIPTS/countNonStandardHits.R $DATA/normalization/decontam/ $REF/text_
 
 ## NORMALIZATION
 echoerr normalization
-Rscript $SCRIPTS/normalization.QC.R $DATA/normalization/decontam/ $DATA/normalization/normalized_clones/ $DATA/normalization/QC/
+Rscript $SCRIPTS/normalization.QC.R -r $DATA/normalization/decontam/ -n $DATA/normalization/normalized_clones/ -o $DATA/normalization/QC/
 
-Rscript $SCRIPTS/aggregate.normalization.QC.R $DATA/normalization/QC/ $OUT/

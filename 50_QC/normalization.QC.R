@@ -47,18 +47,18 @@ outDir_v <- args$outDir
 ###############
 ### ACTIONS ###
 ###############
-arguments <- commandArgs(trailingOnly=TRUE);
-path.to.raw.clone.counts <- arguments[1];
-path.to.normalized.clone.counts <- arguments[2];
-out.dir <- arguments[3]
+#arguments <- commandArgs(trailingOnly=TRUE);
+#path.to.raw.clone.counts <- arguments[1];
+#path.to.normalized.clone.counts <- arguments[2];
+#out.dir <- arguments[3]
 
 ### Get files
 rawFiles_v <- list.files(rawDir_v)
 normFiles_v <- list.files(normDir_v)
 
 ### Sort
-rawFiles_v <- rawFiles_v[order(as.numeric(gsub("^.*_S|_[a-z]+|.txt", "", rawFiles_v)))]
-normFiles_v <- normFiles_v[order(as.numeric(gsub("^.*_S|_[a-z]+|.txt", "", normFiles_v)))]
+rawFiles_v <- rawFiles_v[order(as.numeric(gsub("^.*_S|_[a-z]+|\\.clono.*|.txt", "", rawFiles_v)))]
+normFiles_v <- normFiles_v[order(as.numeric(gsub("^.*_S|_[a-z]+|\\.clono.*|.txt", "", normFiles_v)))]
 
 ### Get IDs
 rawID_v <- gsub("^.*_S|_[a-z]+|.txt", "", rawFiles_v)
