@@ -7,7 +7,7 @@
 ####################
 
 library(optparse)
-source(file.path(Sys.getenv("tool"), "misc/helperFxn.R"))
+source(file.path(Sys.getenv("tool"), "50_QC/helperFxn.R"))
 options(warn=1)
 
 ####################
