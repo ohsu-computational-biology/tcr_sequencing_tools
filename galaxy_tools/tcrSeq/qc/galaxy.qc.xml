@@ -42,7 +42,7 @@
 	     --spikeCountOutput $count_output
 
 	     --alignReports $mixcr_reports --alignNames $mixcr_names
-	     --alignOutput $mixcr_output --asembleOutput $assemble_output
+	     --alignOutput $align_output --asembleOutput $assemble_output
 	     
 	     --decontamQCFiles $decontam_qc --decontamQCNames $decontam_qc_names --decontamOutput $decontam_qc_output
 	     
