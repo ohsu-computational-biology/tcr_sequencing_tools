@@ -1,0 +1,73 @@
+<tool id="mixcr.analyze" name="Analyze (MiXCR)" version="0.1.0">
+  <description>Align, assemble, and export sequencing reads to reference V, D, and J genes of T-cell receptors</description>
+
+  <macros>
+    <import>macros.xml</import>
+  </macros>
+
+  <expand macro="requirements"/>
+
+  @VERSION_CMD@
+  
+  <command detect_errors="exit_code">
+    <![CDATA[
+	     @CMD_BEGIN@ analyze amplicon --force-overwrite --only-productive --verbose
+             -s $species --starting-material dna --5-end v-primers --3-end j-primers
+	     --adapters adapters-present --receptor-type trb --region-of-interest CDR3
+	     --report $report
+	     --align "-OsaveOriginalReads=true --verbose"
+             --export "--preset-file $preset --verbose"
+             $input $output
+    ]]>
+  </command>
+
+  <inputs>
+    <param name="input" type="data" format="fastq" label="Input FastQ" help="Fastq file assembled by PEAR, with spiked reads
+									     removed.">
+    </param>
+    
+    <param name="species" type="select" label="Species" help="Species to align to.">
+      <option value="mmu">Mouse</option>
+      <option value="hsa">Human</option>
+    </param>
+
+    <param name="preset" type="data" format="txt" label="Preset Args" help="Reference file with preset arguments for assemble portion.">
+    </param>
+    
+  </inputs>
+
+  <outputs>
+    <data name="report" format="tabular" label="Mixcr Report"/> 
+    <data name="output" format="data" label="Mixcr"/> 
+  </outputs>
+
+  <!--
+  <tests>
+    <test>
+      <param name="input" value="/Users/hortowe/newGalaxy/test-data/mixcr/reads_S10_data.fastq"/>
+      <param name="chain" value="TRB"/>
+      <param name="species" value="mmu"/>
+      <param name="save_des" value="-a"/>
+      <param name="save_reads" value="-g"/>
+      <param name="all_reads" value="-v"/>
+      <param name="min_sum" value="120.0"/>
+      <param name="v_abs_min" value="40"/>
+      <param name="j_abs_min" value="40"/>
+      <output name="report" value="/Users/hortowe/newGalaxy/test-data/mixcr/mixcr_S10_alignReport.txt"/>
+      <output name="output" value="/Users/hortowe/newGalaxy/test-data/mixcr/mixcr_S10_alignment.vdjca"/>
+      <output name="output" checksum="214afde7c5a692a45ecda3fef6ea5c2c"/>
+    </test>
+  </tests> 
+  -->
+  <help>
+    <![CDATA[
+	     The MiXCR Align program takes despiked sequencing reads and aligns them to reference V, D, and J genes of T-Cell Receptors.
+	     The GenBank database is used for reference sequences.
+	     This tool defaults to the mouse TRB (T-Cell Receptor Beta chain) locus.
+    ]]>
+  </help>
+
+  <citations>
+  </citations>
+  
+</tool>
