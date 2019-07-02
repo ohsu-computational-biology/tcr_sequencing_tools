@@ -10,14 +10,14 @@
   <command detect_errors="exit_code">
     <![CDATA[
 	     count.spikes.R
-	     $input_fastq
-	     ${input_fastq.element_identifier}
-	     $sample_id
-	     $spike_file
-	     $spike_length
-	     $output_count
-	     $output_remove
-	     $output_qc
+	     --inputFastq $input_fastq
+	     --inputName ${input_fastq.element_identifier}
+	     --id $sample_id
+	     --spikeFile $spike_file
+	     --spikeLength $spike_length
+	     --outputCount $output_count
+	     --outputRemove $output_remove
+	     --outputQC $output_qc
 	     ]]>
   </command>
 
