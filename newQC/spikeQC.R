@@ -37,6 +37,7 @@
 suppressMessages(library(ggplot2))
 suppressMessages(library(data.table))
 suppressMessages(library(optparse))
+suppressMessages(library(wrh.rUtils))
 options("scipen" = 100)
 
 ####################
@@ -94,12 +95,12 @@ colorCol_v <- args$colorCol
 facetCol_v <- args$facetCol
 
 ### For testing
-nineDir_v <- "~/OHSU/tcr_spike/data/test_collab/spike_counts/9bp/qc/"
-twentyFiveDir_v <- "~/OHSU/tcr_spike/data/test_collab/spike_counts/25bp/qc/"
-outDir_v <- "~/OHSU/tcr_spike/data/test_collab/out/"
-metaFile_v <- "~/OHSU/tcr_spike/data/test_collab/meta.txt"
-colorCol_v <- "Treatment"
-facetCol_v <- "Source"
+#nineDir_v <- "~/OHSU/tcr_spike/data/test_collab/spike_counts/9bp/qc/"
+#twentyFiveDir_v <- "~/OHSU/tcr_spike/data/test_collab/spike_counts/25bp/qc/"
+#outDir_v <- "~/OHSU/tcr_spike/data/test_collab/out/"
+#metaFile_v <- "~/OHSU/tcr_spike/data/test_collab/meta.txt"
+#colorCol_v <- "Treatment"
+#facetCol_v <- "Source"
 
 ###################
 ### HANDLE NULL ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -191,8 +192,22 @@ if (is.null(twentyFiveDir_v)) {
 textOut_lsv <- as.list(file.path(outDir_v, paste0(names(out_lsdf), "Counts.txt")))
 names(textOut_lsv) <- names(out_lsdf)
 
-plotNames_lsv <- as.list(file.path(outDir_v, paste0(names(files_lsv), "_pctSpike.pdf")))
-names(plotNames_lsv) <- names(files_lsv)
+plotNames_lsv <- list()
+for (i in 1:length(files_lsv)) {
+
+  ## Get name
+  currName_v <- names(files_lsv)[i]
+
+  ## Make file
+  if (currName_v == "nine") {
+    plotNames_lsv[[currName_v]] <- file.path(outDir_v, paste0(currName_v, "_pctSpike.pdf"))
+  } else if (currName_v == "twentyFive") {
+    names_v <- c("_pctSpike.pdf", "_pctSpikeLog10.pdf", "_spikesBySample.pdf",
+                 "_spikesBySampleLog10.pdf", "_spikesByNumReadsPct.pdf", "_spikesByNumReadsCount.pdf")
+    outNames_v <- paste0(currName_v, names_v)
+    plotNames_lsv[[currName_v]] <- file.path(outDir_v, outNames_v)
+  } # fi
+} # for
 
 ############
 ### READ ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -313,38 +328,170 @@ if (is.null(metaFile_v)) {
   
   if (!is.null(twentyFiveDir_v)) {
     
-    ## Convert to percentage
+    ##
+    ## CHECK COUNTS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ##
+
+    ## Get data
     tf_df <- out_lsdf$twentyFive
+
+    ## Get zero pct
+    tf_0pct_df <- tf_df[tf_df$pct.spiked.reads == 0,]
+    tf_0count_df <- tf_df[tf_df$num.spiked.reads == 0,]
+
+    ## Extract summary
+    tfSummary_df <- tf_df[,c("Sample", "num.reads", "num.spiked.reads", "pct.spiked.reads")]
+
+    ## Check results
+    if ((nrow(tf_0pct_df) > 0 | nrow(tf_0count_df) > 0)) {
+
+      ## Make sure rows are same
+      if (nrow(tf_0count_df) != nrow(tf_0pct_df)) {
+        warning(sprintf("Mismatch between number of 0-count (%s) and 0-pct (%s) rows.",
+                        nrow(tf_0count_df), nrow(tf_0pct_df)))
+      } # fi
+      
+      ## Make sure samples are the same
+      pctUniq_v <- setdiff(tf_0pct_df$Sample, tf_0count_df$Sample)
+      countUniq_v <- setdiff(tf_0count_df$Sample, tf_0pct_df$Sample)
+      mismatchSamples_v <- union(pctUniq_v, countUniq_v)
+      if (length(mismatchSamples_v) > 0) {
+        warning(sprintf("Mismatch between 0-count and 0-pct samples.\n\t0-count uniq: %s\n\t0-pct uniq: %s\n",
+                paste(countUniq_v, collapse = "; "), paste(pctUniq_v, collapse = "; ")))
+      } else {
+        badSamples_v <- tf_0pct_df$Sample
+        warning(sprintf("Following samples have 0 spikes and will be removed: %s\n", paste(badSamples_v, collapse = "; ")))
+        tf_df <- tf_df[!(tf_df$Sample %in% badSamples_v),]
+      } # fi
+    } # fi
+
+
+    ##
+    ## X-AXIS IS SPIKES, BOXES CONTAIN 1 POINT PER SAMPLE
+    ##
+    
+    ## Convert to percentage
     tf_df[,spikeCols_v] <- tf_df[,spikeCols_v] / tf_df$num.spiked.reads * 100
     
     ## Get means
-    means_v <- colMeans(tf_df[,spikeCols_v], na.rm = T)
+    colMeans_v <- colMeans(tf_df[,spikeCols_v], na.rm = T)
+    rowMedians_v <- apply(tf_df[,spikeCols_v], 1, function(x) median(x, na.rm = T))
+    nonZeroRowMedians_v <- apply(tf_df[,spikeCols_v], 1, function(x) median(x[which(x != 0)], na.rm = T))
+    names(rowMedians_v) <- tf_df$Sample
+    names(nonZeroRowMedians_v) <- tf_df$Sample
     
     ## Remove summary cols and sort
-    tf_df <- tf_df[,c("Sample", spikeCols_v[order(means_v)])]
+    tf_df <- tf_df[,c("Sample", spikeCols_v[order(colMeans_v)])]
     
     ## Melt
     melt_df <- melt(tf_df, id.vars = "Sample")
     
+    ## Log transform
+    melt_df$log10 <- log10(melt_df$value + 1)
+    #melt_df[is.infinite(melt_df$log10), "log10"] <- 0
+    
     ## Plot
-    tf_gg <- ggplot(data = melt_df, aes(x = variable, y = value)) +
+    tf_gg1 <- ggplot(data = melt_df, aes(x = variable, y = value)) +
       geom_boxplot() +
-      ylab("Percent") +
-      xlab("Spike") +
-      scale_y_log10() +
+      labs(x = "Spike", y = "Percent") +
+      scale_y_log10(breaks = c(0.01, 1, 10, 50, 100)) +
       ggtitle(paste(batch_v, "Percent Of All Spiked Reads")) +
-      theme_classic() +
-      theme(plot.title = element_text(hjust = 0.5, size = 20),
-            axis.text.x = element_blank(),
-            axis.title.x = element_text(size = 18),
-            axis.ticks.x = element_blank(),
-            axis.text.y = element_text(size = 16),
-            axis.title.y = element_text(size = 18))
+      big_label() +
+      theme(axis.text.x = element_blank(),
+            axis.ticks.x = element_blank())
+      
+      tf_gg2 <- ggplot(data = melt_df, aes(x = variable, y = log10)) +
+        geom_boxplot() +
+        labs(x = "Spike", y = "log10(Percent)") +
+        ggtitle(paste(batch_v, "Percent Of All Spiked Reads")) +
+        big_label() + 
+      theme(axis.text.x = element_blank(),
+            axis.ticks.x = element_blank())
+            
     
     ## Write
-    pdf(file = plotNames_lsv$twentyFive)
-    print(tf_gg)
+    pdf(file = plotNames_lsv$twentyFive[1])
+    print(tf_gg1)
     dev.off()
+    
+    pdf(file = plotNames_lsv$twentyFive[2])
+    print(tf_gg2)
+    dev.off()
+    
+    ##
+    ## X-AXIS IS SAMPLE, BOXES CONTAIN 1 POINT PER SPIKE
+    ##
+    
+    ## Order
+    #rowOrder_v <- sort(rowMedians_v, decreasing = T)
+    rowOrder_v <- sort(nonZeroRowMedians_v)
+    melt_df$Sample <- factor(melt_df$Sample, levels = names(rowOrder_v))
+    
+    tf_gg3 <- ggplot(data = melt_df, aes(x = Sample, y = value)) +
+      geom_boxplot() +
+      labs(x = "Sample", y = "Percent") +
+      scale_y_log10(breaks = c(0.01, 1, 10, 50, 100)) +
+      ggtitle(paste(batch_v, "Spike distrib. in each Sample")) +
+      big_label() +
+      theme(axis.text.x = element_blank(),
+            axis.ticks.x = element_blank())
+    
+    tf_gg4 <- ggplot(data = melt_df, aes(x = Sample, y = log10)) +
+      geom_boxplot() +
+      labs(x = "Sample", y = "log10(Percent)") +
+      ggtitle(paste(batch_v, "Spike distrib. in each Sample")) +
+      big_label() +
+      theme(axis.text.x = element_blank(),
+            axis.ticks.x = element_blank())
+    
+    ## Write
+    pdf(file = plotNames_lsv$twentyFive[3])
+    print(tf_gg3)
+    dev.off()
+    
+    pdf(file = plotNames_lsv$twentyFive[4])
+    print(tf_gg4)
+    dev.off()
+    
+    ##
+    ## NUMBER OF SPIKES OUT OF 260
+    ##
+    
+    ## Get number of spikes
+    spikes_v <- grep("Sample", colnames(tf_df), value = T, invert = T)
+    numSpikes_v <- apply(tf_df[,spikes_v], 1, function(x) length(which(unlist(x) != 0)))
+    pctSpikes_v <- numSpikes_v / 260 * 100
+    pctSpikes_df <- data.frame("Sample" = paste0("S", names(pctSpikes_v)), "pctSpikes" = pctSpikes_v, "numSpikes" = numSpikes_v)
+    tfSummary_df <- merge(tfSummary_df, pctSpikes_df, by = "Sample", sort = F)
+    
+    ## Make plots
+    tf_gg5 <- ggplot(tfSummary_df, aes(x = num.reads, y = pctSpikes)) +
+      geom_point() +
+      labs(x = "Number of Reads", y = "Pct of Unique 260 Spikes") +
+      ggtitle("Unique Spikes Found Based on Number of Reads") +
+      big_label() +
+      theme(panel.grid.major.y = element_line(color="grey60")) +
+      scale_x_log10(breaks = c(100, 10000, 100000, 1000000)) +
+      scale_y_continuous(breaks = seq(50,250,by=50))
+    
+    tf_gg6 <- ggplot(tfSummary_df, aes(x = num.reads, y = numSpikes)) +
+      geom_point() +
+      labs(x = "Number of Reads", y = "Number Unique Spikes") +
+      ggtitle("Unique Spikes Found Based on Number of Reads") +
+      big_label() +
+      theme(panel.grid.major = element_line(color="grey60")) +
+      scale_x_log10(breaks = c(100, 10000, 100000, 1000000)) +
+      scale_y_continuous(breaks = seq(50,250,by=50))
+    
+    ## Write
+    pdf(file = plotNames_lsv$twentyFive[5])
+    print(tf_gg5)
+    dev.off()
+    
+    pdf(file = plotNames_lsv$twentyFive[6])
+    print(tf_gg6)
+    dev.off()
+
   } # fi
   
 } else {

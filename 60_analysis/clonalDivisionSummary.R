@@ -157,13 +157,17 @@ samples_v <- paste0("S", gsub("^S", "", metadata_dt[[sampleCol_v]]))
 ### Subset cloneFiles_v and cloneNames_v for these samples
 cloneNames_v <- intersect(samples_v, cloneNames_v)
 cloneFiles_v <- cloneFiles_v[cloneNames_v]
+print(cloneFiles_v)
+print(cloneNames_v)
 
 ### Read in metadata
 #metadata_dt <- fread(metadata_v)
 
 ### Read in data
 cloneData_lsdt <- sapply(cloneFiles_v, function(x) fread(file.path(cloneDir_v, x)), simplify = F)
-
+print(cloneData_lsdt[[1]][1:5,1:5])
+names(cloneData_lsdt)[1]
+colnames(cloneData_lsdt[[1]])
 ### Get fraction/count columns
 ## Get fraction column
 if (old_v) {
@@ -198,6 +202,8 @@ if (!is.null(type_v)){
     treatCol_v <- grep("[Tt]reatment", colnames(metadata_dt), value = T)
 } # fi
 
+print(treatCol_v)
+#treatCol_v <- "All"
 treatments_v <- unique(metadata_dt[, get(treatCol_v)])
 
 ### Create divisions and empty data.tables to hold results.
@@ -240,11 +246,14 @@ for (i in 1:length(treatments_v)){
 
     ## Get Treatment
     currTreat_v <- treatments_v[i]
+	print(i)
+	print(currTreat_v)
 
     ## Subset files
     currFiles_v <- paste0("S", metadata_dt[get(treatCol_v) == currTreat_v, get(sampleCol_v)]) # LIB170728LC
     currData_lsdt <- cloneData_lsdt[currFiles_v]
-
+print(currFiles_v)
+print(currData_lsdt[[1]][1:5,1:5])
     ## Make empty matrix
     meanFreq_mat <- matrix(ncol = (length(divisions_v)-1), nrow = length(currData_lsdt))
     cumFreq_mat <- meanFreq_mat
