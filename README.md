@@ -27,7 +27,7 @@ DIRECTORY SET UP AND ENV VARS
 1. Create a location on ExaCloud for storing the project files, by creating a new directory in the tcrseq project area:
 
     ```
-     ~$ cd /home/exacloud/lustre1/CompBio/data/tcrseq/dhaarini/
+     ~$ cd /path/to/data/tcrseq/dhaarini/
      ~$ mkdir DNAXXXXXLC
      ```
 
@@ -40,7 +40,7 @@ DIRECTORY SET UP AND ENV VARS
     b. Enter these lines:
 
      ```
-     data=/home/exacloud/lustre1/CompBio/data/tcrseq/dhaarini/NEW_DIR/
+     data=/path/to/data/tcrseq/dhaarini/NEW_DIR/
      export data
      tool=/path/to/this/repo/installation/
      export tool
@@ -174,9 +174,9 @@ The Core places the files on their IGL server, nix (formerly mpssr). You will ne
 
      ```
      ~% pwd
-     /home/exacloud/lustre1/CompBio/data/tcrseq/dhaarini/DNAXXXXLC
+     /path/to/data/tcrseq/dhaarini/DNAXXXXLC
      ~% rsync -r username@mpssr1:/projects/DNAXXXXLC/150*/DNAXXXXLC
-     /home/exacloud/lustre1/CompBio/data/tcrseq/dhaarini/DNAXXXXLC/fastqs\_from\_core/fastqs
+     /path/to/tcrseq/dhaarini/DNAXXXXLC/fastqs\_from\_core/fastqs
      ```
 1. Use the instructions provided by the Core to find the files on the IGL server.  (You can ssh into the server if necessary – the Core typically provides a temporary password giving you access for ~two weeks.)
 
@@ -189,7 +189,7 @@ The Core places the files on their IGL server, nix (formerly mpssr). You will ne
      ~$  pwd
      /path/to/DNAXXXXLC/fastqs\_from\_core/FastQC/
      ~$ srun --mincpus 1 --mem 16G --time 0-12 --pty bash
-     ~$ /home/exacloud/lustre1/BioCoders/Applications/miniconda3/bin/multiqc --interactive --export .
+     ~$ /path/to/BioCoders/Applications/miniconda3/bin/multiqc --interactive --export .
      ```
 
 2. A new file called `multiqc_report.html` will be created in the FastQC directory. You can either copy this to your local, and then view it in a web browser:
