@@ -25,20 +25,29 @@ library(optparse)
 
 ### Make list of options
 optlist <- list(
-  make_option("-i", "--inputFile",
-              type = "character",
-              help = "'full' clone file from frequency group output"),
-  make_option("-o", "--outDir",
-              type = "character",
-              help = "path to directory to write output files"),
-  make_option("-n", "--nClones",
-              type = "numeric",
-              default = 10000,
-              help = "Maximum number of unique clones allowed in each treatment group"),
+  make_option(
+    c("-i", "--inputFile"),
+    type = "character",
+    help = "'full' clone file from frequency group output"),
+  make_option(
+    c("-o", "--outDir"),
+    type = "character",
+    help = "path to directory to write output files"),
+  make_option(
+    c("-n", "--nClones"),
+    type = "numeric",
+    default = 10000,
+    help = "Maximum number of unique clones allowed in each treatment group"),
+  make_option(
+    c("-f", "--freqGroups"),
+    type = "character",
+    default = "Hyperexpanded,Large,Medium,Small,Rare",
+    help = "list of frequency groups to use. This cut-off takes precedence over nClones cut-off. Comma-sep, no spaces"
+  )
 )
 
 ### Parse commandline
-p <- OptionParser(usage = "%prog -i inputFile -o outDir -n nClones",
+p <- OptionParser(usage = "%prog -i inputFile -o outDir -n nClones -f freqGroups",
                   option_list = optlist)
 
 args <- parse_args(p)
@@ -48,11 +57,7 @@ opt <- args$options
 inputFile_v <- args$inputFile
 outDir_v <- args$outDir
 nClones_v <- args$nClones
-
-### Testing
-inputFile_v <- "~/OHSU/tcr_spike/data/LIB190701LC/freqGroups/LIB190701LC_full_clones.txt"
-outDir_v <- mkdir("~/OHSU/tcr_spike/data/LIB190701LC/", "gliph")
-nClones_v <- 10000
+freqs_v <- args$freqGroups
 
 #############
 ### SETUP ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -65,7 +70,7 @@ inputData_dt <- fread(inputFile_v)
 treats_v <- unique(inputData_dt$Treatment)
 
 ### Frequency groups
-freqs_v <- c("Hyperexpanded", "Large", "Medium", "Small", "Rare")
+freqs_v <- splitComma(freqs_v)
 
 ### Output
 out_lsdt <- list()
