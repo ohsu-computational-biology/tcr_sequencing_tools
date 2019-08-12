@@ -1,97 +1,149 @@
-#!/usr/bin/Rscript
-
 ###
-### Convert MiXCR to GLIPH
+### CREATE GLIPH INPUT
 ###
 
-### We can take MiXCR files and then group them by their different clonal frequencies. Sometimes we want to then put these clones
-### through the GLIPH algorithm. These files are significantly different in format than the original MiXCR files, so they require a 
-### separate script in order to convert them into GLIPH-compatible tables. 
-### Since these files have already been grouped by treatment, there will be one input directory and then one output file for each file in that directory.
+###################
+### DESCRIPTION ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+###################
 
-### Format:
-  ### Column 1 : CDR3 AA seq
-    ### freqGrp - "AA. Seq. CDR3"
-    ### GLIPH - "CDR3b"
-  ### Column 2 : V sequence
-    ### freqGrp - "V segments"; format V131
-    ### GLIPH - "TRBV"; format TRBV13-1
-  ### Column 3 : J sequence
-    ### freqGrp - "J segments"; format J2-5
-    ### GLIPH - "TRBJ"; format TRBJ2-5
-  ### Column 4 : Patient (Sample, but want consistent names with tool)
-    ### freqGrp - "Sample"; format S1
-  ### Column 5 : Counts
-    ### freqGrp - "Normalized clone count"
+### For a given batch, first create an aggregate file of all normalized clones and their frequency group designations
+### Must also have treatment designations as well.
+### For each treatment, create a new file with maximum 10k unique clones in the GLIPH input format
+### Determine which 10k clones to include by starting with most frequent to least frequent (by frequency group)
+### Within a group, prioritize higher degree of sharing among samples.
 
+####################
+### DEPENDENCIES ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+####################
 
-### Dependencies
-library(data.table)
+library(wrh.rUtils)
 library(optparse)
+
+####################
+### COMMAND LINE ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+####################
 
 ### Make list of options
 optlist <- list(
-  make_option(
-    c("-i", "--inputDir"),
-    type = "character",
-    help = "Directory of freqGroup clone files. One file for each treatment, generally."
-  ),
-  make_option(
-    c("-o", "--outDir"),
-    type = "character",
-    help = "output directory to write GLIPH-compatible clone files"
-  )
+  make_option("-i", "--inputFile",
+              type = "character",
+              help = "'full' clone file from frequency group output"),
+  make_option("-o", "--outDir",
+              type = "character",
+              help = "path to directory to write output files"),
+  make_option("-n", "--nClones",
+              type = "numeric",
+              default = 10000,
+              help = "Maximum number of unique clones allowed in each treatment group"),
 )
 
 ### Parse commandline
-p <- OptionParser(usage = "%prog -i inputDirectory -o outputDirectory",
+p <- OptionParser(usage = "%prog -i inputFile -o outDir -n nClones",
                   option_list = optlist)
+
 args <- parse_args(p)
 opt <- args$options
 
-### Commands
-cloneDir_v <- args$inputDir
+### Assign
+inputFile_v <- args$inputFile
 outDir_v <- args$outDir
+nClones_v <- args$nClones
 
-### Get files
-cloneFiles_v <- list.files(cloneDir_v)
+### Testing
+inputFile_v <- "~/OHSU/tcr_spike/data/LIB190701LC/freqGroups/LIB190701LC_full_clones.txt"
+outDir_v <- mkdir("~/OHSU/tcr_spike/data/LIB190701LC/", "gliph")
+nClones_v <- 10000
 
-### Get batch
-batchName_v <- strsplit(cloneFiles_v[1], split = "_")[[1]][1]
+#############
+### SETUP ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#############
 
-### Column variables
-toRead_v <- c("AA. Seq. CDR3", "V segments", "J segments", "Normalized clone count", "Sample")
-vj_v <- c("V segments", "J segments")
-weirdV_v <- c("V121", "V122", "V131", "V132", "V133")
+### Get data
+inputData_dt <- fread(inputFile_v)
 
-### Read in files and fix up
-clones_lsdt <- sapply(cloneFiles_v, function(x) {
-    ## Get data
-    y <- fread(file.path(cloneDir_v, x), select = toRead_v)
+### Get treatments
+treats_v <- unique(inputData_dt$Treatment)
 
-    ## Change sample column to Patient
-    colnames(y)[colnames(y) == "Sample"] <- "Patient"
+### Frequency groups
+freqs_v <- c("Hyperexpanded", "Large", "Medium", "Small", "Rare")
 
-    ## Add dash to specific V's
-    y[, `V segments` := gsub('^(V1[23]{1})([123]{1})$', '\\1-\\2', `V segments`)]
+### Output
+out_lsdt <- list()
+
+###########
+### RUN ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+###########
+
+for (i in 1:length(treats_v)) {
+  
+  ## Get treatment and subset data
+  currTreat_v <- treats_v[i]
+  currData_dt <- inputData_dt[Treatment == currTreat_v,]
+  cat(sprintf("Currently on %s (%s of %s)\n", currTreat_v, i, length(treats_v)))
+  
+  ## Empty data table
+  currOut_dt <- data.table()
+  stop_v <- F
+  
+  ## Run for each freq
+  for (j in 1:length(freqs_v)) {
     
-    ## Reformat V and J
-    y[, (vj_v) := lapply(.SD, function(z) paste0("TRB", z)), .SDcols = vj_v]
+    ## Initial check
+    if (stop_v) next
+    
+    ## Get freq and subset
+    currFreq_v <- freqs_v[j]
+    currFreqData_dt <- currData_dt[Div == currFreq_v,]
+    
+    ## Skip if empty
+    if (currFreqData_dt[,.N] == 0) next
+    
+    ## Create table of occurrences
+    currTable_dt <- as.data.table(table(currFreqData_dt[,mget(c("aaSeqCDR3", "V segments", "J segments"))]))[N > 0,][rev(order(N))]
+    
+    ## Add
+    for (k in 1:currTable_dt[,.N]) {
+      
+      ## Initial check
+      if (stop_v) next
+      
+      ## Get clones
+      currAdd_dt <- currFreqData_dt[aaSeqCDR3 == currTable_dt[k,aaSeqCDR3] &
+                                      `V segments` == currTable_dt[k,`V segments`] &
+                                      `J segments` == currTable_dt[k,`J segments`],
+                                    mget(c("aaSeqCDR3", "V segments", "J segments", "nb.clone.count", "Sample"))]
+      
+      ## Change sample
+      currAdd_dt$Sample <- gsub("^S", "", currAdd_dt$Sample)
+      currAdd_dt$Sample <- sapply(currAdd_dt$Sample, function(x) paste0(paste0(rep(0, (3-nchar(x))), collapse = ""), x))
+      
+      ## Change count
+      currAdd_dt$nb.clone.count <- sapply(currAdd_dt$nb.clone.count, function(x) paste0(paste0(rep(0, (7-nchar(x))), collapse = ""), x))
+      
+      ## Make new patientCounts column
+      currAdd_dt$patientCounts <- paste(currAdd_dt$Sample, currAdd_dt$nb.clone.count, sep = "/")
+      
+      ## Remove other columns
+      rmCol_v <- c("nb.clone.count", "Sample")
+      currAdd_dt[, (rmCol_v) := NULL]
+      
+      if ((nrow(currOut_dt) + nrow(currAdd_dt)) < nClones_v) {
+        currOut_dt <- rbind(currOut_dt, currAdd_dt)
+      } else {
+        stop_v <- T
+        cat(sprintf("Maximum reached. Stopped at %s clone of %s freq group.\n", k, currFreq_v))
+        #next
+      } # fi
+      
+    } # for k
+    
+  } # for j
+  
+  ## Add to list
+  out_lsdt[[currTreat_v]] <- currOut_dt
+  
+} # for i
 
-    ## Re-order columns
-    y <- y[,c(1:3,5,4), with = F]
-    ## Change column names
-    colnames(y) <- c("CDR3b", "TRBV", "TRBJ", "Patient", "Counts")
-
-    ## Return
-    return(y)
-
-}, simplify = F)
-
-for (i in 1:length(clones_lsdt)){
-    ## Get output name
-    currTreat_v <- strsplit(names(clones_lsdt)[i], split = "_")[[1]][2]
-    currOut_v <- paste0(batchName_v, "_", currTreat_v, "_gliphClones.txt")
-    ## Write table
-    write.table(clones_lsdt[[i]], file.path(outDir_v, currOut_v), row.names = F, quote = F, sep = '\t')
-} # for 
+### Write
+sapply(names(out_lsdt), function(x) write.table(out_lsdt[[x]], file = file.path(outDir_v, paste0(x, "_gliphClones.txt")), 
+                                                sep = '\t', quote = F, row.names = F))
