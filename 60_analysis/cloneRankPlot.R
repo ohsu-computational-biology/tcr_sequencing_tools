@@ -387,9 +387,14 @@ for (i in 1:length(sepData_lsdt)) {
     }
     
     ## Calculate p-value
-    currT <- t.test(currMouseData_dt[get(compareCol_v) == whichCompare_v[1], log10Count],
-                    currMouseData_dt[get(compareCol_v) == whichCompare_v[2], log10Count])
-    currP_v <- formatC(currT$p.value, format = "e", digits = 4)
+    # currT <- t.test(currMouseData_dt[get(compareCol_v) == whichCompare_v[1], log10Count],
+    #                 currMouseData_dt[get(compareCol_v) == whichCompare_v[2], log10Count])
+    # currP_v <- formatC(currT$p.value, format = "e", digits = 4)
+    
+    ## Kolmogorov-Smirnov Test
+    currKS <- ks.test(currMouseData_dt[get(compareCol_v) == whichCompare_v[1], log10Count],
+                      currMouseData_dt[get(compareCol_v) == whichCompare_v[2], log10Count])
+    currP_v <- currKS$p.value
     
     ## Get annotation parameters
     x_v <- max(currMouseData_dt$Rank) * .8
