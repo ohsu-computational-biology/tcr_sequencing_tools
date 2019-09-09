@@ -28,7 +28,7 @@ optlist <- list(
   make_option(
       c("-c", "--columns"),
       type = "character",
-      default = c("nb.clone.count,nb.clone.fraction,Clonal sequence(s),AA. Seq. CDR3,V segments,J segments"),
+      default = c("nb.clone.count,nb.clone.fraction,Clonal sequence(s),AA. Seq. CDR3,V segments,J segments,bestDGene"),
       help = "Column names to read in. Count and fraction are required, but all default columns are recommended. Comma-separated, no spaces.\
 		Example: 'Col1,Col 2,Col 3 a'"),
     make_option(

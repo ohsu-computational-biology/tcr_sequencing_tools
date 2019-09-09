@@ -116,21 +116,24 @@ for (i in 1:length(treats_v)) {
       currAdd_dt <- currFreqData_dt[aaSeqCDR3 == currTable_dt[k,aaSeqCDR3] &
                                       `V segments` == currTable_dt[k,`V segments`] &
                                       `J segments` == currTable_dt[k,`J segments`],
-                                    mget(c("aaSeqCDR3", "V segments", "J segments", "nb.clone.count", "Sample"))]
+                                    mget(c("aaSeqCDR3", "V segments", "J segments", "Sample", "nb.clone.count"))]
       
       ## Change sample
-      currAdd_dt$Sample <- gsub("^S", "", currAdd_dt$Sample)
-      currAdd_dt$Sample <- sapply(currAdd_dt$Sample, function(x) paste0(paste0(rep(0, (3-nchar(x))), collapse = ""), x))
+      # currAdd_dt$Sample <- gsub("^S", "", currAdd_dt$Sample)
+      # currAdd_dt$Sample <- sapply(currAdd_dt$Sample, function(x) paste0(paste0(rep(0, (3-nchar(x))), collapse = ""), x))
+      # 
+      # ## Change count
+      # currAdd_dt$nb.clone.count <- sapply(currAdd_dt$nb.clone.count, function(x) paste0(paste0(rep(0, (7-nchar(x))), collapse = ""), x))
+      # 
+      # ## Make new patientCounts column
+      # currAdd_dt$patientCounts <- paste(currAdd_dt$Sample, currAdd_dt$nb.clone.count, sep = "/")
+      # 
+      # ## Remove other columns
+      # rmCol_v <- c("nb.clone.count", "Sample")
+      # currAdd_dt[, (rmCol_v) := NULL]
       
-      ## Change count
-      currAdd_dt$nb.clone.count <- sapply(currAdd_dt$nb.clone.count, function(x) paste0(paste0(rep(0, (7-nchar(x))), collapse = ""), x))
-      
-      ## Make new patientCounts column
-      currAdd_dt$patientCounts <- paste(currAdd_dt$Sample, currAdd_dt$nb.clone.count, sep = "/")
-      
-      ## Remove other columns
-      rmCol_v <- c("nb.clone.count", "Sample")
-      currAdd_dt[, (rmCol_v) := NULL]
+      ## Change column names
+      colnames(currAdd_dt) <- c("CDR3b", "TRBV", "TRBJ", "Patient", "Counts")
       
       if ((nrow(currOut_dt) + nrow(currAdd_dt)) < nClones_v) {
         currOut_dt <- rbind(currOut_dt, currAdd_dt)

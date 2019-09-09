@@ -11,13 +11,13 @@
 #SBATCH --time               0-24:00                 # time (D-HH:MM)
 #SBATCH --output             zip_%A_%a.out        # Standard output
 #SBATCH --error              zip_%A_%a.err        # Standard error
-#SBATCH --array              0-5                    # sets number of jobs in array
+#SBATCH --array              0-15                    # sets number of jobs in array
 
 
 ### SET I/O VARIABLES
 
-BATCH=LIB170920LC
-IN=$dha/$BATCH/fastqs_from_core/decontam/ 	# Directory containing all input files. Should be one job per file
+BATCH=LIB170213LC
+IN=$dha/$BATCH/fastqs_from_core/fastqs/ 	# Directory containing all input files. Should be one job per file
 MYBIN=$tool/10_preProcess/04_zip.sh                    # Path to shell script or command-line executable that will be used
 
 ### Record slurm info
