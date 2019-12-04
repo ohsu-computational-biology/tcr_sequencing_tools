@@ -297,7 +297,7 @@ if (is.null(metaFile_v)) {
   if (!is.null(nineDir_v)) {
     
     ## Melt
-    melt_df <- melt(out_lsdf$nine, id.vars = "Sample")
+    melt_df <- melt(as.data.table(out_lsdf$nine), id.vars = "Sample")
     
     ## Subset
     plot_df <- melt_df[melt_df$variable == "pct.spiked.reads",]
@@ -384,7 +384,7 @@ if (is.null(metaFile_v)) {
     tf_df <- tf_df[,c("Sample", spikeCols_v[order(colMeans_v)])]
     
     ## Melt
-    melt_df <- melt(tf_df, id.vars = "Sample")
+    melt_df <- melt(as.data.table(tf_df), id.vars = "Sample")
     
     ## Log transform
     melt_df$log10 <- log10(melt_df$value + 1)
