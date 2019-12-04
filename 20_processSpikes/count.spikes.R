@@ -11,6 +11,8 @@
 #
 #   load depdencies
 
+### Loading ShortRead should load BiocParallel, but I was getting a weird error and this fixed it.
+library(BiocParallel, lib.loc="/home/exacloud/lustre1/CompBio/data/tcrseq/dhaarini/from_tempwork/myRPkg")
 suppressMessages(suppressWarnings(library(ShortRead)));
 #library(stringr);
 #library(Biostrings);
