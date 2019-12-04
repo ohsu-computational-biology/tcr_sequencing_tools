@@ -190,7 +190,7 @@ for (i in 1:nrow(out_df)) {
 if (is.null(metaFile_v)) {
   
   ## Melt
-  melt_df <- melt(out_df, id.vars = "Sample")
+  melt_df <- melt(as.data.table(out_df), id.vars = "Sample")
   
   for (i in 1:length(cols_v)) {
     
