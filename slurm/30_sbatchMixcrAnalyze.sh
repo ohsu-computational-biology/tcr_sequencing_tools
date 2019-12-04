@@ -50,7 +50,7 @@ EXPORT=$BASE\S$SNUM
 ###############
 
 ### Run MiXCR
-/usr/bin/java -Xmx15g -jar $MYBIN analyze amplicon \
+cmd="/usr/bin/java -Xmx15g -jar $MYBIN analyze amplicon \
 	-s $SPECIES \
 	--starting-material dna \
 	--5-end v-primers \
@@ -62,10 +62,13 @@ EXPORT=$BASE\S$SNUM
 	--verbose \
 	--force-overwrite \
 	--only-productive  \
-	--align "-OsaveOriginalReads=true --verbose" \
-	--export "--preset-file $PRESET --verbose" \
+	--align \"-OsaveOriginalReads=true --verbose\" \
+	--export \"--preset-file $PRESET --verbose\" \
 	$FASTQ \
-	$EXPORT
+	$EXPORT"
+
+echo $cmd
+eval $cmd
 
 ### Move output files
 mv $EXPORT\.clna $OUT/clna/
