@@ -122,7 +122,7 @@ for (i in 1:length(inputFiles_v)){
                curr.Success, curr.NoHit, curr.NoJ, curr.Overlap, curr.Overlap.Align, curr.Overlap.Not.Align)
     alignNames_v <- names(alignRow_v)
 
-    assembleRow_v <- c(curr.date, curr.input, curr.output,, curr.output2, curr.version, curr.count, curr.avg.per.clone,
+    assembleRow_v <- c(curr.date, curr.input, curr.output,curr.output2, curr.version, curr.count, curr.avg.per.clone,
                curr.reads.used, curr.reads.cluster, curr.core, curr.low, curr.clust, curr.pre.clust,
                curr.dropped.lack, curr.dropped.low, curr.dropped.fail, curr.dropped.low.clone,
                curr.pcr.correct, curr.clone.dropped.lowq, curr.clone.preclust)
