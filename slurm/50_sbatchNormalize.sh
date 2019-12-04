@@ -46,8 +46,8 @@ printf "\n\n"
 ### Extract file name information as well
 
 TODO=$data/tools/todo/normalize.txt
-CURRFILE=`awk -v line=$SLURM_ARRAY_TASK_ID '{if (NR == line) print $0}' $TODO`
-#CURRFILE=`ls -v $IN/decontam | awk -v line=$SLURM_ARRAY_TASK_ID '{if (NR == line) print $0}'`
+#CURRFILE=`awk -v line=$SLURM_ARRAY_TASK_ID '{if (NR == line) print $0}' $TODO`
+CURRFILE=`ls -v $IN/decontam | awk -v line=$SLURM_ARRAY_TASK_ID '{if (NR == line) print $0}'`
 BASE="${CURRFILE%%S[0-9]*}"
 SNUM="${CURRFILE%%.clonotypes.TRB_decontam.txt}"; SNUM="${SNUM##*S}"
 
