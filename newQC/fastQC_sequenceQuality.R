@@ -107,4 +107,4 @@ split_lsdt <- split_lsdt[c("summary", lvls_v)]
 
 ### Write out
 writexl::write_xlsx(split_lsdt,
-                    path = file.path(outDir_v, "sequenceQualitySummary.txt"))
+                    path = file.path(outDir_v, "sequenceQualitySummary.xlsx"))
