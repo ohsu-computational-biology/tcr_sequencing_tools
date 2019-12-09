@@ -320,6 +320,21 @@ if (is.null(metaFile_v)) {
     pdf(file = plotNames_lsv$nine)
     print(nine_gg)
     dev.off()
+    
+    ## Check > 50%
+    ranges_lsv <- list(c(50, 60), c(60, 70), c(70, 80), c(80,90), c(90,100))
+    nineOut_df <- as.data.frame(matrix(nrow = length(ranges_lsv), ncol = 2))
+    for (i in 1:length(ranges_lsv)) {
+      samples_v <- plot_df[plot_df$value > ranges_lsv[[i]][1] &
+                             plot_df$value <= ranges_lsv[[i]][2], "Sample"]
+      nineOut_df[i,] <- c(paste(ranges_lsv[[i]][1], ranges_lsv[[i]][2], sep = "_"),
+                          paste(samples_v, collapse = "; "))
+    }
+    colnames(nineOut_df) <- c("Spike Percentage", "Samples")
+    
+    ## Write
+    write.table(nineOut_df, file = file.path(outDir_v, "highSpikePct.txt"), sep = "\t", quote = F, row.names = F)
+    
   } # fi
   
   ###
@@ -390,11 +405,21 @@ if (is.null(metaFile_v)) {
     melt_df$log10 <- log10(melt_df$value + 1)
     #melt_df[is.infinite(melt_df$log10), "log10"] <- 0
     
+    ## Calculate medians
+    temp <- melt_df; temp[1,1] <- temp[1,1]
+    temp[,med := median(value), by = variable]
+    temp <- unique(temp[,mget(c("variable", "med"))])
+    
+    ## Which are greater than 0.366
+    tooLarge_v <- temp[med > 0.385,variable]
+    cat(sprintf("%d spikes with greater median values\n than 0.385\n", length(tooLarge_v)))
+    
     ## Plot
     tf_gg1 <- ggplot(data = melt_df, aes(x = variable, y = value)) +
       geom_boxplot() +
+      geom_hline(yintercept = 0.385) +
       labs(x = "Spike", y = "Percent") +
-      scale_y_log10(breaks = c(0.01, 1, 10, 50, 100)) +
+      scale_y_log10(breaks = c(0.01, 0.385, 1, 10, 50, 100)) +
       ggtitle(paste(batch_v, "Percent Of All Spiked Reads")) +
       big_label() +
       theme(axis.text.x = element_blank(),
@@ -429,8 +454,9 @@ if (is.null(metaFile_v)) {
     
     tf_gg3 <- ggplot(data = melt_df, aes(x = Sample, y = value)) +
       geom_boxplot() +
+      geom_hline(yintercept = 0.385) +
       labs(x = "Sample", y = "Percent") +
-      scale_y_log10(breaks = c(0.01, 1, 10, 50, 100)) +
+      scale_y_log10(breaks = c(0.01, 0.385, 1, 10, 50, 100)) +
       ggtitle(paste(batch_v, "Spike distrib. in each Sample")) +
       big_label() +
       theme(axis.text.x = element_blank(),
@@ -460,13 +486,20 @@ if (is.null(metaFile_v)) {
     ## Get number of spikes
     spikes_v <- grep("Sample", colnames(tf_df), value = T, invert = T)
     numSpikes_v <- apply(tf_df[,spikes_v], 1, function(x) length(which(unlist(x) != 0)))
+    names(numSpikes_v) <- tf_df$Sample
     pctSpikes_v <- numSpikes_v / 260 * 100
-    pctSpikes_df <- data.frame("Sample" = paste0("S", names(pctSpikes_v)), "pctSpikes" = pctSpikes_v, "numSpikes" = numSpikes_v)
+    pctSpikes_df <- data.frame("Sample" = paste0("S", gsub("^S", "", names(pctSpikes_v))), "pctSpikes" = pctSpikes_v, "numSpikes" = numSpikes_v)
     tfSummary_df <- merge(tfSummary_df, pctSpikes_df, by = "Sample", sort = F)
+    tfSummary_df <- as.data.table(tfSummary_df)
+    
+    ## Add label
+    tfSummary_df$label <- ""
+    tfSummary_df[numSpikes <= 230, label := Sample]
     
     ## Make plots
     tf_gg5 <- ggplot(tfSummary_df, aes(x = num.reads, y = pctSpikes)) +
       geom_point() +
+      ggrepel::geom_text_repel(aes(label = label)) +
       labs(x = "Number of Reads", y = "Pct of Unique 260 Spikes") +
       ggtitle("Unique Spikes Found Based on Number of Reads") +
       big_label() +
@@ -476,6 +509,7 @@ if (is.null(metaFile_v)) {
     
     tf_gg6 <- ggplot(tfSummary_df, aes(x = num.reads, y = numSpikes)) +
       geom_point() +
+      ggrepel::geom_text_repel(aes(label = label)) +
       labs(x = "Number of Reads", y = "Number Unique Spikes") +
       ggtitle("Unique Spikes Found Based on Number of Reads") +
       big_label() +
