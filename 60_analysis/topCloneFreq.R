@@ -1,3 +1,5 @@
+#!/usr/bin/Rscript
+
 ###
 ### Top Clone Frequencies
 ###
@@ -43,9 +45,6 @@ opt <- args$options
 inputDir_v <- args$inputDir
 freqs_v <- splitComma(args$freqs)
 outDir_v <- args$outDir
-
-inputDir_v <- "/Users/hortowe/OHSU/tcr_spike/data/LIB190701LC/normClones"
-freqs_v <- splitComma("5,10,15,20,50,100,200")
 
 ############
 ### BODY ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
