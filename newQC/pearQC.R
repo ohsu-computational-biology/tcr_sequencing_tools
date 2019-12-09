@@ -170,6 +170,8 @@ for (i in 1:length(inputFiles_v)) {
   out_df[i,cols_v] <- c(currAssemble_v, currUnassemble_v, currDiscarded_v)
 }
 
+out_df <- out_df[order(out_df$pear_pctAssembled),]
+
 write.table(out_df, outFile_v, sep = '\t', quote = F, row.names = F)
 
 ##############
