@@ -18,9 +18,9 @@ library(optparse)
 suppressMessages(library(affy))
 suppressMessages(library(mcr))
 library(ggplot2)
-source("/home/exacloud/lustre1/CompBio/users/hortowe/2016_11_27_stable_repos/WesPersonal/utilityFxns.R")
-source("/home/exacloud/lustre1/CompBio/users/hortowe/tcr_sequencing_tools/normalize/batchNormHelperFxn.R")
-
+#source("/home/exacloud/lustre1/CompBio/users/hortowe/2016_11_27_stable_repos/WesPersonal/utilityFxns.R")
+library(wrh.rUtils)
+source("/home/exacloud/lustre1/CompBio/users/hortowe/tcr_sequencing_tools/40_postProcess/batchNorm/batchNormHelperFxn.R")
 
 ### Make list of options
 optlist <- list(

@@ -21,7 +21,7 @@ read_clone<-function(file, directory, norm_v) {
     getCols_v <- c("Clone ID", "cloneId", "Clone count", "clonalSequence", "Clonal sequence(s)", "AA. Seq. CDR3", "aaSeqCDR3", "V segments", "J segments")
     newCols_v <- c("ID", "CloneCount", "Seq", "aaSeq", "V", "J")
   } else if (norm_v == "nb") {
-    getCols_v <- c("Clone ID", "cloneId", "nb.clone.count", "clonalSequence", "Clonal sequence(s)", "AA. Seq. CDR3", "aaSeqCDR3", "V segments", "J segments")
+    getCols_v <- c("Clone ID", "cloneId", "nSeqCDR3", "nb.clone.count", "clonalSequence", "Clonal sequence(s)", "AA. Seq. CDR3", "aaSeqCDR3", "V segments", "J segments")
     newCols_v <- c("ID", "Seq", "aaSeq", "V", "J", "CloneCount")
   } else {
     stop("Incorrect designation of norm_v argument. Must be 'orig', 'raw', or 'nb'.")
@@ -33,7 +33,14 @@ read_clone<-function(file, directory, norm_v) {
   ## Get column indices (for some reason, fread doesn't work with character vector of column names, 
   ##                     so giving int vector of column indices)
   whichCols_v <- which(colNames_v %in% getCols_v)
-  
+
+  ## New edge case - some batches don't have clonalSequence or Clonal sequence(s) and only have nSeqCDR3, while some have both.
+  ## need to remove one or the other
+  if ("nSeqCDR3" %in% colNames_v[whichCols_v] 
+	& "clonalSequence" %in% colNames_v[whichCols_v]) {
+	rm_v <- which(colNames_v[whichCols_v] == "nSeqCDR3")
+	whichCols_v <- whichCols_v[-rm_v]
+  }
   ## Handle edge case - Clone ID is repeated...need to remove second instance of it
   ## Making as general as possible, in case of different (or multiple) repeated columns
   colFreq_df <- as.data.frame(table(colNames_v[whichCols_v]))                # Get frequencies
@@ -42,7 +49,7 @@ read_clone<-function(file, directory, norm_v) {
     currCols_v <- which(colNames_v[whichCols_v] %in% x)
     badCols_v <- currCols_v[-1]
   })
-  whichCols_v <- whichCols_v[-whichDup_v]
+  if (length(whichDup_v) > 0) whichCols_v <- whichCols_v[-whichDup_v]
   
   ## Read in clone file
   clone<-fread(file.path(directory,file), select = whichCols_v, sep = '\t', header = T)
@@ -73,7 +80,7 @@ readDir_clone<-function(dataDir, subDir, meta, norm_v) {
   #' @export
   
   ## Get full directory path
-  directory<-paste(dataDir,subDir, sep="")
+  directory <- file.path(dataDir, subDir)
   
   ## Get batches from metadata
   batchCol_v <- grep("atch", colnames(meta), value = T)
@@ -89,9 +96,9 @@ readDir_clone<-function(dataDir, subDir, meta, norm_v) {
     ## Get files
     currFiles_v <- list.files(directory, pattern = paste0(".*", currBatch_v, ".*txt$"))
     ## Sort by sample number
-    currFiles_v <- currFiles_v[order(as.numeric(gsub("^.*_S|_align.*|_clones.*", "", currFiles_v)))]
+    currFiles_v <- currFiles_v[order(as.numeric(gsub("^.*_S|_align.*|_clones.*|\\.clonotypes.*", "", currFiles_v)))]
     ## Get names
-    currNames_v <- gsub(".*_S|_align.*|_clones.*", "", currFiles_v)
+    currNames_v <- gsub(".*_S|_align.*|_clones.*|\\.clonotypes.*", "", currFiles_v)
     ## Read in data
     #currData_lsdt <- lapply(currFiles_v, read_clone, directory = directory)
     currData_lsdt <- lapply(currFiles_v, function(x) read_clone(file = x, directory = directory, norm_v = norm_v))
