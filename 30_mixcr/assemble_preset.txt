@@ -1,7 +1,6 @@
 -cloneId
 -count
 -fraction
--sequence
 -vHits
 -dHits
 -jHits
