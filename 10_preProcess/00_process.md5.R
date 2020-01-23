@@ -22,7 +22,7 @@ arguments <- commandArgs(trailingOnly=TRUE);
 input.directory <- arguments[1];
 
 #   get the files to be processed, and specify the output paths
-fastq.files.to.process <- list.files(input.directory, pattern="*.fastq.gz");
+fastq.files.to.process <- list.files(input.directory, pattern="*.fastq.gz|*.fq.gz");
 pathed.fastq.files.to.process <- paste(input.directory, fastq.files.to.process, sep="");
 pathed.digest.file.to.process <- paste(input.directory, "md5sum.txt", sep="");
 output.calculated.digest.file.location <- paste(input.directory, "calculated.md5.sums.txt", sep=""); 
@@ -75,7 +75,8 @@ provided.digests$V2 <- NULL;
 
 provided.digests <- provided.digests[order(provided.digests$V3),];
 
-sorted.digest.location <- paste(input.directory, "md5sum.sorted.txt", sep=""); 
+# This doesn't appear to be used.
+#sorted.digest.location <- paste(input.directory, "md5sum.sorted.txt", sep=""); 
 cat("Writing sorted digest file to: ", output.sorted.digest.file.location, "\n", sep="");
 
 #   output results
