@@ -9,19 +9,26 @@
 #SBATCH --output		topCloneFreq-%j.out
 #SBATCH --error			topCloneFreq-%j.err
 
-MYBIN=$tool/60_analysis/topCloneFreq.R
-IN=$data/normalization/normalized_clones/
-OUT=$data/QC/std
-FREQ="5,10,15,20,50,100,200"
+DIRS=(LIB170728LC LIB170921LC LIB171213LC LIB190603LC LIB190701LC LIB191025LC)
 
-echo "SLURM_JOBID: " $SLURM_JOBID
-echo "SLURM_JOB_NODELIST: " $SLURM_JOB_NODELIST
-echo "SLURM_CPUS_ON_NODE: " $SLURM_CPUS_ON_NODE
+GROUP='"5,6-25,26-50,51-100"'
+REST=T
 
-mkdir -p $OUT
+for DIR in "${DIRS[@]}"; do
 
-cmd="$MYBIN -i $IN -f $FREQ -o $OUT"
-
-echo $cmd
-eval $cmd
+	data=$dha/$DIR
+	
+	MYBIN=$tool/60_analysis/topCloneFreq.R
+	IN=$data/normalization/normalized_clones/
+	OUT=$data/QC/std
+	
+	mkdir -p $OUT
+	
+	printf "Batch: %s\nGroups: %s\nOutput: %s\n" $DIR $GROUP $OUT
+	
+	cmd="$MYBIN -i $IN -g $GROUP -r $REST -o $OUT"
+	
+	echo $cmd
+	eval $cmd
+done
 
