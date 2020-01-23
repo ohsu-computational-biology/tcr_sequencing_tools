@@ -6,6 +6,7 @@ library(data.table)
 library(optparse)
 
 ### Want to apply some sort of minimum count cut-off to our samples.
+### Apply the cut-off to the raw counts, but must recalculate frequencies for raw and normalized.
 
 ####################
 ### COMMAND LINE ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -93,7 +94,7 @@ if (old_v) {
 ### Get fraction columns to re-calculate
 freqCols_v <- grep("[Ff]raction", colnames(inputData_lsdt[[1]]), value = T)
 countCols_v <- grep("[Cc]ount", colnames(inputData_lsdt[[1]]), value = T)
-cat(sprintf("Count - Frequency combinations that will be used. PLEASE DOUBLE CHECK THIS!!! \n\t%s\n",
+cat(sprintf("Count - Frequency combinations that will be corrected after subset. (Which is used for threshold is determined by old_v) \n\t%s\n",
             paste(paste(freqCols_v, countCols_v, sep = "_-_"), collapse = "\n\t")))
 
 ### Special case for raw data
@@ -120,6 +121,12 @@ for (i in 1:length(inputData_lsdt)) {
   ## Apply cut-off and get new rows
   currData_dt <- currData_dt[get(count_v) > cutOff_v,]
   newRows_v <- nrow(currData_dt)
+
+  ## If no remaining clones
+  if (nrow(currData_dt) == 0) {
+    cat(sprintf("No clones with raw count under %s in sample %s\n", cutOff_v, currName_v))
+    next
+  } # fi
   
   ## Re-calculate frequencies
   for (j in 1:length(freqCols_v)) {
@@ -136,7 +143,7 @@ for (i in 1:length(inputData_lsdt)) {
     
     ## Check
     currCheckSum_v <- sum(currData_dt[[currFreq_v]])
-    if (currCheckSum_v != 1) warning(sprintf("New frequency calculation for - %s - in sample - %s - does not sum to 1. Instead it is: %d\n", 
+    if (!all.equal(currCheckSum_v, 1)) warning(sprintf("New frequency calculation for - %s - in sample - %s - does not sum to 1. Instead it is: %f\n", 
                                              currFreq_v, currName_v, currCheckSum_v))
   } # for j
   
@@ -165,8 +172,8 @@ summaryName_v <- file.path(qcDir_v, paste0(batchName_v, "_countFilter_", cutOff_
 write.table(summary_df, file = summaryName_v, sep = '\t', quote = F, row.names = F)
 
 ### Write clones
-sapply(inputNames_v, function(x) {
+invisible(sapply(inputNames_v, function(x) {
   write.table(inputData_lsdt[[x]],
               file = file.path(outputDir_v, outputFiles_v[[x]]),
               sep = '\t', quote = F, row.names = F)
-})
+}))
