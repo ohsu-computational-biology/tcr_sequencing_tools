@@ -114,7 +114,7 @@ colnames(output.df) <- c("File", "Shannon Entropy", "Normalized Entropy", "Uniqu
 ### Write output
 file.name <- paste0("multiBatch_", paste(batches_v, collapse = "_"), "_divAnalysis.txt")
 write.table(output.df, 
-            file=paste(out.dir, file.name, sep = ''),
+            file=file.path(out.dir, file.name),
             quote=FALSE,
             sep="\t",
             row.names=FALSE)
