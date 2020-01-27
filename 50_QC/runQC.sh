@@ -5,7 +5,7 @@
 SCRIPTS=$tool/50_QC/
 REF=$tool/00_reference/
 DATA=$data/
-OUT=$data/QC/
+OUT=$data/QC/std
 
 echoerr() { printf "%s\n" "$*" >&2; }
 
